@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            /* Deep Blue */
+            background-color: #001f3f; /* Deep Blue */
             color: #ddd; /* Silver */
             display: flex;
             justify-content: center;
@@ -16,15 +16,17 @@
             margin: 0;
         }
         .login-container {
+            background-color: #f9f9f9;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-width: 400px;
             width: 100%;
+            box-sizing: border-box;
         }
         .login-container h1 {
-            color: #001f3f; 
+            color: #001f3f;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -32,7 +34,7 @@
             margin-bottom: 15px;
         }
         .form-group label {
-            color: black;
+            color: #333;
             font-size: 14px;
         }
         .form-group input {
@@ -41,12 +43,13 @@
             margin-top: 5px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            color: #fff;
             box-sizing: border-box;
+            color: #333;
         }
         .form-group input:focus {
             outline: none;
             border-color: #87CEEB;
+            box-shadow: 0 0 5px rgba(135, 206, 235, 0.5);
         }
         .form-group button {
             width: 100%;
@@ -57,9 +60,32 @@
             color: #001f3f;
             font-weight: bold;
             cursor: pointer;
+            font-size: 16px;
         }
         .form-group button:hover {
             background: #B0E0E6;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 15px;
+                box-shadow: none;
+            }
         }
     </style>
 </head>
@@ -75,6 +101,14 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
+             <!-- Flash Messages -->
+        {{#if error}}
+        <div class="alert alert-error">{{error}}</div>
+        {{/if}}
+        {{#if success}}
+        <div class="alert alert-success">{{success}}</div>
+        {{/if}}
+
             <div class="form-group">
                 <button type="submit">Login</button>
             </div>

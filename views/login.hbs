@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Quanta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* Deep Blue */
+            color: #ddd; /* Silver */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-container h1 {
+            color: #001f3f; 
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            color: black;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #87CEEB;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background: #87CEEB; /* Silver Blue */
+            border: none;
+            border-radius: 5px;
+            color: #001f3f;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background: #B0E0E6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Quanta Login</h1>
+        <form action="/auth/login" method="POST">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

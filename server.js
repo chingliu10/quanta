@@ -2,24 +2,32 @@ import express from 'express';
 import hbs from 'hbs';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
-import mysql from './database/connection.js';
+import connection from './config/connection.js'; // Import connection
+import dashboardRoutes from "./routes/dashboard/dashboard.js"
+
+const { pool } = connection; // Destructure pool from connection
 
 const app = express();
 const PORT = 3000;
 
-// Middleware for parsing JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+
 
 // Configure Session Middleware
 app.use(
     session({
-        secret: 'your-secret-key', // Replace with a strong secret key in production
+        secret: 'your-secret-key',
         resave: false,
         saveUninitialized: true,
         cookie: { secure: false }, // Use secure cookies in production with HTTPS
     })
 );
+
+// Middleware for parsing JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+//subroutes
+app.use("/dashboard", dashboardRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');
@@ -37,39 +45,27 @@ app.use((req, res, next) => {
 // Routes
 app.get('/', (req, res) => {
     if (req.session.user) {
-        // If user is logged in, redirect to dashboard
         return res.redirect('/dashboard');
     }
-    // Otherwise, redirect to login
     res.redirect('/login');
 });
 
 app.get('/login', (req, res) => {
     if (req.session.user) {
-        // If user is already logged in, redirect to dashboard
         return res.redirect('/dashboard');
     }
-    // Render login page for unauthenticated users
     res.render('login');
 });
 
 
-app.get('/dashboard', (req, res) => {
-    if (!req.session.user) {
-        req.session.error = 'Please log in to access the dashboard.';
-        return res.redirect('/login');
-    }
-
-    res.render('dashboard', { user: req.session.user });
-});
 
 // POST route for login
 app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if email exists in the database
-        const [rows] = await mysql.query('SELECT * FROM users WHERE email = ?', [email]);
+        // Use the pool to execute the query
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
         if (rows.length === 0) {
             req.session.error = 'Invalid email.';
@@ -87,7 +83,7 @@ app.post('/auth/login', async (req, res) => {
         }
 
         // Email and password are valid
-        req.session.user = { id: user.id, email: user.email }; // Store user details in the session
+        req.session.user = { id: user.id, email: user.email };
         req.session.success = 'Login successful!';
         res.redirect('/dashboard');
     } catch (err) {

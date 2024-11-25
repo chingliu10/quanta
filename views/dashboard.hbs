@@ -4,8 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            margin: 0 0 10px;
+        }
+
+        .loading {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-    
+    <h1>Welcome to the Dashboard</h1>
+    <p>Logged in as: {{user.email}}</p>
+    <a href="/logout">Logout</a>
+
+    <!-- Borrowers Section -->
+    <div class="section" id="borrowers-section">
+        <h2>Total Borrowers</h2>
+        <p class="loading" id="borrowers-loading">Loading...</p>
+        <p class="error" id="borrowers-error"></p>
+        <p id="borrowers-data"></p>
+    </div>
+
+    <!-- Total Loans Released Section -->
+    <div class="section" id="loans-section">
+        <h2>Total Loans Released</h2>
+        <p class="loading" id="loans-loading">Loading...</p>
+        <p class="error" id="loans-error"></p>
+        <p id="loans-data"></p>
+    </div>
+
+    <!-- Total Collection Section -->
+    <div class="section" id="collection-section">
+        <h2>Total Collection</h2>
+        <p class="loading" id="collection-loading">Loading...</p>
+        <p class="error" id="collection-error"></p>
+        <p id="collection-data"></p>
+    </div>
+
+    <!-- Outstanding Open Loans Section -->
+    <div class="section" id="outstanding-section">
+        <h2>Outstanding Open Loans</h2>
+        <p class="loading" id="outstanding-loading">Loading...</p>
+        <p class="error" id="outstanding-error"></p>
+        <p id="outstanding-data"></p>
+    </div>
+
+    <!-- Open Loans Section -->
+    <div class="section" id="openloans-section">
+        <h2>Open Loans</h2>
+        <p class="loading" id="openloans-loading">Loading...</p>
+        <p class="error" id="openloans-error"></p>
+        <p id="openloans-data"></p>
+    </div>
+
+   <script>
+    // Utility function to format numbers
+    function formatNumber(n) {
+        return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Function to fetch data from an API endpoint
+    async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(`Failed to fetch data from ${url}:`, error.message);
+            throw error;
+        }
+    }
+
+    // Fetch and update total borrowers
+    fetchData('/dashboard/getborrowers')
+        .then((data) => {
+            const loadingElement = document.getElementById('borrowers-loading');
+            const dataElement = document.getElementById('borrowers-data');
+
+            // Hide loading and show data
+            loadingElement.style.display = 'none';
+            dataElement.textContent = data.totalBorrowers;
+        })
+        .catch((error) => {
+            const loadingElement = document.getElementById('borrowers-loading');
+            const errorElement = document.getElementById('borrowers-error');
+
+            // Hide loading and show error
+            loadingElement.style.display = 'none';
+            errorElement.textContent = `Failed to fetch borrowers: ${error.message}`;
+        });
+
+    // Fetch and update total loans released
+    fetchData('/dashboard/totalloansreleased')
+        .then((data) => {
+            const loadingElement = document.getElementById('loans-loading');
+            const dataElement = document.getElementById('loans-data');
+
+            // Hide loading and show data
+            loadingElement.style.display = 'none';
+            dataElement.textContent = formatNumber(data.totalLoans);
+        })
+        .catch((error) => {
+            const loadingElement = document.getElementById('loans-loading');
+            const errorElement = document.getElementById('loans-error');
+
+            // Hide loading and show error
+            loadingElement.style.display = 'none';
+            errorElement.textContent = `Failed to fetch total loans: ${error.message}`;
+        });
+
+    // Fetch and update total collection
+    fetchData('/dashboard/totalcollection')
+        .then((data) => {
+            const loadingElement = document.getElementById('collection-loading');
+            const dataElement = document.getElementById('collection-data');
+
+            // Hide loading and show data
+            loadingElement.style.display = 'none';
+            dataElement.textContent = formatNumber(data.totalCollection);
+        })
+        .catch((error) => {
+            const loadingElement = document.getElementById('collection-loading');
+            const errorElement = document.getElementById('collection-error');
+
+            // Hide loading and show error
+            loadingElement.style.display = 'none';
+            errorElement.textContent = `Failed to fetch total collection: ${error.message}`;
+        });
+
+    // Fetch and update outstanding minus collection
+    async function fetchOutstandingMinusCollection() {
+        const loadingElement = document.getElementById('outstanding-loading');
+        const errorElement = document.getElementById('outstanding-error');
+        const dataElement = document.getElementById('outstanding-data');
+
+        // Reset UI elements
+        loadingElement.style.display = 'block';
+        errorElement.textContent = '';
+        dataElement.textContent = '';
+
+        try {
+            // Fetch outstanding and collection data concurrently
+            const [outstandingData, collectionData] = await Promise.all([
+                fetchData('/dashboard/outstandingopenloans'),
+                fetchData('/dashboard/totalcollection')
+            ]);
+
+            const outstanding = outstandingData.outstanding;
+            const totalCollection = collectionData.totalCollection;
+
+            // Perform the calculation
+            const result = outstanding - totalCollection;
+
+            // Update the UI
+            loadingElement.style.display = 'none';
+            dataElement.textContent = `${formatNumber(result)}`;
+        } catch (error) {
+            loadingElement.style.display = 'none'; // Hide loading
+            errorElement.textContent = `Failed to fetch data: ${error.message}`;
+        }
+    }
+
+    fetchOutstandingMinusCollection();
+
+    // Fetch and update open loans
+    fetchData('/dashboard/openloans')
+        .then((data) => {
+            const loadingElement = document.getElementById('openloans-loading');
+            const dataElement = document.getElementById('openloans-data');
+
+            // Hide loading and show data
+            loadingElement.style.display = 'none';
+            dataElement.textContent = data.openloans
+             
+        })
+        .catch((error) => {
+            const loadingElement = document.getElementById('openloans-loading');
+            const errorElement = document.getElementById('openloans-error');
+
+            // Hide loading and show error
+            loadingElement.style.display = 'none';
+            errorElement.textContent = `Failed to fetch open loans: ${error.message}`;
+        });
+</script>
+
+
 </body>
 </html>

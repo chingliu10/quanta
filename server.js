@@ -4,6 +4,13 @@ import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import connection from './config/connection.js'; // Import connection
 import dashboardRoutes from "./routes/dashboard/dashboard.js"
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const { pool } = connection; // Destructure pool from connection
 
@@ -23,6 +30,9 @@ app.use(
     })
 );
 
+// Serve static files from the "public" directory
+app.use(express.static('assets'));
+
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,6 +42,9 @@ app.use("/dashboard", dashboardRoutes);
 // View Engine
 app.set('view engine', 'hbs');
 app.set('views', './views');
+
+// Register the partials directory
+hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
 // Middleware to make session variables accessible to templates
 app.use((req, res, next) => {
@@ -83,7 +96,7 @@ app.post('/auth/login', async (req, res) => {
         }
 
         // Email and password are valid
-        req.session.user = { id: user.id, email: user.email };
+        req.session.user = { id: user.id, user : user.first_name };
         req.session.success = 'Login successful!';
         res.redirect('/dashboard');
     } catch (err) {

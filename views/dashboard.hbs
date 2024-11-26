@@ -4,220 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Include Tabler CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
             background-color: #f4f4f9;
         }
 
-        h1 {
-            color: #333;
-        }
-
-        .section {
+        .info-box {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            background-color: #fff;
+            background-color: white;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
 
-        .section h2 {
-            margin: 0 0 10px;
+        .info-box:hover {
+            transform: scale(1.02);
         }
 
-        .loading {
-            color: #555;
-            font-size: 14px;
+        .info-box-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.5rem;
         }
 
-        .error {
-            color: red;
-            font-size: 14px;
+        .bg-green {
+            background-color: #28a745;
+        }
+
+        .bg-blue {
+            background-color: #001F3F;
+        }
+
+        .bg-silver {
+            background-color: #87CEEB;
+        }
+
+        .info-box-content {
+            flex-grow: 1;
+        }
+
+        .info-box-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .info-box-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #001F3F;
+        }
+
+        .loading-stick {
+            height: 4px;
+            background-color: #87CEEB;
+            animation: loading 1s infinite linear;
+            width: 100%;
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            50% { width: 50%; }
+            100% { width: 100%; }
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-3 {
+            flex: 1 1 calc(25% - 20px);
+            max-width: calc(25% - 20px);
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Dashboard</h1>
-    <p>Logged in as: {{user.email}}</p>
-    <a href="/logout">Logout</a>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        {{>sidebar}}
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            {{>topnav  user=user.user}}
+            <!-- Dashboard Info Boxes -->
+            <div class="container mt-4">
+                {{user.user}}
+                <div class="row">
+                    <!-- Total Borrowers -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green"><i class="fas fa-users"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Borrowers</span><br/>
+                                <span class="info-box-number" id="borrowers-data"></span>
+                                <div class="loading-stick" id="borrowers-loading"></div>
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- Borrowers Section -->
-    <div class="section" id="borrowers-section">
-        <h2>Total Borrowers</h2>
-        <p class="loading" id="borrowers-loading">Loading...</p>
-        <p class="error" id="borrowers-error"></p>
-        <p id="borrowers-data"></p>
+                    <!-- Total Loans Released -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-blue"><i class="fas fa-dollar-sign"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Loans Released</span><br/>
+                                <span class="info-box-number" id="loans-data"></span>
+                                <div class="loading-stick" id="loans-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Collection -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-silver"><i class="fas fa-coins"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Collection</span><br/>
+                                <span class="info-box-number" id="collection-data"></span>
+                                <div class="loading-stick" id="collection-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Outstanding Open Loans -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green"><i class="fas fa-money-check-alt"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Outstanding Loans</span><br/>
+                                <span class="info-box-number" id="outstanding-data"></span>
+                                <div class="loading-stick" id="outstanding-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Open Loans -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-blue"><i class="fas fa-folder-open"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Open Loans</span><br/>
+                                <span class="info-box-number" id="openloans-data"></span>
+                                <div class="loading-stick" id="openloans-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Closed Loans -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-silver"><i class="fas fa-folder"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Closed Loans</span><br/>
+                                <span class="info-box-number" id="closedloans-data"></span>
+                                <div class="loading-stick" id="closedloans-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                      <!-- Pending Loans -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green"><i class="fas fa-hourglass-half"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Pending Loans</span><br/>
+                                <span class="info-box-number" id="pendingloans-data"></span>
+                                <div class="loading-stick" id="pendingloans-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                                        <!-- Savings Deposited -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-blue"><i class="fas fa-piggy-bank"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Savings Deposited</span><br/>
+                                <span class="info-box-number" id="savingsdeposited-data"></span>
+                                <div class="loading-stick" id="savingsdeposited-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Savings Withdrawn -->
+                    <div class="col-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-silver"><i class="fas fa-piggy-bank"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Savings Withdrawn</span><br/>
+                                <span class="info-box-number" id="savingswithdrawn-data"></span>
+                                <div class="loading-stick" id="savingswithdrawn-loading"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Total Loans Released Section -->
-    <div class="section" id="loans-section">
-        <h2>Total Loans Released</h2>
-        <p class="loading" id="loans-loading">Loading...</p>
-        <p class="error" id="loans-error"></p>
-        <p id="loans-data"></p>
-    </div>
-
-    <!-- Total Collection Section -->
-    <div class="section" id="collection-section">
-        <h2>Total Collection</h2>
-        <p class="loading" id="collection-loading">Loading...</p>
-        <p class="error" id="collection-error"></p>
-        <p id="collection-data"></p>
-    </div>
-
-    <!-- Outstanding Open Loans Section -->
-    <div class="section" id="outstanding-section">
-        <h2>Outstanding Open Loans</h2>
-        <p class="loading" id="outstanding-loading">Loading...</p>
-        <p class="error" id="outstanding-error"></p>
-        <p id="outstanding-data"></p>
-    </div>
-
-    <!-- Open Loans Section -->
-    <div class="section" id="openloans-section">
-        <h2>Open Loans</h2>
-        <p class="loading" id="openloans-loading">Loading...</p>
-        <p class="error" id="openloans-error"></p>
-        <p id="openloans-data"></p>
-    </div>
-
-   <script>
-    // Utility function to format numbers
-    function formatNumber(n) {
-        return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    // Function to fetch data from an API endpoint
-    async function fetchData(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-            return await response.json();
-        } catch (error) {
-            console.error(`Failed to fetch data from ${url}:`, error.message);
-            throw error;
-        }
-    }
-
-    // Fetch and update total borrowers
-    fetchData('/dashboard/getborrowers')
-        .then((data) => {
-            const loadingElement = document.getElementById('borrowers-loading');
-            const dataElement = document.getElementById('borrowers-data');
-
-            // Hide loading and show data
-            loadingElement.style.display = 'none';
-            dataElement.textContent = data.totalBorrowers;
-        })
-        .catch((error) => {
-            const loadingElement = document.getElementById('borrowers-loading');
-            const errorElement = document.getElementById('borrowers-error');
-
-            // Hide loading and show error
-            loadingElement.style.display = 'none';
-            errorElement.textContent = `Failed to fetch borrowers: ${error.message}`;
-        });
-
-    // Fetch and update total loans released
-    fetchData('/dashboard/totalloansreleased')
-        .then((data) => {
-            const loadingElement = document.getElementById('loans-loading');
-            const dataElement = document.getElementById('loans-data');
-
-            // Hide loading and show data
-            loadingElement.style.display = 'none';
-            dataElement.textContent = formatNumber(data.totalLoans);
-        })
-        .catch((error) => {
-            const loadingElement = document.getElementById('loans-loading');
-            const errorElement = document.getElementById('loans-error');
-
-            // Hide loading and show error
-            loadingElement.style.display = 'none';
-            errorElement.textContent = `Failed to fetch total loans: ${error.message}`;
-        });
-
-    // Fetch and update total collection
-    fetchData('/dashboard/totalcollection')
-        .then((data) => {
-            const loadingElement = document.getElementById('collection-loading');
-            const dataElement = document.getElementById('collection-data');
-
-            // Hide loading and show data
-            loadingElement.style.display = 'none';
-            dataElement.textContent = formatNumber(data.totalCollection);
-        })
-        .catch((error) => {
-            const loadingElement = document.getElementById('collection-loading');
-            const errorElement = document.getElementById('collection-error');
-
-            // Hide loading and show error
-            loadingElement.style.display = 'none';
-            errorElement.textContent = `Failed to fetch total collection: ${error.message}`;
-        });
-
-    // Fetch and update outstanding minus collection
-    async function fetchOutstandingMinusCollection() {
-        const loadingElement = document.getElementById('outstanding-loading');
-        const errorElement = document.getElementById('outstanding-error');
-        const dataElement = document.getElementById('outstanding-data');
-
-        // Reset UI elements
-        loadingElement.style.display = 'block';
-        errorElement.textContent = '';
-        dataElement.textContent = '';
-
-        try {
-            // Fetch outstanding and collection data concurrently
-            const [outstandingData, collectionData] = await Promise.all([
-                fetchData('/dashboard/outstandingopenloans'),
-                fetchData('/dashboard/totalcollection')
-            ]);
-
-            const outstanding = outstandingData.outstanding;
-            const totalCollection = collectionData.totalCollection;
-
-            // Perform the calculation
-            const result = outstanding - totalCollection;
-
-            // Update the UI
-            loadingElement.style.display = 'none';
-            dataElement.textContent = `${formatNumber(result)}`;
-        } catch (error) {
-            loadingElement.style.display = 'none'; // Hide loading
-            errorElement.textContent = `Failed to fetch data: ${error.message}`;
-        }
-    }
-
-    fetchOutstandingMinusCollection();
-
-    // Fetch and update open loans
-    fetchData('/dashboard/openloans')
-        .then((data) => {
-            const loadingElement = document.getElementById('openloans-loading');
-            const dataElement = document.getElementById('openloans-data');
-
-            // Hide loading and show data
-            loadingElement.style.display = 'none';
-            dataElement.textContent = data.openloans
-             
-        })
-        .catch((error) => {
-            const loadingElement = document.getElementById('openloans-loading');
-            const errorElement = document.getElementById('openloans-error');
-
-            // Hide loading and show error
-            loadingElement.style.display = 'none';
-            errorElement.textContent = `Failed to fetch open loans: ${error.message}`;
-        });
-</script>
-
-
+    <!-- Include Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    <script src="/js/dashboard.js"></script>
 </body>
 </html>

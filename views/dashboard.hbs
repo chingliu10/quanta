@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <!-- Include Tabler CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {{>toplinks}}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -101,10 +100,9 @@
         <!-- Main Content -->
         <div class="flex-grow-1">
             <!-- Top Navbar -->
-            {{>topnav  user=user.user}}
+            {{>topnav user=user.user}}
             <!-- Dashboard Info Boxes -->
             <div class="container mt-4">
-                {{user.user}}
                 <div class="row">
                     <!-- Total Borrowers -->
                     <div class="col-3">
@@ -220,7 +218,7 @@
     </div>
 
     <!-- Include Tabler JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    {{>bottomlinks}}
     <script src="/js/dashboard.js"></script>
 </body>
 </html>

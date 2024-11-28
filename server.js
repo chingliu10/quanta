@@ -3,7 +3,8 @@ import hbs from 'hbs';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import connection from './config/connection.js'; // Import connection
-import dashboardRoutes from "./routes/dashboard/dashboard.js"
+import dashboardRoutes from "./routes/dashboard.js"
+import borrowerRoutes from "./routes/borrower.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //subroutes
 app.use("/dashboard", dashboardRoutes);
+app.use("/borrower", borrowerRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');

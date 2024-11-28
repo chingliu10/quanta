@@ -1,32 +1,151 @@
-        <nav class="sidebar bg-blue text-white p-3" style="width: 250px;height :100vh">
-            <h2 class="text-center mb-4">Quanta</h2>
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="/" class="nav-link text-white">
-                        <i class="fas fa-home me-2"></i> Default
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="/dashboard" class="nav-link text-white">
-                        <i class="fas fa-chart-line me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="#borrowers-menu" data-bs-toggle="collapse" class="nav-link text-white">
-                        <i class="fas fa-users me-2"></i> Borrowers
-                        <i class="fas fa-chevron-down float-end"></i>
-                    </a>
-                    <div id="borrowers-menu" class="collapse">
-                        <ul class="nav flex-column ps-3">
-                            <li><a href="/borrowers/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Borrowers</a></li>
-                            <li><a href="/borrowers/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Borrowers</a></li>
-                            <li><a href="/borrowers/groups/view" class="nav-link text-white"><i class="fas fa-user-friends me-2"></i> View Groups</a></li>
-                            <li><a href="/borrowers/groups/add" class="nav-link text-white"><i class="fas fa-user-plus me-2"></i> Add Group</a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-            <a href="/logout" class="btn btn-outline-danger mt-auto w-100">
-                <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+<nav class="sidebar bg-blue text-white p-3" style="width: 250px; height: 100vh;">
+    <h2 class="text-center mb-4">Quanta</h2>
+    <ul class="nav flex-column">
+        <!-- Default -->
+        <li class="nav-item mb-2">
+            <a href="/" class="nav-link text-white">
+                <i class="fas fa-home me-2"></i> Default
             </a>
-        </nav>
+        </li>
+        <!-- Dashboard -->
+        <li class="nav-item mb-2">
+            <a href="/dashboard" class="nav-link text-white">
+                <i class="fas fa-chart-line me-2"></i> Dashboard
+            </a>
+        </li>
+        <!-- Branches -->
+        <li class="nav-item mb-2">
+            <a href="#branches-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-code-branch me-2"></i> Branches</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="branches-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/branches/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Branches</a></li>
+                    <li><a href="/branches/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Branch</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Borrowers -->
+        <li class="nav-item mb-2">
+            <a href="#borrowers-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-users me-2"></i> Borrowers</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="borrowers-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/borrower/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Borrowers</a></li>
+                    <li><a href="/borrower/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Borrowers</a></li>
+                    <li><a href="/borrower/groups/view" class="nav-link text-white"><i class="fas fa-user-friends me-2"></i> View Groups</a></li>
+                    <li><a href="/borrower/groups/add" class="nav-link text-white"><i class="fas fa-user-plus me-2"></i> Add Group</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Loans -->
+        <li class="nav-item mb-2">
+            <a href="#loans-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-money-bill-wave me-2"></i> Loans</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="loans-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/loans/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Loans</a></li>
+                    <li><a href="/loans/active" class="nav-link text-white"><i class="fas fa-check-circle me-2"></i> Active Loans</a></li>
+                    <li><a href="/loans/due" class="nav-link text-white"><i class="fas fa-calendar-alt me-2"></i> Due Loans</a></li>
+                    <li><a href="/loans/arrears" class="nav-link text-white"><i class="fas fa-exclamation-circle me-2"></i> Loan Arrears</a></li>
+                    <li><a href="/loans/past-maturity" class="nav-link text-white"><i class="fas fa-calendar-times me-2"></i> Past Maturity</a></li>
+                    <li><a href="/loans/pending" class="nav-link text-white"><i class="fas fa-hourglass-half me-2"></i> Pending Loans</a></li>
+                    <li><a href="/loans/disbursed" class="nav-link text-white"><i class="fas fa-hand-holding-usd me-2"></i> Disbursed Loans</a></li>
+                    <li><a href="/loans/closed" class="nav-link text-white"><i class="fas fa-folder me-2"></i> Closed Loans</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Loan Officers -->
+        <li class="nav-item mb-2">
+            <a href="#loan-officers-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-id-badge me-2"></i> Loan Officers</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="loan-officers-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/loan-officers/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Loan Officers</a></li>
+                    <li><a href="/loan-officers/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Loan Officers</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Guarantors -->
+        <li class="nav-item mb-2">
+            <a href="#guarantors-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-user-shield me-2"></i> Guarantors</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="guarantors-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/guarantors/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Guarantors</a></li>
+                    <li><a href="/guarantors/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Guarantors</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Repayments -->
+        <li class="nav-item mb-2">
+            <a href="#repayments-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-money-check-alt me-2"></i> Repayments</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="repayments-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/repayments/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Repayments</a></li>
+                    <li><a href="/repayments/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Repayments</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Collateral Register -->
+        <li class="nav-item mb-2">
+            <a href="/collateral/register" class="nav-link text-white">
+                <i class="fas fa-warehouse me-2"></i> Collateral Register
+            </a>
+        </li>
+        <!-- Collection Sheets -->
+        <li class="nav-item mb-2">
+            <a href="#collection-sheets-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-file-invoice-dollar me-2"></i> Collection Sheets</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="collection-sheets-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/collections/daily" class="nav-link text-white"><i class="fas fa-calendar-day me-2"></i> Daily Collection</a></li>
+                    <li><a href="/collections/missed-repayments" class="nav-link text-white"><i class="fas fa-times-circle me-2"></i> Missed Repayments</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Reports -->
+        <li class="nav-item mb-2">
+            <a href="#reports-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-chart-bar me-2"></i> Reports</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+            <div id="reports-menu" class="collapse">
+                <ul class="nav flex-column ps-3">
+                    <li><a href="/reports/cashflow" class="nav-link text-white"><i class="fas fa-money-check me-2"></i> Cashflow</a></li>
+                    <li><a href="/reports/profitloss" class="nav-link text-white"><i class="fas fa-chart-pie me-2"></i> Profit & Loss</a></li>
+                    <li><a href="/reports/loans" class="nav-link text-white"><i class="fas fa-list me-2"></i> Loan Reports</a></li>
+                    <li><a href="/reports/balance-sheet" class="nav-link text-white"><i class="fas fa-balance-scale me-2"></i> Balance Sheet</a></li>
+                    <li><a href="/reports/trial-balance" class="nav-link text-white"><i class="fas fa-balance-scale-right me-2"></i> Trial Balance</a></li>
+                    <li><a href="/reports/loan-balance" class="nav-link text-white"><i class="fas fa-calculator me-2"></i> Loan Balance</a></li>
+                    <li><a href="/reports/portfolio-at-risk" class="nav-link text-white"><i class="fas fa-exclamation-triangle me-2"></i> Portfolio at Risk</a></li>
+                    <li><a href="/reports/loan-officer" class="nav-link text-white"><i class="fas fa-user-tie me-2"></i> Loan Officer Report</a></li>
+                    <li><a href="/reports/collection" class="nav-link text-white"><i class="fas fa-chart-line me-2"></i> Collection Report</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- Settings -->
+        <li class="nav-item mb-2">
+            <a href="/settings" class="nav-link text-white">
+                <i class="fas fa-cogs me-2"></i> Settings
+            </a>
+        </li>
+    </ul>
+    <a href="/logout" class="btn mt-auto w-100" style="border: 1px solid whitesmoke;">
+        <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+    </a>
+</nav>

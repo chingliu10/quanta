@@ -47,6 +47,10 @@ app.set('views', './views');
 
 // Register the partials directory
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
+hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
+    return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+});
+
 
 // Middleware to make session variables accessible to templates
 app.use((req, res, next) => {

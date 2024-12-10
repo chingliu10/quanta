@@ -44,7 +44,7 @@ export const addBorrower =  async (borrower) => {
         console.log(borrower)
         console.log("adasd hey controller")
 
-        const { first_name, last_name, gender, business, address } = borrower;
+        const { first_name, last_name, gender, business, address, mobile } = borrower;
 
         const checkQuery = `SELECT first_name , last_name FROM borrowers WHERE first_name = ? AND last_name = ? LIMIT 1`;
         const dbCheckQuery = await pool.query(checkQuery, [
@@ -60,14 +60,15 @@ export const addBorrower =  async (borrower) => {
                 }
         }
         
-        const query = `INSERT INTO borrowers (first_name, last_name, gender, business_name, address, branch_id, created_at) 
-               VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO borrowers (first_name, last_name, gender, business_name, address, mobile, branch_id, created_at) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
         const dbRequest = await pool.query(query, [
             first_name.trim().toUpperCase(),  // Trim to ensure no leading/trailing spaces
             last_name.trim().toUpperCase(),
             gender,
             business,
             address,
+            mobile,
             1,                  // Branch ID
             new Date(),         // Created at timestamp
         ]);
@@ -92,32 +93,94 @@ export const addBorrower =  async (borrower) => {
     }
 };
 
-// // Update a borrower by ID
-// export const updateBorrower = (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const { name, email, phone, groupId } = req.body;
 
-//         const borrower = borrowers.find((b) => b.id === id);
+export const getEditBorrower = async (id) => {
+    try {
+    
+        const query = `SELECT id, first_name, last_name, gender, business_name, address, mobile FROM borrowers WHERE id = ? LIMIT 1`;
+        const [borrowers] = await pool.query(query, [id]);
 
-//         if (!borrower) {
-//             return res.status(404).json({ success: false, message: 'Borrower not found' });
-//         }
+        return {
+            queryStatus : true ,
+            message : "success",
+            data : borrowers[0]
+        }
 
-//         borrower.name = name || borrower.name;
-//         borrower.email = email || borrower.email;
-//         borrower.phone = phone || borrower.phone;
-//         borrower.groupId = groupId || borrower.groupId;
+    } catch (error) {
 
-//         res.status(200).json({
-//             success: true,
-//             message: 'Borrower updated successfully',
-//             data: borrower,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ success: false, message: 'Error updating borrower', error });
-//     }
-// };
+        return {
+            queryStatus : false,
+            errorInformation : { errorNo : error.errno , errorCode : error.code , errorMessage : error.sqlMessage },
+            activity : "adding borrower inside database"
+        }      
+
+    }
+};
+
+// Update a borrower by ID
+export const updateBorrower =  async (borrowerId , borrowerData) => {
+    try {
+       
+       
+        const { first_name, last_name, gender, mobile, business, address } = borrowerData;
+        
+        const query = `
+            UPDATE borrowers
+            SET first_name = ?, last_name = ?, gender = ?, mobile = ?, business_name = ?, address = ?, updated_at = ?
+            WHERE id = ?
+        `;
+
+        const [result] = await pool.query(query, [
+            first_name.trim().toUpperCase(),
+            last_name.trim().toUpperCase(),
+            gender,
+            mobile,
+            business,
+            address,
+            new Date(),
+            borrowerId,
+        ]);
+
+        return {
+            queryStatus : true,
+            message : "success"
+        }
+       
+      
+    } catch (error) {
+        
+        return {
+            queryStatus : false,
+            errorInformation : { errorNo : error.errno , errorCode : error.code , errorMessage : error.sqlMessage },
+            activity : "Updating borrower inside database"
+        }  
+    }
+
+};
+
+
+export const getBorrowerDetails = async (id) => {
+    try {
+    
+        const query = `SELECT id, first_name, last_name, gender, business_name, address, mobile FROM borrowers WHERE id = ? LIMIT 1`;
+        const [borrowers] = await pool.query(query, [id]);
+
+        return {
+            queryStatus : true ,
+            message : "success",
+            data : borrowers[0]
+        }
+
+    } catch (error) {
+
+        return {
+            queryStatus : false,
+            errorInformation : { errorNo : error.errno , errorCode : error.code , errorMessage : error.sqlMessage },
+            activity : "getting borrower details inside database"
+        }      
+
+    }
+};
 
 // // Delete a borrower by ID
 // export const deleteBorrower = (req, res) => {

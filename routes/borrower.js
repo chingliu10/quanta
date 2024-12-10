@@ -2,6 +2,9 @@ import express from 'express';
 import {
     getAllBorrowers,
     addBorrower,
+    getEditBorrower,
+    updateBorrower,
+    getBorrowerDetails
 } from '../controllers/borrowers/borrowerController.js';
 
 
@@ -62,10 +65,74 @@ router.post('/add', async (req, res) => {
     }
 });
 
+//edit borrower
+router.get('/edit/:id', async (req, res) => {
 
-// // 2. Get a single borrower by ID
-// router.get('/:id', getBorrowerById);
-// // 4. Update a borrower by ID
+
+    try {
+
+        let result =  await getEditBorrower(req.params.id);
+        res.render('borrower_update', { borrower: result.data , user: req.session.user });
+
+
+    }catch (error) {
+
+    }
+   
+});
+
+router.post('/edit/:id', async (req, res) => {
+    try {
+
+
+        console.log("updating borrower")
+
+        let result = await updateBorrower(req.params.id, req.body);
+
+        if(result.message = "success" && result.queryStatus == true) {
+
+            res.redirect("/borrower/view")
+
+        }
+
+        //else there was an error at updateBorrower()
+
+    }catch (error) {
+
+
+
+    }
+});
+
+
+
+// view borrower by id
+router.get('/details/:id', async (req, res) => {
+
+    try {
+
+
+        let result = await getBorrowerDetails(req.params.id);
+
+
+        console.log(result);
+
+        if(result.message = "success" && result.queryStatus == true) {
+
+            res.render("borrower_details", { borrower: result.data , user: req.session.user })
+
+        }
+
+        //else there was an error at updateBorrower()
+
+    }catch (error) {
+
+
+
+    }
+
+} );
+// 4. Update a borrower by ID
 // router.put('/:id', updateBorrower);
 
 // // 5. Delete a borrower by ID

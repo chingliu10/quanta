@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Borrower</title>
+    <title>Edit Borrower</title>
     {{>toplinks}}
     <style>
         .form-container {
@@ -51,11 +51,21 @@
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-            text-align: right;
         }
 
         .btn-primary:hover {
             background-color: #87CEEB;
+        }
+
+        .alert {
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .alert-danger {
+            background-color: #dc3545;
         }
     </style>
 </head>
@@ -72,48 +82,80 @@
             <!-- Borrower Form -->
             <div class="form-container">
                 <div class="form-header">
-                    <h2>Add New Borrower</h2>
+                    <h2>Edit Borrower</h2>
                 </div>
-                <form action="/borrower/add" method="POST" onsubmit="return validateForm()">
+
+                <!-- Error Alert -->
+                {{#if error}}
+                <div class="alert alert-danger">{{error}}</div>
+                {{/if}}
+
+                <form action="/borrower/edit/{{borrower.id}}" method="POST">
                     <!-- First Name -->
                     <div class="form-control">
                         <label for="first_name">First Name <span style="color: red;">*</span></label>
-                        <input type="text" id="first_name" name="first_name" placeholder="Enter first name" required>
+                        <input 
+                            type="text" 
+                            id="first_name" 
+                            name="first_name" 
+                            placeholder="Enter first name" 
+                            value="{{borrower.first_name}}" 
+                            required>
                     </div>
 
                     <!-- Last Name -->
                     <div class="form-control">
                         <label for="last_name">Last Name <span style="color: red;">*</span></label>
-                        <input type="text" id="last_name" name="last_name" placeholder="Enter last name" required>
+                        <input 
+                            type="text" 
+                            id="last_name" 
+                            name="last_name" 
+                            placeholder="Enter last name" 
+                            value="{{borrower.last_name}}" 
+                            required>
                     </div>
 
                     <!-- Gender -->
                     <div class="form-control">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" required>
+                        <select id="gender" name="gender">
                             <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="Male" {{#ifEquals borrower.gender "Male"}}selected{{/ifEquals}}>Male</option>
+                            <option value="Female" {{#ifEquals borrower.gender "Female"}}selected{{/ifEquals}}>Female</option>
                         </select>
                     </div>
 
-                     <!-- Business -->
+                     <!-- Mobile -->
                     <div class="form-control">
                         <label for="business">Mobile</label>
-                        <input type="number" id="business" name="mobile" placeholder="Enter Your Mobile">
+                        <input 
+                            type="text" 
+                            id="mobile" 
+                            name="mobile" 
+                            placeholder="Enter your mobile" 
+                            value="{{borrower.mobile}}">
                     </div>
-
 
                     <!-- Business -->
                     <div class="form-control">
                         <label for="business">Business</label>
-                        <input type="text" id="business" name="business" placeholder="Enter business name">
+                        <input 
+                            type="text" 
+                            id="business" 
+                            name="business" 
+                            placeholder="Enter business name" 
+                            value="{{borrower.business_name}}">
                     </div>
 
                     <!-- Address -->
                     <div class="form-control">
                         <label for="address">Address</label>
-                        <input type="text" id="address" name="address" placeholder="Enter address">
+                        <input 
+                            type="text" 
+                            id="address" 
+                            name="address" 
+                            placeholder="Enter address" 
+                            value="{{borrower.address}}">
                     </div>
 
                     <!-- Submit Button -->
@@ -124,13 +166,5 @@
     </div>
 
     {{>bottomlinks}}
-
-    <script>
-          document.getElementById('first_name').addEventListener('keydown', function(event) {
-                if (event.key === ' ') {
-                    event.preventDefault();  // Prevent space bar from being pressed
-                }
-         });
-    </script>
 </body>
 </html>

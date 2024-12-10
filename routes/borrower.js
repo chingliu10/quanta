@@ -4,7 +4,8 @@ import {
     addBorrower,
     getEditBorrower,
     updateBorrower,
-    getBorrowerDetails
+    getBorrowerDetails,
+    deleteBorrower
 } from '../controllers/borrowers/borrowerController.js';
 
 
@@ -132,11 +133,34 @@ router.get('/details/:id', async (req, res) => {
     }
 
 } );
+
+
+// // 5. Delete a borrower by ID
+router.get('/delete/:id', async (req, res) => {
+    try{
+
+        
+        let result = await deleteBorrower(req.params.id);
+
+
+        console.log(result);
+
+        if(result.message = "success" && result.queryStatus == true) {
+
+            res.redirect("/borrower/view")
+
+        }
+
+    }catch (error) {
+
+    }
+} );
+
+
 // 4. Update a borrower by ID
 // router.put('/:id', updateBorrower);
 
-// // 5. Delete a borrower by ID
-// router.delete('/:id', deleteBorrower);
+
 
 // // Routes for Borrower Groups
 // // 6. Get all borrower groups

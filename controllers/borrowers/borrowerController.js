@@ -4,7 +4,7 @@ const { pool } = connection;
 // Get all borrowers
 export const getAllBorrowers = async () => {
     try {
-        const query = `SELECT id, first_name, last_name, business_name, mobile, email FROM borrowers`;
+        const query = `SELECT id, first_name, last_name, business_name, mobile, email FROM borrowers where deleted_at IS NULL`;
         const [rows] = await pool.query(query); // Execute the query
         return rows; // Return the fetched rows
     } catch (error) {
@@ -183,26 +183,36 @@ export const getBorrowerDetails = async (id) => {
 };
 
 // // Delete a borrower by ID
-// export const deleteBorrower = (req, res) => {
-//     try {
-//         const { id } = req.params;
+export const deleteBorrower = async (borrowerId) => {
 
-//         const index = borrowers.findIndex((b) => b.id === id);
+    try {
+                
+            const query = `
+                UPDATE borrowers
+                SET deleted_at = ? , updated_at = ?
+                WHERE id = ?
+            `;
 
-//         if (index === -1) {
-//             return res.status(404).json({ success: false, message: 'Borrower not found' });
-//         }
+            const [result] = await pool.query(query, [
+                new Date(),
+                new Date(),
+                borrowerId,
+            ]);
 
-//         borrowers.splice(index, 1);
-
-//         res.status(200).json({
-//             success: true,
-//             message: 'Borrower deleted successfully',
-//         });
-//     } catch (error) {
-//         res.status(500).json({ success: false, message: 'Error deleting borrower', error });
-//     }
-// };
+            return {
+                queryStatus : true,
+                message : "success"
+            }
+        
+    
+    } catch (error) {
+        
+        return {
+            queryStatus : false,
+            errorInformation : { errorNo : error.errno , errorCode : error.code , errorMessage : error.sqlMessage },
+            activity : "Deleting borrower inside database"
+    }  
+}};
 
 // // Get all borrower groups
 // export const getBorrowerGroups = (req, res) => {

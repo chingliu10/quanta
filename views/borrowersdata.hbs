@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrowers</title>
     {{>toplinks}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/css/datatables/datatables.min.css">
     <style>
         /* Custom styles for table */
         table#borrowers-table {
@@ -138,10 +138,10 @@
 
     <!-- Tabler JS -->
     {{>bottomlinks}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+    <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/js/jquery/jquery.datatables.min.js"></script>
+    <script src="/js/jquery/datatables.buttons.min.js"></script>
+    <script src="/js/jquery/buttons.print.min.js"></script>
     <script>
        $(document).ready(function() {
                 $('#borrowers-table').DataTable({

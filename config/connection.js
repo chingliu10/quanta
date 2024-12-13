@@ -17,36 +17,37 @@ const pool = mysql.createPool({
 });
 
 // Custom wrapper for connection events
-const trackConnection = async () => {
-    try {
-        const connection = await pool.getConnection();
-        console.log('Connection opened: ', connection.threadId); // Log connection opened
+// const trackConnection = async () => {
+//     try {
+//         const connection = await pool.getConnection();
+//         console.log('Connection opened: ', connection.threadId); // Log connection opened
 
-        // Override the release method to track when connections are released
-        const originalRelease = connection.release;
-        connection.release = () => {
-            console.log('Connection closed: ', connection.threadId); // Log connection closed
-            return originalRelease.call(connection);
-        };
+//         // Override the release method to track when connections are released
+//         const originalRelease = connection.release;
+//         connection.release = () => {
+//             console.log('Connection closed: ', connection.threadId); // Log connection closed
+//             return originalRelease.call(connection);
+//         };
 
-        return connection;
-    } catch (error) {
-        console.error('Error acquiring connection:', error);
-        throw error;
-    }
-};
+//         return connection;
+//     } catch (error) {
+//         console.error('Error acquiring connection:', error);
+//         throw error;
+//     }
+// };
 
 // Test the connection with tracking
-(async () => {
-    try {
-        const connection = await trackConnection();
-        // Use the connection here (e.g., a query)
-        console.log('Testing query...');
-        await connection.query('SELECT 1'); // Example query
-        connection.release(); // Release the connection
-    } catch (error) {
-        console.error('Error during testing:', error);
-    }
-})();
+// (async () => {
+//     try {
+//         const connection = await trackConnection();
+//         // Use the connection here (e.g., a query)
+//         console.log('Testing query...');
+//         await connection.query('SELCT 1'); // Example query
+//         connection.release(); // Release the connection
+//     } catch (error) {
+//         console.error(error.message);
+//         console.error(error.stack);
+//     }
+// })();
 
-export default { pool, trackConnection };
+export default { pool };

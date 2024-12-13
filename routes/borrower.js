@@ -6,7 +6,7 @@ import {
     updateBorrower,
     getBorrowerDetails,
     deleteBorrower
-} from '../controllers/borrowers/borrowerController.js';
+} from '../controllers/borrowerController.js';
 
 
 const router = express.Router();
@@ -37,18 +37,12 @@ router.get('/add', (req, res) => {
 router.post('/add', async (req, res) => {
     try {
 
-
-        console.log("addinf aa")
-        console.log(req.body)
-        console.log("addinf aa")
-
         const insertBorrower = await addBorrower(req.body)
 
-        console.log("addinf aa 22222222222")
+        console.log("dfsdfkbfskdf fdsjfsd")
         console.log(insertBorrower)
 
-
-        if(insertBorrower.message == "user found") {
+        if(insertBorrower.message == "Borrower already exists") {
             res.redirect("/borrower/add")
         }
 
@@ -156,17 +150,5 @@ router.get('/delete/:id', async (req, res) => {
     }
 } );
 
-
-// 4. Update a borrower by ID
-// router.put('/:id', updateBorrower);
-
-
-
-// // Routes for Borrower Groups
-// // 6. Get all borrower groups
-// router.get('/groups', getBorrowerGroups);
-
-// // 7. Add a borrower group
-// router.post('/groups', addBorrowerGroup);
 
 export default router;

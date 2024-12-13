@@ -5,6 +5,7 @@ import session from 'express-session';
 import connection from './config/connection.js'; // Import connection
 import dashboardRoutes from "./routes/dashboard.js"
 import borrowerRoutes from "./routes/borrower.js"
+import loanRoutes from "./routes/loan.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 //subroutes
 app.use("/dashboard", dashboardRoutes);
 app.use("/borrower", borrowerRoutes);
+app.use("/loan", loanRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');
@@ -50,6 +52,13 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
     return arg1 === arg2 ? options.fn(this) : options.inverse(this);
 });
+hbs.registerHelper('formatShortCurrency', (value) => {
+    if (!value) return '0';
+    return parseFloat(value).toLocaleString('en-US', {
+        maximumFractionDigits: 0,
+    });
+});
+hbs.registerHelper('eq', (a, b) => a === b);
 
 
 // Middleware to make session variables accessible to templates

@@ -117,12 +117,12 @@
                         <tr>
                             <td>{{this.first_name}} {{this.last_name}}</td>
                             <td>{{this.loan_id}}</td>
-                            <td>{{formatShortCurrency this.principal}}</td>
+                            <td>{{formatDecimalNumbers this.principal}}</td>
                             <td>{{this.release_date}}</td>
-                            <td>{{formatShortCurrency this.interest_rate}}%/month</td>
-                            <td>{{formatShortCurrency this.total_due}}</td>
-                            <td>{{formatShortCurrency this.total_paid}}</td>
-                            <td>{{formatShortCurrency this.balance}}</td>
+                            <td>{{formatDecimalNumbers this.interest_rate}}%/month</td>
+                            <td>{{formatDecimalNumbers this.total_due}}</td>
+                            <td>{{formatDecimalNumbers this.total_paid}}</td>
+                            <td>{{formatDecimalNumbers this.balance}}</td>
                             <td>
                                 <span class="badge 
                                     {{#if (eq this.status 'Closed')}}badge-closed{{/if}}

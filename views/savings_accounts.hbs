@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savings Accounts</title>
+    {{>toplinks}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <style>
+        .table-container {
+            margin: 20px auto;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container h2 {
+            text-align: center;
+            color: #001F3F;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            background-color: #001F3F;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        {{>sidebar}}
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            {{>topnav user=user.user}}
+
+            <!-- Savings Accounts Table -->
+            <div class="table-container">
+                <h2>Savings Accounts</h2>
+
+                {{#if savings.length}}
+                <table id="savings-accounts-table" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Borrower</th>
+                            <th>Account #</th>
+                            <th>Product</th>
+                            <th>Balance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each savings}}
+                        <tr>
+                            <td>{{this.first_name}} {{this.last_name}}</td>
+                            <td>{{this.savings_id}}</td>
+                            <td>{{this.product}}</td>
+                            <td>{{this.balance}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle" style="background-color: red; color: white;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/savings/details/{{this.savings_id}}">Details</a></li>
+                                        <li><a class="dropdown-item" href="/savings/edit/{{this.savings_id}}">Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="/savings/delete/{{this.savings_id}}">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p>No savings accounts found.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    {{>bottomlinks}}
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#savings-accounts-table').DataTable({
+                paging: true,
+                searching: true,
+                order: [[3, 'desc']], // Order by Balance descending
+                columnDefs: [
+                    { orderable: false, targets: [4] } // Disable sorting on Actions column
+                ],
+                dom: 'Bfrtip',
+                buttons: ['print', 'csv', 'pdf']
+            });
+        });
+    </script>
+</body>
+</html>

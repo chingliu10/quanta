@@ -1,7 +1,7 @@
 import express from 'express';
 import {
     getAllLoans,
-    getDueLoans
+    getArrearsLoans
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 
@@ -29,9 +29,9 @@ router.get('/all', async (req, res) => {
 });
 
 // // Route to fetch due loans
-router.get('/due', async (req, res) => {
+router.get('/arrears', async (req, res) => {
     try {
-        const result = await getDueLoans();
+        const result = await getArrearsLoans();
 
         if (result.queryStatus) {
             return res.render('loan_due', { loans: result.data, user: req.session.user });

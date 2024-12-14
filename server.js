@@ -6,6 +6,7 @@ import connection from './config/connection.js'; // Import connection
 import dashboardRoutes from "./routes/dashboard.js"
 import borrowerRoutes from "./routes/borrower.js"
 import loanRoutes from "./routes/loan.js"
+import savingRoutes from "./routes/saving.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -42,6 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/dashboard", dashboardRoutes);
 app.use("/borrower", borrowerRoutes);
 app.use("/loan", loanRoutes);
+app.use("/savings", savingRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');
@@ -52,7 +54,7 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
     return arg1 === arg2 ? options.fn(this) : options.inverse(this);
 });
-hbs.registerHelper('formatShortCurrency', (value) => {
+hbs.registerHelper('formatDecimalNumbers', (value) => {
     if (!value) return '0';
     return parseFloat(value).toLocaleString('en-US', {
         maximumFractionDigits: 0,

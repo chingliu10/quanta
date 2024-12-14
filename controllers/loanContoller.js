@@ -4,7 +4,7 @@ import  handleError  from '../helpers/handleError.js';
 const { pool } = connection;
 
 // Fetch due loans
-export const getDueLoans = async () => {
+export const getArrearsLoans = async () => {
     try {
         const query = `
             SELECT 

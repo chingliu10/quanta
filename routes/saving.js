@@ -3,6 +3,7 @@ import {
     getSavingsAccounts,
     getSavingsForm,
     storeSavingsAccount,
+    getSavingsTransactions
 } from '../controllers/savingController.js';
 import handleError from '../helpers/handleError.js';
 
@@ -74,5 +75,24 @@ router.post('/accounts/store', async (req, res) => {
     }
 });
 
+
+
+// View Savings Transactions
+router.get('/transactions/data', async (req, res) => {
+    try {
+        const result = await getSavingsTransactions();
+
+        if (result.queryStatus) {
+            return res.render('savings_transactions', { transactions: result.data, user: req.session.user });
+        }
+
+        req.session.error = result.message;
+        res.redirect('/dashboard');
+    } catch (error) {
+        const err = handleError(error, 'fetching savings transactions');
+        req.session.error = err.message;
+        res.redirect('/dashboard');
+    }
+});
 
 export default router;

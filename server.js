@@ -61,6 +61,24 @@ hbs.registerHelper('formatDecimalNumbers', (value) => {
     });
 });
 hbs.registerHelper('eq', (a, b) => a === b);
+import Handlebars from 'handlebars';
+
+
+hbs.registerHelper('formatDateTime', (dateString) => {
+    try {
+        const date = new Date(dateString);
+        const options = {
+            weekday: 'short', // Abbreviated weekday (e.g., Sat)
+            month: 'short',   // Abbreviated month (e.g., Aug)
+            day: '2-digit',   // Two-digit day (e.g., 03)
+        };
+
+        return date.toLocaleDateString('en-US', options);
+    } catch (error) {
+        return 'Invalid Date';
+    }
+});
+
 
 
 // Middleware to make session variables accessible to templates

@@ -64,8 +64,7 @@ export const storeSavingsAccount = async (data) => {
         const checkQuery = `
             SELECT id 
             FROM savings 
-            WHERE borrower_id = ? AND savings_product_id = ? AND deleted_at IS NULL LIMIT 1
-        `;
+            WHERE borrower_id = ? AND savings_product_id = ? AND deleted_at IS NULL LIMIT 1`;
         const [existingAccounts] = await pool.query(checkQuery, [borrower_id, savings_product_id]);
 
         if (existingAccounts.length > 0) {
@@ -88,5 +87,40 @@ export const storeSavingsAccount = async (data) => {
         return handleError(error, 'storing new savings account');
     }
 };
+
+
+
+
+// Get all savings transactions
+export const getSavingsTransactions = async () => {
+    try {
+        const query = `
+            SELECT 
+                borrowers.first_name AS first_name,
+                borrowers.last_name AS last_name,
+                savings.id AS savings_id,
+                savings_transactions.date AS transaction_date,
+                savings_transactions.time AS transaction_time,
+                savings_transactions.type AS transaction_type,
+                savings_transactions.amount AS amount
+            FROM 
+                savings_transactions
+            JOIN 
+                savings ON savings.id = savings_transactions.savings_id
+            JOIN 
+                borrowers ON borrowers.id = savings.borrower_id
+            WHERE 
+                savings_transactions.deleted_at IS NULL
+            ORDER BY 
+                savings_transactions.date DESC, savings_transactions.time DESC;
+        `;
+
+        const [rows] = await pool.query(query);
+        return { queryStatus: true, data: rows, message: 'success' };
+    } catch (error) {
+        return handleError(error, 'fetching savings transactions');
+    }
+};
+
 
 

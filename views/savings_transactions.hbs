@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savings Transactions</title>
+    {{>toplinks}}
+    <style>
+        .table-container {
+            margin: 20px auto;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container h2 {
+            text-align: center;
+            color: #001F3F;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #001F3F;
+            color: white;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f4f4f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: whitesmoke;
+        }
+
+        .dropdown .btn {
+            background-color: red;
+            color: white;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            text-decoration: none;
+            display: block;
+            padding: 8px 15px;
+            color: #333;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f4f4f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        {{>sidebar}}
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            {{>topnav user=user.user}}
+            <div class="table-container">
+                <h2>Savings Transactions</h2>
+                {{#if transactions.length}}
+                <table id="transactions-table" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Account</th>
+                            <th>Date</th>
+                            <th>Transaction</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each transactions}}
+                        <tr>
+                            <td>{{this.first_name}} {{this.last_name}}</td>
+                            <td>{{this.savings_id}}</td>
+                            <td>{{formatDateTime this.transaction_date}}</td>
+                            <td>{{this.transaction_type}}</td>
+                            <td>{{#if (eq this.transaction_type 'withdrawal')}}{{formatDecimalNumbers this.amount}}{{/if}}</td>
+                            <td>{{#if (eq this.transaction_type 'deposit')}}{{formatDecimalNumbers this.amount}}{{/if}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/savings/transactions/edit/{{this.id}}">Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="/savings/transactions/delete/{{this.id}}">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p>No transactions found.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    {{>bottomlinks}}
+    <script>
+        $(document).ready(function() {
+            $('#transactions-table').DataTable({
+                paging: true,
+                searching: true,
+                dom: 'Bfrtip',
+                buttons: ['print', 'csv', 'pdf'],
+            });
+        });
+    </script>
+</body>
+</html>

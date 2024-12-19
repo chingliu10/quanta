@@ -3,7 +3,9 @@ import {
     getSavingsAccounts,
     getSavingsForm,
     storeSavingsAccount,
-    getSavingsTransactions
+    getSavingsTransactions,
+    storeSavingsProduct,
+    getSavingsProducts
 } from '../controllers/savingController.js';
 import handleError from '../helpers/handleError.js';
 
@@ -90,6 +92,57 @@ router.get('/transactions/data', async (req, res) => {
         res.redirect('/dashboard');
     } catch (error) {
         const err = handleError(error, 'fetching savings transactions');
+        req.session.error = err.message;
+        res.redirect('/dashboard');
+    }
+});
+
+
+// Add Savings Product Form
+router.get('/products/create', async (req, res) => {
+    try {
+        const days = Array.from({ length: 31 }, (_, i) => i + 1);
+        res.render('savings_product_add', { days,  user: req.session.user });
+    } catch (error) {
+
+        console.log(error)
+        const err = handleError(error, 'loading savings product creation form');
+        req.session.error = err.message;
+        res.redirect('/dashboard');
+    }
+});
+
+
+// Store Savings Product
+router.post('/products/store', async (req, res) => {
+    try {
+        const result = await storeSavingsProduct(req.body);
+        if (result.queryStatus) {
+            req.session.success = result.message;
+            return res.redirect('/savings/products/view');
+        }
+        req.session.error = result.message;
+        res.redirect('/savings/products/add');
+    } catch (error) {
+        const err = handleError(error, 'storing savings product');
+        req.session.error = err.message;
+        res.redirect('/savings/products/add');
+    }
+});
+
+// View Savings Products
+router.get('/products/view', async (req, res) => {
+    try {
+        const result = await getSavingsProducts();
+
+        if (result.queryStatus) {
+            return res.render('savings_products', { savingsProducts: result.data, user: req.session.user });
+        }
+
+        req.session.error = result.message;
+        res.redirect('/dashboard');
+    } catch (error) {
+        const err = handleError(error, 'fetching savings products');
         req.session.error = err.message;
         res.redirect('/dashboard');
     }

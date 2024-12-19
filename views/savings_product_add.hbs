@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Savings Product</title>
+    {{>toplinks}}
+</head>
+<body>
+    <div class="d-flex">
+        {{>sidebar}}
+        <div class="flex-grow-1">
+            {{>topnav user=user.user}}
+
+            <div class="container mt-4">
+                <h2>Add Savings Product</h2>
+                <form action="/savings/products/store" method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required placeholder="Enter product name">
+    </div>
+
+    <div class="form-group">
+        <label for="interest_rate">Interest Rate Per Annum (%)</label>
+        <input type="number" class="form-control" id="interest_rate" name="interest_rate" required placeholder="Enter interest rate">
+    </div>
+
+    <div class="form-group">
+        <label for="allow_overdraw">Allow Savings Account to be Overdrawn</label>
+        <select class="form-control" id="allow_overdraw" name="allow_overdraw" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+        <small>If you select Yes, the account can hold a negative balance.</small>
+    </div>
+
+    <div class="form-group">
+        <label for="interest_posting">Interest Posting Frequency on Savings Accounts</label>
+        <select class="form-control" id="interest_posting" name="interest_posting" required>
+            <option value="1">Every 1 Month</option>
+            <option value="2">Every 2 Months</option>
+            <option value="3">Every 3 Months</option>
+            <option value="4">Every 4 Months</option>
+            <option value="5">Every 5 Months</option>
+            <option value="6">Every 6 Months</option>
+            <option value="7">Every 12 Months</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="interest_adding">When Should Interest Be Added to Saving Account?</label>
+        <select class="form-control" id="interest_adding" name="interest_adding" required>
+            {{#each days}}
+            <option value="{{this}}">{{this}}{{ordinal this}} of the Month</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="minimum_balance">Minimum Balance</label>
+        <input type="number" class="form-control" id="minimum_balance" name="minimum_balance" value="0" placeholder="Enter minimum balance (0 for immediate)">
+        <small>Interest is calculated only if the balance exceeds this amount.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+            </div>
+        </div>
+    </div>
+
+    {{>bottomlinks}}
+</body>
+</html>

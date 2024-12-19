@@ -123,4 +123,65 @@ export const getSavingsTransactions = async () => {
 };
 
 
+export const storeSavingsProduct = async (data) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        const { name, interest_rate, allow_overdraw, interest_posting, interest_adding, minimum_balance } = data;
+
+        // Check if a savings product with the same name already exists
+        const checkQuery = `
+            SELECT id 
+            FROM savings_products 
+            WHERE name = ? 
+            AND deleted_at IS NULL 
+            LIMIT 1;
+        `;
+        const [existingProduct] = await connection.query(checkQuery, [name]);
+
+        if (existingProduct.length > 0) {
+            await connection.rollback();
+            return {
+                queryStatus: false,
+                message: 'A savings product with this name already exists.',
+            };
+        }
+
+        // Insert the new savings product
+        const query = `
+            INSERT INTO savings_products (name, interest_rate, allow_overdraw, interest_posting, interest_adding, minimum_balance, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW());
+        `;
+
+        await connection.query(query, [name, interest_rate, allow_overdraw, interest_posting, interest_adding, minimum_balance]);
+
+        await connection.commit();
+        return { queryStatus: true, message: 'Savings product added successfully.' };
+    } catch (error) {
+        await connection.rollback();
+        return handleError(error, 'storing new savings product');
+    } finally {
+        connection.release();
+    }
+};
+
+
+
+// Get all savings products
+export const getSavingsProducts = async () => {
+    try {
+        const query = `
+            SELECT id, name, interest_rate, interest_posting, minimum_balance
+            FROM savings_products
+            WHERE deleted_at IS NULL;
+        `;
+
+        const [rows] = await pool.query(query);
+        return { queryStatus: true, data: rows, message: 'success' };
+    } catch (error) {
+        return handleError(error, 'fetching savings products');
+    }
+};
+
 

@@ -79,6 +79,12 @@ hbs.registerHelper('formatDateTime', (dateString) => {
     }
 });
 
+hbs.registerHelper('ordinal', (day) => {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const value = day % 100;
+    return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
+});
+
 
 
 // Middleware to make session variables accessible to templates

@@ -73,8 +73,9 @@
                 </ul>
             </div>
         </li>
+        
         <!-- Loan Officers -->
-        <li class="nav-item mb-2">
+        {{!-- <li class="nav-item mb-2">
             <a href="#loan-officers-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
                 <span><i class="fas fa-id-badge me-2"></i> Loan Officers</span>
                 <i class="fas fa-chevron-down"></i>
@@ -85,8 +86,8 @@
                     <li><a href="/loan-officers/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Loan Officers</a></li>
                 </ul>
             </div>
-        </li>
-        <!-- Guarantors -->
+        </li> --}}
+        {{!-- <!-- Guarantors -->
         <li class="nav-item mb-2">
             <a href="#guarantors-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
                 <span><i class="fas fa-user-shield me-2"></i> Guarantors</span>
@@ -98,7 +99,7 @@
                     <li><a href="/guarantors/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Guarantors</a></li>
                 </ul>
             </div>
-        </li>
+        </li> --}}
         <!-- Repayments -->
         <li class="nav-item mb-2">
             <a href="#repayments-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
@@ -113,13 +114,13 @@
             </div>
         </li>
         <!-- Collateral Register -->
-        <li class="nav-item mb-2">
+        {{!-- <li class="nav-item mb-2">
             <a href="/collateral/register" class="nav-link text-white">
                 <i class="fas fa-warehouse me-2"></i> Collateral Register
             </a>
-        </li>
+        </li> --}}
         <!-- Collection Sheets -->
-        <li class="nav-item mb-2">
+        {{!-- <li class="nav-item mb-2">
             <a href="#collection-sheets-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
                 <span><i class="fas fa-file-invoice-dollar me-2"></i> Collection Sheets</span>
                 <i class="fas fa-chevron-down"></i>
@@ -130,7 +131,50 @@
                     <li><a href="/collections/missed-repayments" class="nav-link text-white"><i class="fas fa-times-circle me-2"></i> Missed Repayments</a></li>
                 </ul>
             </div>
-        </li>
+        </li> --}}
+        <li class="nav-item mb-2">
+    <a href="#payroll-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-money-check me-2"></i> Payroll</span>
+        <i class="fas fa-chevron-down"></i>
+    </a>
+    <div id="payroll-menu" class="collapse">
+        <ul class="nav flex-column ps-3">
+            <li><a href="/payroll/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Payroll</a></li>
+            <li><a href="/payroll/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Payroll</a></li>
+        </ul>
+    </div>
+</li>
+
+<li class="nav-item mb-2">
+    <a href="#expenses-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-receipt me-2"></i> Expenses</span>
+        <i class="fas fa-chevron-down"></i>
+    </a>
+    <div id="expenses-menu" class="collapse">
+        <ul class="nav flex-column ps-3">
+            <li><a href="/expenses/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Expenses</a></li>
+            <li><a href="/expenses/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Expense</a></li>
+            <li><a href="/expenses/types/view" class="nav-link text-white"><i class="fas fa-list me-2"></i> View Expense Types</a></li>
+            <li><a href="/expenses/types/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Expense Type</a></li>
+        </ul>
+    </div>
+</li>
+
+<li class="nav-item mb-2">
+    <a href="#income-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-chart-line me-2"></i> Income</span>
+        <i class="fas fa-chevron-down"></i>
+    </a>
+    <div id="income-menu" class="collapse">
+        <ul class="nav flex-column ps-3">
+            <li><a href="/income/view" class="nav-link text-white"><i class="fas fa-eye me-2"></i> View Income</a></li>
+            <li><a href="/income/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Income</a></li>
+            <li><a href="/income/types/view" class="nav-link text-white"><i class="fas fa-list me-2"></i> View Income Types</a></li>
+            <li><a href="/income/types/add" class="nav-link text-white"><i class="fas fa-plus me-2"></i> Add Income Type</a></li>
+        </ul>
+    </div>
+</li>
+
         <!-- Reports -->
         <li class="nav-item mb-2">
             <a href="#reports-menu" data-bs-toggle="collapse" class="nav-link text-white d-flex justify-content-between align-items-center">

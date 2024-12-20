@@ -7,6 +7,7 @@ import dashboardRoutes from "./routes/dashboard.js"
 import borrowerRoutes from "./routes/borrower.js"
 import loanRoutes from "./routes/loan.js"
 import savingRoutes from "./routes/saving.js"
+import payrollRoutes from "./routes/payroll.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -44,6 +45,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/borrower", borrowerRoutes);
 app.use("/loan", loanRoutes);
 app.use("/savings", savingRoutes);
+app.use("/payroll", payrollRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');

@@ -8,6 +8,7 @@ import borrowerRoutes from "./routes/borrower.js"
 import loanRoutes from "./routes/loan.js"
 import savingRoutes from "./routes/saving.js"
 import payrollRoutes from "./routes/payroll.js"
+import branchRoutes from "./routes/branch.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -46,6 +47,7 @@ app.use("/borrower", borrowerRoutes);
 app.use("/loan", loanRoutes);
 app.use("/savings", savingRoutes);
 app.use("/payroll", payrollRoutes);
+app.use("/branch", branchRoutes);
 
 // View Engine
 app.set('view engine', 'hbs');
@@ -116,21 +118,22 @@ app.get('/login', (req, res) => {
 
 
 // POST route for login
+// POST route for login
 app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Use the pool to execute the query
-        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        // Query the users table to check if the user exists
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
-        if (rows.length === 0) {
+        if (users.length === 0) {
             req.session.error = 'Invalid email.';
             return res.redirect('/login');
         }
 
-        const user = rows[0];
+        const user = users[0];
 
-        // Email is valid, now check password
+        // Validate the password
         const isPasswordValid = bcrypt.compareSync(password, user.password);
 
         if (!isPasswordValid) {
@@ -138,16 +141,41 @@ app.post('/auth/login', async (req, res) => {
             return res.redirect('/login');
         }
 
-        // Email and password are valid
-        req.session.user = { id: user.id, user : user.first_name };
+        // Fetch the user's accessible branches
+        const [branch] = await pool.query(`
+            SELECT b.id AS branch_id, b.name AS branch_name
+            FROM branch_users bu
+            JOIN branches b ON bu.branch_id = b.id
+            WHERE bu.user_id = 1 limit 1
+        `, [user.id]);
+
+        if (branch.length === 0) {
+            req.session.error = 'No branches assigned to this user.';
+            return res.redirect('/login');
+        }
+
+        // // Use the most recently created branch as the active branch or the default branch
+        // const activeBranch = branches.find(branch => branch.default_branch === 1) || branches[0];
+
+        // Save user and branch information in the session
+        req.session.user = {
+            id: user.id,
+            user: user.first_name,
+            branchId : branch[0].branch_id,
+            branchName : branch[0].branch_name,
+        };
+
+        console.log(req.session);
+
         req.session.success = 'Login successful!';
-        res.redirect('/dashboard');
+        return res.redirect('/dashboard');
     } catch (err) {
         console.error('Error during login:', err);
         req.session.error = 'An unexpected error occurred.';
         return res.redirect('/login');
     }
 });
+
 
 // Logout Route
 app.get('/logout', (req, res) => {
@@ -158,6 +186,13 @@ app.get('/logout', (req, res) => {
         res.redirect('/login');
     });
 });
+
+
+
+app.all("*", (req, res) => {
+    res.status(404).render("notfound")
+});
+
 
 // Start Server
 app.listen(PORT, () => {

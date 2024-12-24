@@ -11,7 +11,8 @@ router.get('/view', async (req, res) => {
         const result = await getBranches();
 
         if (result.queryStatus) {
-            return res.render('branches_view', { branches: result.data, user: req.session.user });
+            console.log(result);
+            return res.render('branch_view', { branches: result.data, user: req.session.user });
         }
 
         req.session.error = result.message;

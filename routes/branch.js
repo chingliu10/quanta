@@ -73,7 +73,6 @@ router.post('/details/:id/add_user', async (req, res) => {
 
     try {
       
-        console.log("sdfksdfksdbfkbsdfkusbufdbuksfkusbfskudbfskbdf")
         const result = await addUserToBranch(branchId, userId);
 
         if(result.queryStatus) {
@@ -82,9 +81,7 @@ router.post('/details/:id/add_user', async (req, res) => {
         }
 
         if(!result.queryStatus && result.message == "User does exist in this branch" ) {
-            console.log("session below")
-            console.log(req.session)
-          console.log(req.flash('warning', 'User already exists in this branch'));
+           req.flash('warning', 'User already exists in this branch')
            return res.redirect(`/branch/details/${branchId}`)
         }
 

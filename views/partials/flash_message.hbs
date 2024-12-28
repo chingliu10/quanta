@@ -1,5 +1,4 @@
 <div class="flash-message-container">
-    fdhfghfg
     {{#if success}}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <div class="alert-content">
@@ -20,3 +19,58 @@
         </div>
     {{/if}}
 </div>
+
+<script>
+
+         document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        
+        // Add slide-in class after a brief delay
+        setTimeout(() => {
+            alerts.forEach(alert => {
+                alert.classList.add('slide-in');
+            });
+        }, 100);
+
+        // Function to remove alert with animation
+        function removeAlert(alert) {
+            alert.classList.add('hiding');
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 500);
+        }
+
+        // Auto-dismiss alerts after 5 seconds
+        let timeoutId = setTimeout(() => {
+            alerts.forEach(alert => {
+                removeAlert(alert);
+            });
+        }, 5000);
+
+        // Hover effect to pause auto-dismiss
+        const alertContainer = document.querySelector('.flash-message-container');
+
+        alertContainer.addEventListener('mouseenter', () => {
+            clearTimeout(timeoutId);
+        });
+
+        alertContainer.addEventListener('mouseleave', () => {
+            timeoutId = setTimeout(() => {
+                alerts.forEach(alert => {
+                    removeAlert(alert);
+                });
+            }, 3000);
+        });
+
+        // Handle manual close button
+        document.querySelectorAll('.btn-close').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const alert = this.closest('.alert');
+                removeAlert(alert);
+            });
+        });
+    });
+    
+</script>

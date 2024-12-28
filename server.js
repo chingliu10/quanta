@@ -2,6 +2,7 @@ import express from 'express';
 import hbs from 'hbs';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
+import flash from 'connect-flash';
 import connection from './config/connection.js'; // Import connection
 import dashboardRoutes from "./routes/dashboard.js"
 import borrowerRoutes from "./routes/borrower.js"
@@ -36,6 +37,15 @@ app.use(
     })
 );
 
+//using flash messages
+app.use(flash());
+// Middleware to make session variables accessible to templates
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.warning = req.flash('warning');
+    res.locals.error = req.flash('error');
+    next();
+});
 // Serve static files from the "public" directory
 app.use(express.static('assets'));
 
@@ -66,7 +76,7 @@ hbs.registerHelper('formatDecimalNumbers', (value) => {
     });
 });
 hbs.registerHelper('eq', (a, b) => a === b);
-import Handlebars from 'handlebars';
+
 
 
 hbs.registerHelper('formatDateTime', (dateString) => {
@@ -91,15 +101,6 @@ hbs.registerHelper('ordinal', (day) => {
 });
 
 
-
-// Middleware to make session variables accessible to templates
-app.use((req, res, next) => {
-    res.locals.error = req.session.error || null;
-    res.locals.success = req.session.success || null;
-    req.session.error = null;
-    req.session.success = null;
-    next();
-});
 
 // Routes
 app.get('/', (req, res) => {
@@ -167,8 +168,7 @@ app.post('/auth/login', async (req, res) => {
         };
 
         console.log(req.session);
-
-        req.session.success = 'Login successful!';
+        console.log(req.flash("warning", "Your message"));
         return res.redirect('/dashboard');
     } catch (err) {
         console.error('Error during login:', err);

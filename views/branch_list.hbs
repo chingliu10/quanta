@@ -11,7 +11,8 @@
         {{> sidebar }}
 
         <div class="flex-grow-1">
-            {{> topnav user=user }}
+            
+            {{>topnav user=user.user}}
 
             <div class="container mt-4">
                 <h2>Branches</h2>
@@ -40,18 +41,18 @@
                             <td>
                                 <div class="dropdown">
                                     <button 
-                                        class="btn btn-sm dropdown-toggle" 
+                                        class="btn btn-sm btn-secondary dropdown-toggle" 
                                         type="button" 
-                                        id="actionMenu{{this.id}}" 
+                                        id="actionMenu" 
                                         data-bs-toggle="dropdown" 
                                         aria-expanded="false"
-                                        style="background-color: #87CEEB;color : white;"
                                     >
                                         Action
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="actionMenu{{this.id}}">
-                                        <li><a class="dropdown-item" href="/branch/edit/{{this.id}}">Edit</a></li>
-                                        <li><a class="dropdown-item text-danger" href="/branch/delete/{{this.id}}">Delete</a></li>
+                                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                        <li><a class="dropdown-item" href="/branch/details/{{this.branch_id}}">Details</a></li>
+                                        <li><a class="dropdown-item" href="/branch/edit/{{this.branch_id}}">Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="/branch/delete/{{this.branch_id}}">Delete</a></li>
                                     </ul>
                                 </div>
                             </td>

@@ -1,0 +1,151 @@
+/* colors.css */
+
+/* Define root variables for the color palette */
+:root {
+    --color-primary: #5A9BD4;      /* Cornflower Blue - Primary */
+    --color-primary-dark: #4A8CC0; /* Slightly darker blue */
+    --color-secondary: #FFD700;   /* Gold - Secondary actions */
+    --color-success: #28A745;     /* Green - Success */
+    --color-danger: #DC3545;      /* Red - Alerts */
+    --color-warning: #FFC107;     /* Yellow - Warnings */
+    --color-info: #17A2B8;        /* Cyan - Information */
+    --color-light: #F8F9FA;       /* Light Gray - Background */
+    --color-dark: #212529;        /* Rich Black - Text */
+    --color-white: #FFFFFF;       /* White */
+}
+
+
+/* Button styles using the color variables */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-dark);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-warning);
+}
+
+/* Utility classes for background and text colors */
+.bg-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-dark);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.text-secondary {
+    color: var(--color-secondary);
+}
+
+.text-danger {
+    color: var(--color-danger);
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+.text-warning {
+    color: var(--color-warning);
+}
+
+.text-info {
+    color: var(--color-info);
+}
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: var(--color-light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-primary-dark);
+    border-radius: 4px;
+    z-index: 1;
+    min-width: 180px;
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--color-dark);
+    font-weight: bold;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.dropdown-item-danger {
+    color: var(--color-danger);
+}
+
+.dropdown-item-danger:hover {
+    background-color: var(--color-danger);
+    color: var(--color-white);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+
+.flash-message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 400px;
+}

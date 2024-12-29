@@ -39,7 +39,7 @@ export const createNewBranch = async (branch_name) => {
             INSERT INTO branches (name) values (?)
         `
 
-        await pool.query(query, [ branch_name ])
+        await pool.query(query, [ branch_name.toUpperCase() ])
 
         return { queryStatus: true, message: 'New branch Added' };
 
@@ -68,7 +68,10 @@ export const getBranchDetails = async (branchId) => {
         const [rows] = await pool.query(query, [branchId]);
 
         if (rows.length === 0) {
-            return { queryStatus: false, message: `Branch with ID ${branchId} not found.` };
+            const [ rows2 ]= await pool.query(`select branches.name as branch_name, branches.id as branch_id 
+                    FROM branches
+                `)
+            return { queryStatus: false, message: `No users`, data : rows2 };
         }
 
         return { queryStatus: true, data: rows };

@@ -75,6 +75,7 @@ router.get('/details/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
+
         const result = await getBranchDetails(id);
         const users = await getAllUsers();
 
@@ -87,6 +88,19 @@ router.get('/details/:id', async (req, res) => {
                 branch_users : result.data, 
                 user: req.session.user 
             });
+        }
+
+
+        if(!result.queryStatus && result.message == "No users") {
+
+            return res.render('branch_details',{
+
+                users : users.data, 
+                user: req.session.user,
+                branch_name : result.data[0].branch_name,
+                branch_id : result.data[0].branch_id,
+
+            })
         }
 
         // Handle the case where branch details are not found

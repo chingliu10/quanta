@@ -74,10 +74,33 @@ export const getBranchDetails = async (branchId) => {
         return { queryStatus: true, data: rows };
 
     } catch (error) {
+        console.log(error)
         return handleError(error, 'Failed To Get Branch Details');
     }
 };
 
+
+export const deleteBranch = async (branch_name) => {
+
+    try {
+
+        const query = `
+            update branches set deleted_at = now() where id = ?
+        `
+
+        await pool.query(query, [branch_name])
+
+
+        return { queryStatus: true, message: 'Branch was deleted' };
+
+
+    }catch(error) {
+
+            return handleError(error, "Failed to delete branch")
+    }
+
+
+}
 
 // Add user to branch
 export const addUserToBranch = async (branchId, userId) => {

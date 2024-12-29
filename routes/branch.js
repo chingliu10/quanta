@@ -5,6 +5,7 @@ import {
     createNewBranch,
     getBranchDetails,
     addUserToBranch,
+    deleteBranch,
     removeUserFromBranch,
 } from '../controllers/branchController.js';
 
@@ -102,6 +103,36 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
+
+//delete branch
+router.get("/delete/:branchId", async (req, res) => {
+
+    const { branchId } = req.params
+
+    try {
+
+        const result = await deleteBranch(branchId)
+
+        if(result.queryStatus) {
+
+            req.flash('success', `${result.message}`)
+            return res.redirect(`/branch/view`)
+
+        }
+
+        return res.status(400).render('error_page', { 
+            message: result.activity || "Failed to delete branch" 
+        });
+
+    }catch (error) {
+
+        return res.status(500).render('error_page', { 
+            message: 'An unexpected error occurred while Deleting branch' 
+        });
+
+    }
+
+})
 
 router.post('/details/:id/add_user', async (req, res) => {
     const { id: branchId } = req.params;

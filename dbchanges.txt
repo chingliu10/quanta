@@ -1,0 +1,7 @@
+//added deleted_at column branch_users table
+
+ALTER TABLE branch_users ADD COLUMN deleted_at DATETIME NULL;
+
+//added deleted_at column branches table
+
+ALTER TABLE branches ADD COLUMN deleted_at DATETIME NULL;

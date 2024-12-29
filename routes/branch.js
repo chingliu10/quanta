@@ -2,8 +2,10 @@ import express from 'express';
 import flash from 'connect-flash';
 import { 
     getBranches ,
+    createNewBranch,
     getBranchDetails,
     addUserToBranch,
+    removeUserFromBranch,
 } from '../controllers/branchController.js';
 
 import { getAllUsers } from '../helpers/generalHelper.js';
@@ -32,6 +34,40 @@ router.get('/view', async (req, res) => {
 });
 
 
+//route for adding new branch
+router.get("/add", (req, res) => {
+    res.render("branch_create", { user : req.session.user});
+})
+
+router.post("/add", async (req, res) => {
+    //adding 
+    const { branch_name } = req.body
+
+    try {
+
+        const result = await createNewBranch(branch_name)
+
+        if(result.queryStatus) {
+            req.flash('success', 'Branch was added successfully');
+            return res.redirect("/branch/view")
+        }
+
+
+        // Handle the case where branch details are not found
+        return res.status(400).render('error_page', { 
+            message: result.activity || 'Failed to add branch' 
+        });
+
+    }catch (error) {
+
+        return res.status(500).render('error_page', { 
+            message: 'Failed to add branch'  
+        });
+
+    }
+ })
+
+
 
 // Route to view details of a specific branch
 router.get('/details/:id', async (req, res) => {
@@ -53,7 +89,7 @@ router.get('/details/:id', async (req, res) => {
         }
 
         // Handle the case where branch details are not found
-        return res.status(404).render('error_page', { 
+        return res.status(400).render('error_page', { 
             message: result.activity || 'Failed To Get Branch Details' 
         });
 
@@ -87,7 +123,7 @@ router.post('/details/:id/add_user', async (req, res) => {
 
     
         // Handle the case where branch details are not found
-        return res.status(404).render('error_page', { 
+        return res.status(400).render('error_page', { 
             message: result.activity || 'Failed to add user to branch.' 
         });
 
@@ -98,6 +134,46 @@ router.post('/details/:id/add_user', async (req, res) => {
             message: 'Failed to add user to branch.' 
         });
     }
+});
+
+
+router.get("/:branchId/remove/user/:userId", async (req, res) => {
+
+    const {  branchId , userId } = req.params;
+
+
+    try {
+
+
+        const result = await removeUserFromBranch(branchId , userId);
+
+        if(result.queryStatus) {
+
+              req.flash("success", `User has being removed from branch`);
+              return  res.redirect(`/branch/details/${branchId}`);
+
+        }
+
+        if(!result.queryStatus && result.message == "User Not Found") {
+
+            req.flash("warning", "User not found")
+            return  res.redirect(`/branch/details/${branchId}`);
+        }
+
+
+        return res.status(400).render('error_page', {
+            message : result.activity || "Failed to remove user"
+        })
+
+    }catch (error) {
+
+        return res.status(500).render('error_page', {
+            message : "Failed to remove user"
+        })
+
+    }
+
+        
 });
 
 

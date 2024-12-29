@@ -39,9 +39,9 @@
                                 <div class="dropdown">
                                     <button class="btn-primary dropdown-toggle">Actions</button>
                                     <div class="dropdown-menu">
-                                        <a href="/branch/{{branch.id}}/user/details/{{this.id}}" class="dropdown-item">Details</a>
-                                        <a href="/branch/{{branch.id}}/user/edit/{{this.id}}" class="dropdown-item">Edit</a>
-                                        <a href="/branch/{{branch.id}}/user/remove/{{this.id}}" class="dropdown-item">Remove</a>
+                                        <a href="/user/details/{{this.user_id}}" class="dropdown-item">Details</a>
+                                        <a href="/user/edit/{{this.user_id}}" class="dropdown-item">Edit</a>
+                                        <a href="/branch/{{branch_id}}/remove/user/{{this.user_id}}" class="dropdown-item">Remove</a>
                                     </div>
                                 </div>
                             </td>
@@ -85,37 +85,6 @@
                 </div>
             </div>
         </div>
-    <div class="flash-message-container">
-    {{#if success}}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <div class="alert-content">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                <span>{{success}}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {{/if}}
-
-    {{#if warning}}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <div class="alert-content">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <span>{{warning}}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {{/if}}
-
-    {{#if error}}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <div class="alert-content">
-                <i class="bi bi-x-circle-fill me-2"></i>
-                <span>{{error}}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {{/if}}
-</div>
     {{> flash_message}}
     {{> bottomlinks }}
     <script>

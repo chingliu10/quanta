@@ -16,6 +16,8 @@ export const getBranches = async () => {
                 branches b
             LEFT JOIN 
                 branch_users bu ON b.id = bu.branch_id
+            WHERE 
+                bu.deleted_at is null  and b.deleted_at is null
             GROUP BY 
                 b.id
         `;
@@ -23,9 +25,31 @@ export const getBranches = async () => {
         const [rows] = await pool.query(query);
         return { queryStatus: true, data: rows, message: 'Branches retrieved successfully.' };
     } catch (error) {
+        console.log(error)
         return handleError(error, 'Failed To Get Branches');
     }
 };
+
+
+export const createNewBranch = async (branch_name) => {
+
+    try {
+
+        const query = `
+            INSERT INTO branches (name) values (?)
+        `
+
+        await pool.query(query, [ branch_name ])
+
+        return { queryStatus: true, message: 'New branch Added' };
+
+    }catch(error) {
+
+        return handleError(error, 'Failed To Add Branch');
+
+    }
+
+}
 
 
 
@@ -38,7 +62,7 @@ export const getBranchDetails = async (branchId) => {
             on branches.id = branch_users.branch_id
                 join users 
             on branch_users.user_id = users.id
-                where branches.id = ?;
+                where branches.id = ? and branch_users.deleted_at is null and users.deleted_at is null;
         `;
 
         const [rows] = await pool.query(query, [branchId]);
@@ -60,7 +84,7 @@ export const addUserToBranch = async (branchId, userId) => {
 
     try {
         const query1 = `
-          select branch_id, user_id from branch_users WHERE branch_id  = ? and user_id = ? LIMIT 1
+          select branch_id, user_id from branch_users WHERE branch_id  = ? and user_id = ? and deleted_at is null LIMIT 1
         `;
 
       const checkIfUserIsAlreadyAdded =  await pool.query(query1, [branchId, userId]);
@@ -81,10 +105,44 @@ export const addUserToBranch = async (branchId, userId) => {
         return { queryStatus: true, message: 'User successfully added to branch.' };
 
     } catch (error) {
-        console.log(error)
+    
         return handleError(error, 'Failed To Add User To Branch');
+        
     }
 
 };
 
+//remove user from branch
+export const removeUserFromBranch = async (branch , user) => {
+
+        try {
+
+             // Update the deleted_at column instead of deleting the record
+            const [result] = await pool.query(
+                `UPDATE branch_users 
+                SET deleted_at = NOW() 
+                WHERE branch_id = ? AND user_id = ? AND deleted_at IS NULL`,
+                [branch, user]
+            );
+
+            if (result.affectedRows > 0) {
+                return {
+                    queryStatus: true,
+                    message: 'User successfully soft deleted from the branch.',
+                };
+            } else {
+                return {
+                    queryStatus: false,
+                    message: 'User Not Found',
+                };
+            }
+
+        }catch (error) {
+
+            return handleError(error, 'Failed To Remove User');
+
+        }
+    
+
+}
 

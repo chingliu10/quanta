@@ -1,3 +1,48 @@
+<style>
+    .flash-message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        min-width: 300px;
+        max-width: 400px;
+    }
+
+    .alert {
+        margin-bottom: 10px;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .alert.slide-in {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .alert.hiding {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    .alert-content {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+    }
+
+    .btn-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 <div class="flash-message-container">
     {{#if success}}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -5,7 +50,6 @@
                 <i class="bi bi-check-circle-fill me-2"></i>
                 <span>{{success}}</span>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {{/if}}
 
@@ -15,24 +59,20 @@
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 <span>{{warning}}</span>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {{/if}}
 </div>
 
 <script>
-
-         document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         const alerts = document.querySelectorAll('.alert');
         
-        // Add slide-in class after a brief delay
         setTimeout(() => {
             alerts.forEach(alert => {
                 alert.classList.add('slide-in');
             });
         }, 100);
 
-        // Function to remove alert with animation
         function removeAlert(alert) {
             alert.classList.add('hiding');
             setTimeout(() => {
@@ -41,14 +81,12 @@
             }, 500);
         }
 
-        // Auto-dismiss alerts after 5 seconds
         let timeoutId = setTimeout(() => {
             alerts.forEach(alert => {
                 removeAlert(alert);
             });
         }, 5000);
 
-        // Hover effect to pause auto-dismiss
         const alertContainer = document.querySelector('.flash-message-container');
 
         alertContainer.addEventListener('mouseenter', () => {
@@ -63,7 +101,6 @@
             }, 3000);
         });
 
-        // Handle manual close button
         document.querySelectorAll('.btn-close').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -72,5 +109,4 @@
             });
         });
     });
-    
 </script>

@@ -1,5 +1,5 @@
 import express from 'express';
-import hbs from 'hbs';
+import exphbs from 'express-handlebars';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import flash from 'connect-flash';
@@ -60,46 +60,49 @@ app.use("/savings", savingRoutes);
 app.use("/payroll", payrollRoutes);
 app.use("/branch", branchRoutes);
 
-// View Engine
-app.set('view engine', 'hbs');
-app.set('views', './views');
 
-// Register the partials directory
-hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
-hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
-    return arg1 === arg2 ? options.fn(this) : options.inverse(this);
-});
-hbs.registerHelper('formatDecimalNumbers', (value) => {
-    if (!value) return '0';
-    return parseFloat(value).toLocaleString('en-US', {
-        maximumFractionDigits: 0,
-    });
-});
-hbs.registerHelper('eq', (a, b) => a === b);
-
-
-
-hbs.registerHelper('formatDateTime', (dateString) => {
-    try {
-        const date = new Date(dateString);
-        const options = {
-            weekday: 'short', // Abbreviated weekday (e.g., Sat)
-            month: 'short',   // Abbreviated month (e.g., Aug)
-            day: '2-digit',   // Two-digit day (e.g., 03)
-        };
-
-        return date.toLocaleDateString('en-US', options);
-    } catch (error) {
-        return 'Invalid Date';
+// View Engine Setup
+const hbs = exphbs.create({
+    extname: 'handlebars',  // change to handlebars extension
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'views', 'layouts'),
+    partialsDir: path.join(__dirname, 'views', 'partials'),
+    helpers: {
+        ifEquals: function(arg1, arg2, options) {
+            return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+        },
+        formatDecimalNumbers: (value) => {
+            if (!value) return '0';
+            return parseFloat(value).toLocaleString('en-US', {
+                maximumFractionDigits: 0,
+            });
+        },
+        eq: (a, b) => a === b,
+        formatDateTime: (dateString) => {
+            try {
+                const date = new Date(dateString);
+                const options = {
+                    weekday: 'short',
+                    month: 'short',
+                    day: '2-digit',
+                };
+                return date.toLocaleDateString('en-US', options);
+            } catch (error) {
+                return 'Invalid Date';
+            }
+        },
+        ordinal: (day) => {
+            const suffixes = ["th", "st", "nd", "rd"];
+            const value = day % 100;
+            return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
+        }
     }
 });
 
-hbs.registerHelper('ordinal', (day) => {
-    const suffixes = ["th", "st", "nd", "rd"];
-    const value = day % 100;
-    return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
-});
-
+// Set up express-handlebars
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
 
 // Routes
@@ -114,7 +117,7 @@ app.get('/login', (req, res) => {
     if (req.session.user) {
         return res.redirect('/dashboard');
     }
-    res.render('login');
+    res.render('login', { layout : false });
 });
 
 

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Branch</title>
+    {{> toplinks }}
+</head>
+<body>
+    <div class="d-flex">
+        {{> sidebar }}
+        <div class="flex-grow-1">
+            {{> topnav user=user }}
+
+            <div class="container mt-4">
+                <h1 class="mb-3">Change Branch</h1>
+                <form action="/branch/change" method="POST">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Branch ID</th>
+                                    <th>Branch Name</th>
+                                    <th>User Count</th>
+                                    <th>Notes</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each branches}}
+                                    <tr>
+                                        <td>{{this.branch_id}}</td>
+                                        <td>{{this.branch_name}}</td>
+                                        <td>{{this.user_count}}</td>
+                                        <td>{{this.branch_notes}}</td>
+                                        <td>
+                                            <input 
+                                                type="radio" 
+                                                name="branch_id" 
+                                                value="{{this.branch_id}}" 
+                                                {{#ifEquals ../user.branchId this.branch_id}}checked{{/ifEquals}}>
+                                        </td>
+                                    </tr>
+                                {{else}}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No branches available.</td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary">Change Branch</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{> bottomlinks }}
+</body>
+</html>

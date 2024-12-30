@@ -15,6 +15,30 @@ const router = express.Router();
 
 router.use(express.json());
 
+
+
+//change branch
+router.get("/change", async (req, res) => {
+    try {
+
+        const result = await getBranches();
+
+        if(result.queryStatus) {
+
+          return   res.render("branch_change", { branches: result.data , user: req.session.user })
+
+        }
+
+        res.status(400).render("error_page", { message : result.activity  })
+
+    }catch (error) {
+
+        res.status(500).render("error_page", { message : "Something Went Wrong While trying to change branch"})
+
+    }
+   
+})
+
 // Route to view branches
 router.get('/view', async (req, res) => {
     try {

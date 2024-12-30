@@ -1,18 +1,35 @@
-<nav class="navbar navbar-expand-lg bg-blue text-white p-3">
-    <div class="container-fluid">
-        <h3 class="text-white">Dashboard</h3>
-        <div class="dropdown ms-auto">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <span  style="padding-right: 10px;">{{user}}</span>
-                <img src="https://via.placeholder.com/40" alt="profile" width="40" height="40" class="rounded-circle me-2">
-               
-            </a>
+
+  <nav class="app-header navbar navbar-expand bg-body">
+        <!--begin::Container-->
+        <div class="container-fluid">
+          <!--begin::Start Navbar Links-->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+          </ul>
+          <!--end::Start Navbar Links-->
+          <!--begin::End Navbar Links-->
+          <ul class="navbar-nav ms-auto">
+
+            <div class="dropdown ms-auto">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span  style="padding-right: 10px;">{{user}}</span>
+                    <img src="https://via.placeholder.com/40" alt="profile" width="40" height="40" class="rounded-circle me-2"> 
+                </a>
             <ul class="dropdown-menu dropdown-menu-end text-small">
                 <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</a></li>
             </ul>
+             </div>
+            {{user.user}}
+            <!--end::User Menu Dropdown-->
+          </ul>
+          <!--end::End Navbar Links-->
         </div>
-    </div>
-</nav>
+        <!--end::Container-->
+      </nav>
 

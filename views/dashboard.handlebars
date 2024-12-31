@@ -1,4 +1,4 @@
-<style>
+{{!-- <style>
         .loading-stick {
             height: 4px;
             background-color: #87CEEB;
@@ -6,11 +6,6 @@
             width: 100%;
         }
 </style>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <div class="d-flex">
-        <div class="flex-grow-1">
-            <!-- Dashboard Info Boxes -->
-            <div class="container mt-4">
                 <div class="row">
                     <!-- Total Borrowers -->
                     <div class="col-3">
@@ -119,12 +114,213 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+
+
+    <!-- Include Tabler JS -->
+{{>bottomlinks}}
+<script src="/js/dashboard.js"></script> --}}
+<style>
+        .loading-stick {
+            height: 4px;
+            background-color: #87CEEB;
+            animation: loading 1s infinite linear;
+            width: 100%;
+        }
+</style>
+      <main class="app-main">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <div class="app-content">
+            <div class="container-fluid">
+                    <div class="row g-3">
+    <!-- Total Borrowers -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-success rounded-start">
+                <i class="bi bi-people-fill"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Total Borrowers</span>
+                <span class="info-box-number fs-5" id="borrowers-data">
+                    <div class="loading-placeholder" id="borrowers-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
             </div>
         </div>
     </div>
 
-    <!-- Include Tabler JS -->
-{{>bottomlinks}}
-<script src="/js/dashboard.js"></script>
+    <!-- Total Loans Released -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-primary rounded-start">
+                <i class="bi bi-cash-stack"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Total Loans Released</span>
+                <span class="info-box-number fs-5" id="loans-data">
+                    <div class="loading-placeholder" id="loans-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Collection -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-secondary rounded-start">
+                <i class="bi bi-coin"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Total Collection</span>
+                <span class="info-box-number fs-5" id="collection-data">
+                    <div class="loading-placeholder" id="collection-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outstanding Loans -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-success rounded-start">
+                <i class="bi bi-credit-card"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Outstanding Loans</span>
+                <span class="info-box-number fs-5" id="outstanding-data">
+                    <div class="loading-placeholder" id="outstanding-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Open Loans -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-primary rounded-start">
+                <i class="bi bi-folder2-open"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Open Loans</span>
+                <span class="info-box-number fs-5" id="openloans-data">
+                    <div class="loading-placeholder" id="openloans-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Closed Loans -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-secondary rounded-start">
+                <i class="bi bi-folder2"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Closed Loans</span>
+                <span class="info-box-number fs-5" id="closedloans-data">
+                    <div class="loading-placeholder" id="closedloans-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Loans -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-success rounded-start">
+                <i class="bi bi-hourglass-split"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Pending Loans</span>
+                <span class="info-box-number fs-5" id="pendingloans-data">
+                    <div class="loading-placeholder" id="pendingloans-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Deposited -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-primary rounded-start">
+                <i class="bi bi-piggy-bank-fill"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Savings Deposited</span>
+                <span class="info-box-number fs-5" id="savingsdeposited-data">
+                    <div class="loading-placeholder" id="savingsdeposited-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Withdrawn -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="info-box shadow-sm rounded">
+            <span class="info-box-icon text-bg-secondary rounded-start">
+                <i class="bi bi-cash"></i>
+            </span>
+            <div class="info-box-content p-3">
+                <span class="info-box-text text-muted">Savings Withdrawn</span>
+                <span class="info-box-number fs-5" id="savingswithdrawn-data">
+                    <div class="loading-placeholder" id="savingswithdrawn-loading">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-8"></span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+<script src="/js/dashboard.js"></script> 

@@ -1,5 +1,6 @@
 import express from 'express';
 import connection from '../config/connection.js';
+import { title } from 'process';
 
 const { pool } = connection;
 const router = express.Router();
@@ -25,7 +26,7 @@ router.get('/', (req, res) => {
     }
 
     console.log(req.session);
-    res.render('dashboard', { user: req.session.user });
+    res.render('dashboard', { title : "Dashboard", user: req.session.user });
 });
 
 // Subroute: Get Borrowers

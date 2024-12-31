@@ -1,26 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{branch.name}} Details</title>
-    {{> toplinks }}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-</head>
-<body>
-    <div class="d-flex">
-        {{> sidebar }}
-        <div class="flex-grow-1">
-            {{> topnav user=user }}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">{{this.branch_name}} branch users</h3></div>
+                    <div class="col-sm-6">
+    <ol class="breadcrumb float-sm-end align-items-center">
+         <li class="me-3">
+            <a href="#" id="addUserBtn" class="btn btn-sm btn-info add-user-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="bi bi-plus-circle me-1"></i>Add User
+            </a>
+        </li>
+        <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Branch</li>
+    </ol>
+</div>
 
-            <div class="container mt-4">
-                <h2>{{this.branch_name}} Branch Details</h2>
-                <h3>Users</h3>
-                
-                <button id="addUserBtn" class="btn-primary add-user-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                    Add New User
-                </button>
-                <table>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+                <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Full Name</th>
@@ -29,42 +33,64 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#each branch_users}}
-                        <tr>
-                            <td>{{this.first_name}} {{this.last_name}}</td>
-                            <td>{{this.phone}}</td>
-                            <td>{{this.email}}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="btn-primary dropdown-toggle">Actions</button>
-                                    <div class="dropdown-menu">
-                                        <a href="/user/details/{{this.user_id}}" class="dropdown-item">Details</a>
-                                        <a href="/user/edit/{{this.user_id}}" class="dropdown-item">Edit</a>
-                                        <a href="/branch/{{branch_id}}/remove/user/{{this.user_id}}" class="dropdown-item">Remove</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        {{else}}
-                        <tr>
-                            <td colspan="4">No users assigned to this branch.</td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+<tbody>
+    {{#each branch_users}}
+    <tr>
+        <td>{{this.first_name}} {{this.last_name}}</td>
+        <td>{{this.phone}}</td>
+        <td>{{this.email}}</td>
+        <td>
+            <div class="dropdown">
+                <button 
+                    class="btn btn-sm btn-primary dropdown-toggle" 
+                    type="button" 
+                    id="actionMenu{{this.user_id}}" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                >
+                    Actions
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="actionMenu{{this.user_id}}">
+                    <li>
+                        <a href="/user/details/{{this.user_id}}" class="dropdown-item">
+                            <i class="bi bi-info-circle me-2"></i>Details
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/edit/{{this.user_id}}" class="dropdown-item">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="/branch/{{branch_id}}/remove/user/{{this.user_id}}" 
+                            class="dropdown-item text-danger"
+                        >
+                            <i class="bi bi-person-dash-fill me-2"></i>Remove
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </div>
-    </div>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="4" class="text-center bg-warning text-dark">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>No users assigned to this branch.
+        </td>
+    </tr>
+    {{/each}}
+</tbody>
 
-    <!-- Add User Modal -->
+                </table>
+    </div>
+</div>
         <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form method="POST" action="/branch/details/{{this.branch_id}}/add_user">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addUserModalLabel">Add User to {{this.branch_name}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -85,9 +111,8 @@
                 </div>
             </div>
         </div>
-    {{> flash_message}}
-    {{> bottomlinks }}
-    <script>
+{{> flash_message}}
+<script>
     $(document).ready(function () {
         $('#userSelect').select2({
             placeholder: 'Select a user',
@@ -95,6 +120,3 @@
         });
     });
 </script>
-
-</body>
-</html>

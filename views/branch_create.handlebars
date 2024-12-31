@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Branch</title>
-    {{> toplinks }}
-</head>
-<body>
-    <div class="d-flex">
-        {{> sidebar }}
-        <div class="flex-grow-1">
-            {{> topnav user=user }}
-
-            <div class="container my-4">
-                <h1 class="mb-4">Create New Branch</h1>
-                <form action="/branch/add" method="POST">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Create New Branch</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Branch</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+                        <form action="/branch/add" method="POST">
                     <div class="mb-3">
                         <label for="branch_name" class="form-label">Branch Name:</label>
                         <input 
@@ -30,11 +33,9 @@
                         <button type="submit" class="btn btn-primary">Create Branch</button>
                     </div>
                 </form>
-            </div>
-        </div>
     </div>
-    {{> flash_message }}
-    {{> bottomlinks }}
-</body>
-</html>
+</div>
+{{> flash_message}}
+{{> bottomlinks}}
+
 

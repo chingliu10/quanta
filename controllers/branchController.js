@@ -8,18 +8,18 @@ export const getBranches = async () => {
     try {
         const query = `
             SELECT 
-                b.id AS branch_id,
-                b.name AS branch_name,
-                COUNT(bu.id) AS user_count,
-                b.notes AS branch_notes
-            FROM 
-                branches b
-            LEFT JOIN 
-                branch_users bu ON b.id = bu.branch_id
-            WHERE 
-                bu.deleted_at is null  and b.deleted_at is null
-            GROUP BY 
-                b.id
+    b.id AS branch_id,
+    b.name AS branch_name,
+    COUNT(bu.id) AS user_count,
+    b.notes AS branch_notes
+FROM 
+    branches b
+LEFT JOIN 
+    branch_users bu ON b.id = bu.branch_id AND bu.deleted_at is null
+WHERE 
+    b.deleted_at is null
+GROUP BY 
+    b.id
         `;
 
         const [rows] = await pool.query(query);
@@ -31,28 +31,61 @@ export const getBranches = async () => {
 };
 
 
+export const findBranch = async (branch_id) => {
 
-
-
-export const createNewBranch = async (branch_name) => {
 
     try {
-
         const query = `
-            INSERT INTO branches (name) values (?)
+            SELECT id, name from branches Where id = ? and deleted_at is null limit 1
         `
+        const [ rows ] = await pool.query(query, [branch_id])
 
-        await pool.query(query, [ branch_name.toUpperCase() ])
+        if(rows.length == 1) {
+            return { queryStatus : true , data : rows[0] }
+        }
 
-        return { queryStatus: true, message: 'New branch Added' };
+        return { queryStatus : false , message : "Failed To Change Branch"}
+    }catch (error) {
 
-    }catch(error) {
-
-        return handleError(error, 'Failed To Add Branch');
+        return handleError(error, 'Failed To Change Branch');
 
     }
 
 }
+
+
+
+
+
+export const createNewBranch = async (branch_name) => {
+    try {
+        // Convert branch_name to uppercase for case-insensitive comparison
+        const upperBranchName = branch_name.toUpperCase();
+
+        // Check if the branch name already exists
+        const checkQuery = `
+            SELECT COUNT(*) AS count 
+            FROM branches 
+            WHERE name = ? AND deleted_at IS NULL
+        `;
+        const [rows] = await pool.query(checkQuery, [upperBranchName]);
+
+        if (rows[0].count > 0) {
+            return { queryStatus: false, message: 'Branch name already exists.' };
+        }
+
+        // Insert the new branch if it doesn't exist
+        const insertQuery = `
+            INSERT INTO branches (name) VALUES (?)
+        `;
+        await pool.query(insertQuery, [upperBranchName]);
+
+        return { queryStatus: true, message: 'New branch added successfully.' };
+    } catch (error) {
+        return handleError(error, 'Failed to add branch');
+    }
+};
+
 
 
 

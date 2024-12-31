@@ -7,6 +7,7 @@ import {
     addUserToBranch,
     deleteBranch,
     removeUserFromBranch,
+    findBranch,
 } from '../controllers/branchController.js';
 
 import { getAllUsers } from '../helpers/generalHelper.js';
@@ -37,6 +38,28 @@ router.get("/change", async (req, res) => {
 
     }
    
+})
+
+router.post("/change", async (req, res) => {
+    
+    const {  branch_id } = req.body
+    try {
+
+        const result = await findBranch(branch_id)
+        if(result.queryStatus) {
+
+            req.session.user.branchId = result.data.id 
+            req.session.user.branchName = result.data.name
+            req.flash('success', 'Branch Changed Successfully');
+            return res.redirect("/branch/change")
+        }
+
+        res.status(400).render("error_page", { message : result.activity  })        
+
+    }catch (error) {
+        
+        res.status(500).render("error_page", { message : "Something Went Wrong When Changing Branch"  })
+    }
 })
 
 // Route to view branches
@@ -74,6 +97,12 @@ router.post("/add", async (req, res) => {
 
         if(result.queryStatus) {
             req.flash('success', 'Branch was added successfully');
+            return res.redirect("/branch/view")
+        }
+
+
+        if(!result.queryStatus && result.message == "Branch name already exists." ){
+            req.flash('warning', 'Branch name already exists.');
             return res.redirect("/branch/view")
         }
 

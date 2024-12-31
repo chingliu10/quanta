@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Branch</title>
-    {{> toplinks }}
-</head>
-<body>
-    <div class="d-flex">
-        {{> sidebar }}
-        <div class="flex-grow-1">
-            {{> topnav user=user }}
-
-            <div class="container mt-4">
-                <h1 class="mb-3">Change Branch</h1>
-                <form action="/branch/change" method="POST">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Change Branch</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Branch</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+                       <form action="/branch/change" method="POST">
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
@@ -54,9 +57,8 @@
                         <button type="submit" class="btn btn-primary">Change Branch</button>
                     </div>
                 </form>
-            </div>
-        </div>
     </div>
-    {{> bottomlinks }}
-</body>
-</html>
+</div>
+{{> flash_message}}
+
+

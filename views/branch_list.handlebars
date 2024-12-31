@@ -1,69 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Branches</title>
-    {{> toplinks }}
-</head>
-<body>
-    <div class="d-flex">
-        {{> sidebar }}
-
-        <div class="flex-grow-1">
-            
-            {{>topnav user=user.user}}
-
-            <div class="container mt-4">
-                <h2>Branches<a href="/branch/add" class="btn btn-primary">Add New Branch</a></h2>
-
-                <!-- Error Message -->
-                {{#if error}}
-                <div class="alert alert-danger">{{error}}</div>
-                {{/if}}
-
-                <!-- Branches Table -->
-                <table id="branches-table" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Users</th>
-                            <th>Notes</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each branches}}
-                        <tr>
-                            <td>{{this.branch_name}}</td>
-                            <td>{{this.user_count}}</td>
-                            <td>{{this.branch_notes}}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <button 
-                                        class="btn btn-sm btn-secondary dropdown-toggle" 
-                                        type="button" 
-                                        id="actionMenu" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-expanded="false"
-                                    >
-                                        Action
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                                        <li><a class="dropdown-item" href="/branch/details/{{this.branch_id}}">Details</a></li>
-                                        <li><a class="dropdown-item" href="/branch/edit/{{this.branch_id}}">Edit</a></li>
-                                        <li><a class="dropdown-item text-danger" href="/branch/delete/{{this.branch_id}}">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6"><h3 class="mb-0">Branches</h3></div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                     <a href="/branch/add" class="btn btn-sm btn-info  me-3">
+                <i class="bi bi-plus-circle me-1"></i>Add Branch
+            </a>
+                    <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Branch</li>
+                </ol>
             </div>
         </div>
     </div>
+</div>
 
-    {{> bottomlinks }}
-</body>
-</html>
+<div class="app-content">
+    <div class="container-fluid">
+        <table id="branches-table" class="table table-hover text-nowrap">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Users</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each branches}}
+                <tr>
+                    <td>{{this.branch_name}}</td>
+                    <td>{{this.user_count}}</td>
+                    <td>{{this.branch_notes}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button 
+                                class="btn btn-sm btn-primary dropdown-toggle" 
+                                type="button" 
+                                id="actionMenu{{this.branch_id}}" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                            >
+                                Action
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="actionMenu{{this.branch_id}}">
+                                <li>
+                                    <a class="dropdown-item" href="/branch/details/{{this.branch_id}}">
+                                        <i class="bi bi-info-circle"></i> Details 
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/branch/edit/{{this.branch_id}}">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <button 
+                                        class="dropdown-item text-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteBranchModal" 
+                                        data-branch-id="{{this.branch_id}}" 
+                                        data-branch-name="{{this.branch_name}}"
+                                    >
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{>flash_message}}
+{{>delete_modal}}

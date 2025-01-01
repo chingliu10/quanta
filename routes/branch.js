@@ -14,12 +14,15 @@ import {
 } from '../controllers/branchController.js';
 
 import { getAllUsers } from '../helpers/generalHelper.js';
+import { isAuthenticated } from "../middlewares/isAuthenticated.js"
 
 const router = express.Router();
 
 router.use(express.json());
 
 
+
+router.use(isAuthenticated)
 
 //change branch
 router.get("/change", async (req, res) => {

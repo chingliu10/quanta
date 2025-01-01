@@ -1,25 +1,16 @@
 import express from 'express';
 import connection from '../config/connection.js';
-import { title } from 'process';
+import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
 const { pool } = connection;
 const router = express.Router();
 
-// Middleware to ensure user is authenticated
-const ensureAuthenticated = (req, res, next) => {
-    if (req.session && req.session.user) {
-        return next(); // User is authenticated, proceed to the next middleware
-    }
 
-    // User is not authenticated, return a 401 Unauthorized error
-    res.status(401).json({
-        error: 'Unauthorized',
-        message: 'Please log in to access this resource.',
-    });
-};
 
-// Main dashboard route (not using ensureAuthenticated)
-router.get('/', (req, res) => {
+router.use(isAuthenticated)
+
+// Main dashboard route (not using isAuthenticated)
+router.get('/',  (req, res) => {
     if (!req.session.user) {
         req.session.error = 'Please log in to access the dashboard.';
         return res.redirect('/login');
@@ -30,9 +21,10 @@ router.get('/', (req, res) => {
 });
 
 // Subroute: Get Borrowers
-router.get('/getborrowers', ensureAuthenticated, async (req, res) => {
+router.get('/getborrowers',   async (req, res) => {
     try {
-        const [borrowers] = await pool.query('SELECT COUNT(*) AS totalBorrowers FROM borrowers WHERE deleted_at IS NULL');
+        const [borrowers] = await pool.query(`SELECT COUNT(*) AS totalBorrowers FROM borrowers WHERE deleted_at  IS NULL
+            AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ totalBorrowers: borrowers[0].totalBorrowers });
     } catch (error) {
         console.error('Error fetching borrowers:', error);
@@ -41,9 +33,10 @@ router.get('/getborrowers', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Total Loans Released
-router.get('/totalloansreleased', ensureAuthenticated, async (req, res) => {
+router.get('/totalloansreleased',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT SUM(principal) AS totalLoans FROM loans WHERE deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT SUM(principal) AS totalLoans FROM loans WHERE deleted_at IS NULL 
+            AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ totalLoans: result[0].totalLoans });
     } catch (error) {
         console.error('Error fetching total loans:', error);
@@ -52,9 +45,10 @@ router.get('/totalloansreleased', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Total Collection
-router.get('/totalcollection', ensureAuthenticated, async (req, res) => {
+router.get('/totalcollection',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT SUM(amount) AS totalCollection FROM loan_repayments WHERE deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT SUM(amount) AS totalCollection FROM loan_repayments WHERE deleted_at IS NULL
+            AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ totalCollection: result[0].totalCollection });
     } catch (error) {
         console.error('Error fetching total collection:', error);
@@ -63,9 +57,11 @@ router.get('/totalcollection', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Outstanding Open Loans
-router.get('/outstandingopenloans', ensureAuthenticated, async (req, res) => {
+router.get('/outstandingopenloans',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT SUM(due) AS outstanding FROM loan_schedules');
+        const [result] = await pool.query(`SELECT SUM(due) AS outstanding FROM loan_schedules where deleted_at is null and branch_id = ?;`,
+            [req.session.user.branchId]
+        );
         res.json({ outstanding: result[0].outstanding });
     } catch (error) {
         console.error('Error fetching outstanding loans:', error);
@@ -74,9 +70,10 @@ router.get('/outstandingopenloans', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Open Loans
-router.get('/openloans', ensureAuthenticated, async (req, res) => {
+router.get('/openloans',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT COUNT(*) AS openloans FROM loans WHERE status = "disbursed" AND deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT COUNT(*) AS openloans FROM loans 
+             WHERE status = "disbursed" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ openloans: result[0].openloans });
     } catch (error) {
         console.error('Error fetching open loans:', error);
@@ -85,9 +82,10 @@ router.get('/openloans', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Closed Loans
-router.get('/closedloans', ensureAuthenticated, async (req, res) => {
+router.get('/closedloans',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT COUNT(*) AS closedloans FROM loans WHERE status = "closed" AND deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT COUNT(*) AS closedloans FROM loans 
+             WHERE status = "closed" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ closedloans: result[0].closedloans });
     } catch (error) {
         console.error('Error fetching closed loans:', error);
@@ -96,9 +94,10 @@ router.get('/closedloans', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Pending Loans
-router.get('/pendingloans', ensureAuthenticated, async (req, res) => {
+router.get('/pendingloans',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT COUNT(*) AS pendingloans FROM loans WHERE status = "pending" AND deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT COUNT(*) AS pendingloans FROM loans 
+             WHERE status = "pending" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ pendingloans: result[0].pendingloans });
     } catch (error) {
         console.error('Error fetching pending loans:', error);
@@ -107,9 +106,10 @@ router.get('/pendingloans', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Awaiting Disbursement
-router.get('/awaitingdisbursement', ensureAuthenticated, async (req, res) => {
+router.get('/awaitingdisbursement',   async (req, res) => {
     try {
-        const [result] = await pool.query('SELECT COUNT(*) AS awaitingDisbursement FROM loans WHERE status = "approved" AND deleted_at IS NULL');
+        const [result] = await pool.query(`SELECT COUNT(*) AS awaitingDisbursement FROM loans 
+             WHERE status = "approved" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ awaitingDisbursement: result[0].awaitingDisbursement });
     } catch (error) {
         console.error('Error fetching awaiting disbursement:', error);
@@ -118,10 +118,10 @@ router.get('/awaitingdisbursement', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Savings Deposited
-router.get('/savingsdeposited', ensureAuthenticated, async (req, res) => {
+router.get('/savingsdeposited'  , async (req, res) => {
     try {
         const [result] = await pool.query(`SELECT SUM(amount) AS savingsDeposited FROM savings_transactions
-             WHERE type = "deposit" AND deleted_at IS NULL`);
+             WHERE type = "deposit" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ savingsDeposited: result[0].savingsDeposited });
     } catch (error) {
         console.error('Error fetching savings deposited:', error);
@@ -130,10 +130,10 @@ router.get('/savingsdeposited', ensureAuthenticated, async (req, res) => {
 });
 
 // Subroute: Savings Withdrawn
-router.get('/savingswithdrawn', ensureAuthenticated, async (req, res) => {
+router.get('/savingswithdrawn'  , async (req, res) => {
     try {
         const [result] = await pool.query(`SELECT SUM(amount) AS savingsWithdrawn FROM savings_transactions
-              WHERE type = "withdraw" AND deleted_at IS NULL`);
+              WHERE type = "withdraw" AND deleted_at IS NULL AND branch_id = ?`, [req.session.user.branchId]);
         res.json({ savingsWithdrawn: result[0].savingsWithdrawn });
     } catch (error) {
         console.error('Error fetching savings withdrawn:', error);

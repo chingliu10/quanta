@@ -1,0 +1,76 @@
+<!-- Content Header (Page header) -->
+<div class="app-content-header">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-sm-6"><h3 class="mb-0">Edit Branch</h3></div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Branch</li>
+        </ol>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>
+
+<div class="app-content">
+  <div class="container-fluid">
+    <form id="branchForm" action="/branch/update/{{branch.id}}" method="POST">
+      <div class="form-group">
+        <label for="branchName">Branch Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="branchName"
+          name="name"
+          value="{{branch.name}}"
+          required
+        >
+        <small id="nameError" class="text-danger" style="display: none;">Please enter a different branch name</small>
+      </div>
+      <br/>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Update Branch</button>
+      </div>
+    </form>
+  </div>
+</div>
+{{>flash_message}}
+
+<script>
+  // Store the original branch name when the page loads
+  const originalBranchName = "{{branch.name}}";
+  
+  // Get form elements
+  const form = document.getElementById('branchForm');
+  const branchNameInput = document.getElementById('branchName');
+  const nameError = document.getElementById('nameError');
+  
+  // Add form submit handler
+  form.addEventListener('submit', function(event) {
+    // Get the current value and trim whitespace
+    const newBranchName = branchNameInput.value.trim();
+    
+    // Check if the name is unchanged (case-insensitive comparison)
+    if (newBranchName.toUpperCase() === originalBranchName.toUpperCase()) {
+      // Prevent form submission
+      event.preventDefault();
+      
+      // Show error message
+      nameError.style.display = 'block';
+      
+      // Add shake animation class to input
+      branchNameInput.classList.add('is-invalid');
+    }
+  });
+  
+  // Clear error when user starts typing
+  branchNameInput.addEventListener('input', function() {
+    nameError.style.display = 'none';
+    branchNameInput.classList.remove('is-invalid');
+  });
+</script>

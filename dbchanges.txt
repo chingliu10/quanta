@@ -5,3 +5,7 @@ ALTER TABLE branch_users ADD COLUMN deleted_at DATETIME NULL;
 //added deleted_at column branches table
 
 ALTER TABLE branches ADD COLUMN deleted_at DATETIME NULL;
+
+//added updated_at on branches table
+
+ALTER TABLE branches ADD COLUMN updated_at DATETIME NULL;

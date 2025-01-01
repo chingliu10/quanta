@@ -8,6 +8,9 @@ import {
     deleteBranch,
     removeUserFromBranch,
     findBranch,
+    getBranchName,
+    checkBranchNameExists,
+    updateBranch
 } from '../controllers/branchController.js';
 
 import { getAllUsers } from '../helpers/generalHelper.js';
@@ -272,6 +275,85 @@ router.get("/:branchId/remove/user/:userId", async (req, res) => {
     }
 
         
+});
+
+
+router.get("/edit/:branchId", async (req, res) => {
+
+    const { branchId } = req.params
+
+    try {
+
+        const result = await getBranchName(branchId);
+
+        if(result.queryStatus) {
+
+
+           return res.render("branch_update" , { 
+                title : `Edit Branch `,
+                user: req.session.user,
+                branch : result.data
+            })
+        }
+
+        return res.status(400).render('error_page', {
+            message : result.activity || "Failed To Get Branch Name"
+        })
+
+    }catch (error) {
+
+        return res.status(500).render('error_page', {
+            message : "Failed To Get Branch Name"
+        })
+
+    }
+})
+
+// routes/branchRoutes.js
+router.post("/update/:branchId", async (req, res) => {
+    const { branchId } = req.params;
+    const { name } = req.body;
+
+
+    try {
+
+
+        // Check if the name is already in use by another branch
+        const result = await checkBranchNameExists(name, branchId);
+
+        if (result.message == "Branch Does Exist") {
+            req.flash("warning", result.message)
+            return res.redirect(`/branch/edit/${branchId}`);
+        }
+
+
+        if(!result.queryStatus) {
+
+            return res.status(400).render('error_page', { 
+                message: "Failed To Check Branch Name" 
+            });
+
+        }
+
+        // Update the branch name
+        const updateResult = await updateBranch(branchId, name.trim());
+        
+        if (updateResult.queryStatus) {
+            // Redirect to branch list with success message
+            req.flash("success", updateResult.message)
+            return res.redirect('/branch/view');
+        }
+
+        return res.status(400).render('error_page', { 
+            message: updateResult.activity || "Failed to update branch" 
+        });
+
+    } catch (error) {
+        console.error('Error updating branch:', error);
+        return res.status(500).render('error_page', { 
+            message: "An error occurred while updating the branch" 
+        });
+    }
 });
 
 

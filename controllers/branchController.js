@@ -208,3 +208,85 @@ export const removeUserFromBranch = async (branch , user) => {
 
 }
 
+export const getBranchName = async (branch_id) => {
+
+    try {
+
+        const query = `select id, name from branches where id = ? and deleted_at is null limit 1`
+        const [rows] = await pool.query(query, [ branch_id ])
+
+        return { queryStatus : true , data : rows[0]}
+
+
+    }catch (error) {
+
+        handleError(error, 'Failed To Get Branch Name')
+
+    }
+
+}
+
+export const checkBranchNameExists = async (name , branch) => {
+
+    try {
+        const query = `
+            SELECT *
+            FROM branches 
+            WHERE name = UPPER(?) 
+            AND deleted_at IS NULL
+            LIMIT 1
+        `;
+        
+        const [rows] = await pool.query(query, [name, branch]);
+        
+        if(rows.length > 0) {
+
+            return {
+                queryStatus: true,
+                message : "Branch Does Exist"
+            };
+
+        } 
+
+        return { queryStatus : true , message : "Move On"}
+
+    } catch (error) {
+
+        return handleError(error, 'Failed To Check Branch Name');
+        
+    }
+}
+
+
+export const updateBranch = async (branchId, name) => {
+
+
+    try {
+        const query = `
+            UPDATE branches 
+            SET name =  UPPER(?), 
+                updated_at = NOW() 
+            WHERE id = ? 
+            AND deleted_at IS NULL
+        `;
+        
+        const [result] = await pool.query(query, [name, branchId]);
+        
+        if (result.affectedRows === 0) {
+            return {
+                queryStatus: false,
+                activity: "Branch not found or no changes made"
+            };
+        }
+
+        return {
+            queryStatus: true,
+            message : "Branch updated successfully"
+        };
+    } catch (error) {
+        console.log(error)
+        return handleError(error, 'Failed to update branch');
+    }
+
+}
+

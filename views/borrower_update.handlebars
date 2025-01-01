@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -167,4 +167,115 @@
 
     {{>bottomlinks}}
 </body>
-</html>
+</html> --}}
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Edit Borrower</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/borrower/view">Borrower</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Borrower</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+        <form action="/borrower/edit/{{borrower.id}}" method="POST">
+    <!-- First Name -->
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+        <input 
+            type="text" 
+            id="first_name" 
+            name="first_name" 
+            class="form-control" 
+            placeholder="Enter first name" 
+            value="{{borrower.first_name}}"
+            required 
+        />
+    </div>
+
+    <!-- Last Name -->
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+        <input 
+            type="text" 
+            id="last_name" 
+            name="last_name" 
+            class="form-control" 
+            placeholder="Enter last name" 
+            value="{{borrower.last_name}}"
+            required 
+        />
+    </div>
+
+    <!-- Gender -->
+    <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select 
+            id="gender" 
+            name="gender" 
+            class="form-select"
+        >
+            <option value="">Select Gender</option>
+            <option value="Male" {{#ifEquals borrower.gender "Male"}}selected{{/ifEquals}}>Male</option>
+            <option value="Female" {{#ifEquals borrower.gender "Female"}}selected{{/ifEquals}}>Female</option>
+        </select>
+    </div>
+
+    <!-- Mobile -->
+    <div class="mb-3">
+        <label for="mobile" class="form-label">Mobile</label>
+        <input 
+            type="text" 
+            id="mobile" 
+            name="mobile" 
+            class="form-control" 
+            placeholder="Enter your mobile" 
+            value="{{borrower.mobile}}"
+        />
+    </div>
+
+    <!-- Business -->
+    <div class="mb-3">
+        <label for="business" class="form-label">Business</label>
+        <input 
+            type="text" 
+            id="business" 
+            name="business" 
+            class="form-control" 
+            placeholder="Enter business name" 
+            value="{{borrower.business_name}}"
+        />
+    </div>
+
+    <!-- Address -->
+    <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input 
+            type="text" 
+            id="address" 
+            name="address" 
+            class="form-control" 
+            placeholder="Enter address" 
+            value="{{borrower.address}}"
+        />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Save
+        </button>
+    </div>
+</form>
+    </div>
+</div>
+{{> flash_message}}

@@ -43,19 +43,23 @@ router.post('/add', async (req, res) => {
         console.log(insertBorrower)
 
         if(insertBorrower.message == "Borrower already exists") {
-            res.redirect("/borrower/add")
+            req.flash('warning', 'Borrower already exists');
+            return res.redirect("/borrower/add")
         }
 
         if(insertBorrower.message = "success" && insertBorrower.queryStatus == true) {
 
-            res.redirect("/borrower/view")
+            req.flash('success', 'Borrower Created');
+            return res.redirect("/borrower/view")
 
         }
 
-        
+        res.status(400).render("error_page", { message : "Failed To Add Borrower"  }) 
         //
 
     }catch (error) {
+
+        res.status(500).render("error_page", { message : result.activity  })
 
     }
 });
@@ -72,6 +76,7 @@ router.get('/edit/:id', async (req, res) => {
 
     }catch (error) {
 
+        res.status(500).render("error_page", { message : result.activity || "Failed To Get Borrower" })
     }
    
 });
@@ -80,21 +85,22 @@ router.post('/edit/:id', async (req, res) => {
     try {
 
 
-        console.log("updating borrower")
-
         let result = await updateBorrower(req.params.id, req.body);
 
         if(result.message = "success" && result.queryStatus == true) {
 
-            res.redirect("/borrower/view")
+          req.flash('success', 'Borrower Updated');
+          return  res.redirect("/borrower/view")
 
         }
+
+        res.status(400).render("error_page", { message : "Failed To Edit Borrower" })
 
         //else there was an error at updateBorrower()
 
     }catch (error) {
 
-
+        res.status(500).render("error_page", { message : result.activity || "Failed To Edit Borrower" })
 
     }
 });
@@ -114,15 +120,18 @@ router.get('/details/:id', async (req, res) => {
 
         if(result.message = "success" && result.queryStatus == true) {
 
-            res.render("borrower_details", { borrower: result.data , user: req.session.user })
+           return res.render("borrower_details", { borrower: result.data , user: req.session.user })
 
         }
+
+
+        res.status(400).render("error_page", { message : "Failed To View Borrower" })
 
         //else there was an error at updateBorrower()
 
     }catch (error) {
 
-
+        res.status(500).render("error_page", { message : "Failed To View Borrower" })
 
     }
 
@@ -137,15 +146,18 @@ router.get('/delete/:id', async (req, res) => {
         let result = await deleteBorrower(req.params.id);
 
 
-        console.log(result);
-
         if(result.message = "success" && result.queryStatus == true) {
 
-            res.redirect("/borrower/view")
+          req.flash('success', 'Borrower Deleted');
+          return  res.redirect("/borrower/view")
 
         }
 
+        res.status(400).render("error_page", { message : "Failed To Delete Borrower" })
+
     }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To Delete Borrower" })
 
     }
 } );

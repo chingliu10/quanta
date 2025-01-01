@@ -8,12 +8,16 @@ import {
     deleteBorrower
 } from '../controllers/borrowerController.js';
 
+import { isAuthenticated } from '../middlewares/isAuthenticated.js';
+
 
 const router = express.Router();
 
 
 
 router.use(express.json())
+
+router.use(isAuthenticated)
 // Routes for Borrowers
 // 1. Get all borrowers
 router.get('/view', async (req, res) => {
@@ -120,7 +124,7 @@ router.get('/details/:id', async (req, res) => {
 
         if(result.message = "success" && result.queryStatus == true) {
 
-           return res.render("borrower_details", { borrower: result.data , user: req.session.user })
+           return res.render("borrower_profile", { borrower: result.data , user: req.session.user })
 
         }
 

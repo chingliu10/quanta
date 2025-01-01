@@ -1,0 +1,262 @@
+<style>
+.table > :not(caption) > * > * { 
+    border-bottom-width: 1px; 
+    padding: 1rem;
+}
+.btn-group > .btn { 
+    border-radius: 4px;
+    margin: 0 2px;
+}
+.card { 
+    border-radius: 8px;
+}
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+</style>
+<!-- Content Header -->
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Borrower Details</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/borrower/view">Borrowers</a></li>
+                    <li class="breadcrumb-item active">Borrower Details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- Borrower Profile Card -->
+       <div class="card border-0 position-relative overflow-hidden mb-4">
+    <!-- Simple dark background -->
+    <div class="position-absolute w-100" 
+         style="height: 140px; background: #2c3e50; 
+                border-radius: 0 0 50% 50% / 0 0 25% 25%;">
+    </div>
+    
+    <div class="card-body position-relative pt-3 px-4">
+        <!-- Profile Header -->
+        <div class="d-flex align-items-start mb-3">
+            <!-- Avatar Section -->
+            <div class="position-relative me-3">
+                <div class="rounded-circle bg-white p-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                         style="width: 60px; height: 60px; background: #2c3e50; font-size: 1.25rem;">
+                        AB
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Info -->
+            <div class="flex-grow-1">
+                <h5 class="mb-1 text-white">{{borrower.first_name}} {{borrower.last_name}}</h5>
+                <div class="d-flex flex-wrap gap-3 text-white-50 small">
+                    <span><i class="fas fa-briefcase me-1"></i>{{'N/A'}}</span>
+                    <span><i class="fas fa-user me-1"></i>{{'N/A'}}</span>
+                    <span><i class="fas fa-calendar-alt me-1"></i>{{'N/A'}} Years</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="row g-3">
+            <!-- Personal Info Card -->
+            <div class="col-12 col-lg-6">
+                <div class="p-3 rounded-3 h-100 bg-white border shadow-sm">
+                    <h6 class="text-dark mb-3 fs-7">
+                        <i class="fas fa-info-circle me-2"></i>Personal Details
+                    </h6>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item bg-transparent px-0 py-2">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt text-secondary me-2"></i>
+                                <span class="text-body-secondary small">{{'N/A'}}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item bg-transparent px-0 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-phone text-secondary me-2"></i>
+                                    <span class="text-body-secondary small">{{'N/A'}}</span>
+                                </div>
+                                <a href="sms:{{borrower.mobile}}" class="btn btn-outline-secondary btn-sm py-1 px-2">
+                                    <i class="fas fa-comment"></i><span class="ms-1 small">SMS</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item bg-transparent px-0 py-2 border-bottom-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-envelope text-secondary me-2"></i>
+                                    <span class="text-body-secondary small">vvv@bb.co.tz</span>
+                                </div>
+                                <a href="mailto:{{borrower.email}}" class="btn btn-outline-secondary btn-sm py-1 px-2">
+                                    <i class="fas fa-envelope"></i><span class="ms-1 small">Email</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="col-12 col-lg-6">
+                <div class="p-3 rounded-3 h-100 bg-white border shadow-sm">
+                    <h6 class="text-dark mb-3 fs-7">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="/loan/add/{{borrower.id}}" 
+                           class="btn btn-dark btn-sm py-2">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Loan
+                        </a>
+                        
+                        <a href="/borrower/statement/{{borrower.id}}" 
+                           class="btn btn-outline-dark btn-sm py-2">
+                            <i class="fas fa-file-alt me-2"></i>View Statement
+                        </a>
+                        
+                        <a href="/borrower/edit/{{borrower.id}}" 
+                           class="btn btn-outline-secondary btn-sm py-2">
+                            <i class="fas fa-edit me-2"></i>Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Loans Card -->
+        <div class="card border shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-money-bill-wave me-2"></i>Loans
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 px-4">#</th>
+                                <th class="border-0">Principal</th>
+                                <th class="border-0">Released</th>
+                                <th class="border-0">Interest %</th>
+                                <th class="border-0">Due</th>
+                                <th class="border-0">Paid</th>
+                                <th class="border-0">Balance</th>
+                                <th class="border-0">Status</th>
+                                <th class="border-0 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each loans}}
+                            <tr>
+                                <td class="px-4">{{this.id}}</td>
+                                <td>{{formatMoney this.principal}}</td>
+                                <td>{{formatDate this.release_date}}</td>
+                                <td>{{this.interest_rate}}% {{this.interest_type}}</td>
+                                <td>{{formatMoney this.total_due}}</td>
+                                <td>{{formatMoney this.total_paid}}</td>
+                                <td>{{formatMoney this.balance}}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{this.status}}</span>
+                                </td>
+                                <td class="px-4">
+                                    <div class="btn-group">
+                                        <a href="/loan/view/{{this.id}}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="/loan/edit/{{this.id}}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repayments Card -->
+        <div class="card border shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Repayments
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 px-4">Collection Date</th>
+                                <th class="border-0">Collected By</th>
+                                <th class="border-0">Method</th>
+                                <th class="border-0">Amount</th>
+                                <th class="border-0">Action</th>
+                                <th class="border-0 px-4">Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each repayments}}
+                            <tr>
+                                <td class="px-4">{{formatDate this.collection_date}}</td>
+                                <td>{{this.collector_name}}</td>
+                                <td>{{this.payment_method}}</td>
+                                <td>{{formatMoney this.amount}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="/repayment/edit/{{this.id}}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-secondary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteRepaymentModal" 
+                                                data-repayment-id="{{this.id}}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="px-4">
+                                    <a href="/repayment/receipt/{{this.id}}" class="btn btn-sm btn-outline-dark">
+                                        <i class="fas fa-receipt me-1"></i>Receipt
+                                    </a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#loans-table').DataTable({
+            "pageLength": 10,
+            "ordering": true
+        });
+        
+        $('#repayments-table').DataTable({
+            "pageLength": 15,
+            "ordering": true
+        });
+    });
+</script>

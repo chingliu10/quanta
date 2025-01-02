@@ -3,10 +3,11 @@ import handleError from '../helpers/handleError.js';
 const { pool } = connection;
 
 // Get all borrowers
-export const getAllBorrowers = async () => {
+export const getAllBorrowers = async (branch) => {
     try {
-        const query = `SELECT id, first_name, last_name, business_name, mobile, email FROM borrowers where deleted_at IS NULL`;
-        const [rows] = await pool.query(query); // Execute the query
+        const query = `SELECT id, first_name, last_name, business_name, mobile, email 
+         FROM borrowers where deleted_at IS NULL AND branch_id = ?`;
+        const [rows] = await pool.query(query, [ branch ]); // Execute the query
         return rows; // Return the fetched rows
     } catch (error) {
         console.log(error);
@@ -174,6 +175,80 @@ export const deleteBorrower = async (borrowerId) => {
     }
 };
 
+
+export const getBorrowerLoans = async (borrowerId) => {
+    try {
+
+        const query = `
+            SELECT
+    borrowers.first_name AS first_name,
+    borrowers.last_name AS last_name,
+    loans.id AS loan_id,
+    loans.principal AS principal,
+    loans.release_date AS release_date,
+    loans.maturity_date AS maturity_date,
+    loans.interest_rate AS interest_rate,
+    COALESCE(due_totals.total_due, 0) AS total_due,
+    COALESCE(paid_totals.total_paid, 0) AS total_paid,
+    (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS balance,
+    CASE
+        WHEN loans.maturity_date < CURDATE() AND (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) > 0 THEN 'Past Maturity'
+        ELSE loans.status
+    END AS status
+FROM 
+    loans
+JOIN
+    borrowers ON borrowers.id = loans.borrower_id
+LEFT JOIN
+    (
+        SELECT
+            loan_id,
+            SUM(due + fees) AS total_due
+        FROM
+            loan_schedules
+        WHERE
+            deleted_at IS NULL
+        GROUP BY
+            loan_id
+    ) AS due_totals ON loans.id = due_totals.loan_id
+LEFT JOIN
+    (
+        SELECT
+            loan_id,
+            SUM(amount) AS total_paid
+        FROM
+            loan_repayments
+        WHERE
+            deleted_at IS NULL
+        GROUP BY
+            loan_id
+    ) AS paid_totals ON loans.id = paid_totals.loan_id
+WHERE
+    loans.deleted_at IS NULL
+    AND borrowers.id = ?
+        `
+
+    const [ loans ] = await pool.query(query, [borrowerId]);
+    if(loans.length === 0) {
+        return {
+            queryStatus : true,
+            message : "No loans"
+        }
+    }
+
+    return {
+
+            queryStatus : true,
+            data : loans
+    }
+
+
+    }catch (error) {
+
+        return handleError(error, 'Failed to Get Loans Of The Borrower');
+
+    }
+}
 
 // // Get all borrower groups
 // export const getBorrowerGroups = (req, res) => {

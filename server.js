@@ -10,6 +10,7 @@ import loanRoutes from "./routes/loan.js"
 import savingRoutes from "./routes/saving.js"
 import payrollRoutes from "./routes/payroll.js"
 import branchRoutes from "./routes/branch.js"
+import apiRoutes from "./api/routes/index.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv';
@@ -60,7 +61,7 @@ app.use("/loan", loanRoutes);
 app.use("/savings", savingRoutes);
 app.use("/payroll", payrollRoutes);
 app.use("/branch", branchRoutes);
-
+app.use("/api", apiRoutes);
 
 // View Engine Setup
 const hbs = exphbs.create({
@@ -96,6 +97,9 @@ const hbs = exphbs.create({
             const suffixes = ["th", "st", "nd", "rd"];
             const value = day % 100;
             return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
+        },
+        check : (v, c) => {
+            return (v === c) ? 'N/A' : v
         }
     }
 });

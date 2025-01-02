@@ -5,7 +5,8 @@ import {
     getEditBorrower,
     updateBorrower,
     getBorrowerDetails,
-    deleteBorrower
+    deleteBorrower,
+    getBorrowerLoans
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -22,7 +23,7 @@ router.use(isAuthenticated)
 // 1. Get all borrowers
 router.get('/view', async (req, res) => {
     try {
-        const borrowers = await getAllBorrowers(); // Fetch data from the controller
+        const borrowers = await getAllBorrowers(req.session.user.branchId); // Fetch data from the controller
         console.log(borrowers)
         res.render('borrowersdata', { borrowers , user: req.session.user }); // Render the view with data
     } catch (error) {
@@ -118,13 +119,17 @@ router.get('/details/:id', async (req, res) => {
 
 
         let result = await getBorrowerDetails(req.params.id);
-
-
+     
         console.log(result);
 
         if(result.message = "success" && result.queryStatus == true) {
 
-           return res.render("borrower_profile", { borrower: result.data , user: req.session.user })
+           return res.render("borrower_profile", { 
+
+                borrower: result.data ,
+                user: req.session.user 
+        
+            })
 
         }
 

@@ -3,6 +3,7 @@
         display: none;
     }
 </style>
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
 <!-- Content Header -->
 <div id="borrowerId">
     {{borrower.id}}
@@ -209,7 +210,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table id="loansTable" class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0 px-4">#</th>
@@ -223,7 +224,7 @@
                                 <th class="border-0 px-4">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="loansTable">
                             <!-- Table content remains the same but with updated icons -->
                         </tbody>
                     </table>
@@ -243,18 +244,17 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table id="repaymentTable" class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0 px-4">Collection Date</th>
                                 <th class="border-0">Collected By</th>
-                                <th class="border-0">Method</th>
                                 <th class="border-0">Amount</th>
                                 <th class="border-0">Action</th>
                                 <th class="border-0 px-4">Receipt</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="repaymentTable">
                             <!-- Table content remains the same but with updated icons -->
                         </tbody>
                     </table>
@@ -263,16 +263,23 @@
         </div>
     </div>
 </div>
+ <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
 <script>
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     const borrowerId = document.querySelector("#borrowerId").innerText;
+
+    // Fetch loans (already implemented)
     try {
-        const response = await fetch(`/api/loan/get_borrower_loans/${borrowerId}`);
-        const data = await response.json();
-        
-        if (data.loans.queryStatus) {
-            const tbody = document.querySelector(".table tbody");
-            tbody.innerHTML = data.loans.data.map((loan, index) => `
+        const loanResponse = await fetch(`/api/loan/get_borrower_loans/${borrowerId}`);
+        const loanData = await loanResponse.json();
+
+        if (loanData.loans.queryStatus) {
+            const loanTbody = document.querySelector("#loansTable");
+            loanTbody.innerHTML = loanData.loans.data.map((loan, index) => `
                 <tr>
                     <td class="px-4">${index + 1}</td>
                     <td>${parseFloat(loan.principal).toLocaleString()}</td>
@@ -289,9 +296,54 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                     </td>
                 </tr>
             `).join('');
+            $('#loansTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                lengthChange: true,
+                pageLength: 10
+            }); // Initialize DataTables
         }
     } catch (error) {
         console.error("Error fetching loans:", error);
+    }
+
+    // Fetch repayments
+    try {
+        const repaymentResponse = await fetch(`/api/repayment/get_borrower_repayments/${borrowerId}`);
+        const repaymentData = await repaymentResponse.json();
+
+        if (repaymentData.repayments.queryStatus) {
+            const repaymentTbody = document.querySelector("#repaymentTable");
+            repaymentTbody.innerHTML = repaymentData.repayments.data.map((repayment) => `
+                <tr>
+                    <td class="px-4">${new Date(repayment.collection_date).toLocaleDateString()}</td>
+                    <td>${repayment.first_name} ${repayment.last_name}</td>
+                    <td>${parseFloat(repayment.amount).toLocaleString()}</td>
+                    <td>
+                        <a href="/repayment/view/${repayment.id}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </td>
+                    <td class="px-4">
+                        <a href="/repayment/receipt/${repayment.id}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-receipt"></i> Receipt
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+            $('#repaymentTable').DataTable(
+                {
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    lengthChange: true,
+                    pageLength: 10
+                }
+            ); // Initialize DataTables
+        }
+    } catch (error) {
+        console.error("Error fetching repayments:", error);
     }
 });
 </script>

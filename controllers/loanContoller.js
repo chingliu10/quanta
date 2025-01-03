@@ -12,7 +12,8 @@ export const getArrearsLoans = async () => {
                 borrowers.last_name AS last_name,
                 COALESCE(due_totals.total_due, 0) AS total_due,
                 COALESCE(paid_totals.total_paid, 0) AS total_paid,
-                (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS missed_amount
+                (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS missed_amount,
+                loans.id as loan_id
             FROM 
                 loans
             JOIN 

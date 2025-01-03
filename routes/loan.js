@@ -4,9 +4,11 @@ import {
     getArrearsLoans
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
+import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
 const router = express.Router();
 
+router.use(isAuthenticated)
 router.use(express.json());
 
 

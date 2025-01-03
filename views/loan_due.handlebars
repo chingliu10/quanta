@@ -1,85 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Due Loans</title>
-    {{>toplinks}}
-    <!-- DataTables CSS -->
-      <link rel="stylesheet" href="/css/datatables/datatables.min.css">
-    <style>
-        .table-container {
-            margin: 20px auto;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-container h2 {
-            text-align: center;
-            color: #001F3F;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #001F3F;
-            color: white;
-        }
-
-        tbody tr:nth-child(odd) {
-            background-color: #f4f4f9;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: whitesmoke;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 8px 12px;
-            font-size: 14px;
-            color: white;
-            background-color: #001F3F;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #87CEEB;
-        }
-    </style>
-</head>
-<body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        {{>sidebar}}
-
-        <!-- Main Content -->
-        <div class="flex-grow-1">
-            <!-- Top Navbar -->
-            {{>topnav user=user.user}}
-
-            <!-- Due Loans Table -->
-            <div class="table-container">
-                <h2>Due Loans</h2>
-
-                {{#if loans.length}}
-                <table id="due-loans-table" class="display">
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Loan Arrears</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/loan/arrears">Arrears</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Arrears</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+          {{#if loans.length}}
+                <table id="arrears-loans-table" class="table card-table table-vcenter text-nowrap">
                     <thead>
                         <tr>
                             <th>Borrower Name</th>
@@ -97,7 +37,9 @@
                             <td>{{this.total_paid}}</td>
                             <td>{{this.missed_amount}}</td>
                             <td>
-                                <a href="/loan/details/{{this.id}}" class="btn-primary">Details</a>
+                                <a href="/loan/details/{{this.loan_id}}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i>View
+                                </a>
                             </td>
                         </tr>
                         {{/each}}
@@ -106,18 +48,15 @@
                 {{else}}
                 <p>No due loans found.</p>
                 {{/if}}
-            </div>
-        </div>
     </div>
-
-    {{>bottomlinks}}
-    <script src="/js/jquery/jquery-3.6.0.min.js"></script>
-    <script src="/js/jquery/jquery.datatables.min.js"></script>
-    <script src="/js/jquery/datatables.buttons.min.js"></script>
-    <script src="/js/jquery/buttons.print.min.js"></script>
-    <script>
-        $(document).ready(function() {
-    $('#due-loans-table').DataTable({
+</div>
+<script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#arrears-loans-table').DataTable({
         paging: true,
         searching: true,
         order: [[3, 'desc']], // Order by Missed Amount descending
@@ -125,17 +64,13 @@
             { orderable: false, targets: [4] } // Disable sorting on Actions column
         ],
         dom: 'Bfrtip', // Enable buttons in the DOM
-        buttons: [
-            'print', // Print button
-            {
-                extend: 'csv',
-                text: 'Export CSV',
-                className: 'btn btn-primary btn-sm', // Custom styling for the button
-            }
-        ]
+          buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-secondary'
+                        }
+                ]
     });
 });
-
-    </script>
-</body>
-</html>
+</script>

@@ -83,15 +83,10 @@ const hbs = exphbs.create({
         formatDateTime: (dateString) => {
             try {
                 const date = new Date(dateString);
-                const options = {
-                    weekday: 'short',
-                    month: 'short',
-                    day: '2-digit',
-                };
-                return date.toLocaleDateString('en-US', options);
-            } catch (error) {
+                return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`; 
+              } catch (error) {
                 return 'Invalid Date';
-            }
+              }
         },
         ordinal: (day) => {
             const suffixes = ["th", "st", "nd", "rd"];

@@ -4,7 +4,7 @@ import  handleError  from '../helpers/handleError.js';
 const { pool } = connection;
 
 // Fetch due loans
-export const getArrearsLoans = async () => {
+export const getArrearsLoans = async (branch) => {
     try {
         const query = `
             SELECT 
@@ -50,22 +50,23 @@ export const getArrearsLoans = async () => {
             WHERE 
                 loans.status <> 'closed'
                 AND loans.deleted_at IS NULL 
+                AND loans.branch_id = ?
             HAVING 
                 missed_amount > 0
         `;
 
-        const [rows] = await pool.query(query);
+        const [rows] = await pool.query(query, [branch]);
         return {
             queryStatus: true,
             message: "success",
             data: rows
         };
     } catch (error) {
-        return handleError(error, "fetching due loans");
+        return handleError(error, "Fetching Due Loans Failed");
     }
 };
 
-export const getAllLoans = async () => {
+export const getAllLoans = async (branch) => {
     try {
         const query = `
             SELECT 
@@ -115,13 +116,40 @@ export const getAllLoans = async () => {
                 ) AS paid_totals 
                 ON loans.id = paid_totals.loan_id
             WHERE 
-                loans.deleted_at IS NULL;
+                loans.deleted_at IS NULL
+                and loans.branch_id = ?
         `;
-        const [rows] = await pool.query(query);
+        const [rows] = await pool.query(query, [branch]);
         return { queryStatus: true, data: rows, message: 'success' };
     } catch (error) {
+        console.log(error)
         return handleError(error, 'fetching loan details with maturity check');
     }
 };
+
+
+export const getPendingLoans = async (branch) => {
+
+    try {
+
+        const query = `
+            SELECT * FROM loans where status = "pending" 
+                AND deleted_at is null
+                    AND branch_id = ?
+        `
+        const [rows] = await pool.query(query, [branch])
+
+        return {
+            queryStatus : true,
+            data : rows
+        }
+
+    }catch (error)  {
+
+        return handleError(error, 'Fetching Pending Loans Failed');
+
+    }
+
+}
 
 

@@ -8,6 +8,7 @@ import {
     getSavingsProducts
 } from '../controllers/savingController.js';
 import handleError from '../helpers/handleError.js';
+import { title } from 'process';
 
 const router = express.Router();
 
@@ -19,11 +20,13 @@ router.get('/accounts/view', async (req, res) => {
         const result = await getSavingsAccounts();
 
         if (result.queryStatus) {
-            return res.render('savings_accounts', { savings: result.data, user: req.session.user });
+            return res.render('savings_accounts', { 
+                title : "Savings Accounts" ,
+                savings: result.data, 
+                user: req.session.user });
         }
-
-        req.session.error = result.message;
         res.redirect('/dashboard');
+        
     } catch (error) {
         const err = handleError(error, 'fetching savings accounts');
         req.session.error = err.message;

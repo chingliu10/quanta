@@ -1,50 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savings Accounts</title>
-    {{>toplinks}}
-    <style>
-        .table-container {
-            margin: 20px auto;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-container h2 {
-            text-align: center;
-            color: #001F3F;
-        }
-
-        .badge {
-            padding: 5px 10px;
-            border-radius: 5px;
-            color: white;
-            font-size: 14px;
-            background-color: #001F3F;
-        }
-    </style>
-</head>
-<body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        {{>sidebar}}
-
-        <!-- Main Content -->
-        <div class="flex-grow-1">
-            <!-- Top Navbar -->
-            {{>topnav user=user.user}}
-
-            <!-- Savings Accounts Table -->
-            <div class="table-container">
-                <h2>Savings Accounts</h2>
-
-                {{#if savings.length}}
-                <table id="savings-accounts-table" class="table table-striped">
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Savings</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/savings/accounts/view">All Savings</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Savings</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+         {{#if savings.length}}
+                <table id="savings-accounts-table" class="table card-table table-vcenter text-nowrap" >
                     <thead>
                         <tr>
                             <th>Borrower</th>
@@ -63,7 +38,7 @@
                             <td>{{this.balance}}</td>
                             <td>
                                 <div class="dropdown">
-                                    <button class="btn btn-sm dropdown-toggle" style="background-color: red; color: white;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
@@ -80,25 +55,71 @@
                 {{else}}
                 <p>No savings accounts found.</p>
                 {{/if}}
-            </div>
-        </div>
     </div>
-
-    {{>bottomlinks}}
-      <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#all-loans-table').DataTable({
-                paging: true,
-                searching: true,
-                order: [[7, 'desc']], // Order by Balance descending
-                columnDefs: [
-                    { orderable: false, targets: [9] } // Disable sorting on Actions column
-                ],
-                dom: 'Bfrtip',
-                buttons: ['print']
-            });
-        });
-    </script>
-</body>
-</html>
+</div>
+{{> flash_message}}
+ <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#savings-accounts-table').DataTable({
+        // Enable responsive features
+        responsive: true,
+        
+        // Configure DOM layout
+        dom: 'Bfrtip',
+        
+        // Add export buttons
+        buttons: [
+            {
+                extend: 'print',
+                text: 'Print',
+                className: 'btn btn-secondary btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3] // Exclude Actions column
+                }
+            }
+        ],
+        
+        // Default ordering (sort by Account # ascending)
+        order: [[1, 'asc']],
+        
+        // Column specific configurations
+        columnDefs: [
+            {
+                targets: -1, // Actions column
+                orderable: false,
+                searchable: false
+            }
+        ],
+        
+        // Pagination settings
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        
+        // Search configuration
+        search: {
+            return: true,
+            smart: true
+        },
+        
+        // Language customization
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: "Showing 0 to 0 of 0 entries",
+            infoFiltered: "(filtered from _MAX_ total entries)",
+            zeroRecords: "No matching records found",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+});
+</script>

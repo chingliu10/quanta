@@ -1,126 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Savings Account</title>
-    {{>toplinks}}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .form-container {
-            margin: 30px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Add Savings Account</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/savings/accounts/view">All Savings</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">savings</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+         <form action="/savings/accounts/store" method="POST">
+    <!-- Card wrapper for the form -->
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">New Savings Account</h3>
+        </div>
+        <div class="card-body">
+            <!-- Borrower Selection -->
+            <div class="form-group mb-3">
+                <label for="borrower_id" class="form-label">Borrower</label>
+                <select id="borrower_id" name="borrower_id" class="form-select" required>
+                    <option value="" disabled selected>Select Borrower</option>
+                    {{#each borrowers}}
+                    <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
+                    {{/each}}
+                </select>
+            </div>
 
-        .form-header {
-            background-color: #001F3F;
-            color: white;
-            padding: 15px;
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+            <!-- Savings Product Selection -->
+            <div class="form-group mb-3">
+                <label for="savings_product_id" class="form-label">Savings Product</label>
+                <select id="savings_product_id" name="savings_product_id" class="form-select" required>
+                    <option value="" disabled selected>Select Savings Product</option>
+                    {{#each savings_products}}
+                    <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
 
-        .form-control {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            color: #333;
-        }
-
-        select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 100px;
-        }
-
-        .btn-primary {
-            display: block;
-            background-color: #001F3F;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .btn-primary:hover {
-            background-color: #87CEEB;
-        }
-    </style>
-</head>
-<body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        {{>sidebar}}
-
-        <!-- Main Content -->
-        <div class="flex-grow-1">
-            <!-- Top Navbar -->
-            {{>topnav user=user.user}}
-
-            <!-- Savings Account Form -->
-            <div class="form-container">
-                <div class="form-header">
-                    <h2>Add Savings Account</h2>
-                </div>
-                <form action="/savings/accounts/store" method="POST">
-                    <!-- Borrower Selection -->
-
-                    <div class="form-control">
-    <label for="borrower_id">Borrower</label>
-    <select id="borrower_id" name="borrower_id" class="form-select" required>
-        <option value="" disabled selected>Select Borrower</option>
-        {{#each borrowers}}
-        <option value="{{this.id}}">{{this.first_name}} {{this.last_name}}</option>
-        {{/each}}
-    </select>
-</div>
-
-
-                    <!-- Savings Product Selection -->
-                    <div class="form-control">
-                        <label for="savings_product_id">Savings Product</label>
-                        <select id="savings_product_id" name="savings_product_id" required>
-                            {{#each savings_products}}
-                            <option value="{{this.id}}">{{this.name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-
-                    <!-- Notes -->
-                    <div class="form-control">
-                        <label for="notes">Notes</label>
-                        <textarea id="notes" name="notes" placeholder="Enter any notes..."></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn-primary">Save</button>
-                </form>
+            <!-- Notes -->
+            <div class="form-group mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Enter any notes..."></textarea>
             </div>
         </div>
-    </div>
 
-    {{>bottomlinks}}
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+        <!-- Card footer with submit button -->
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Save
+            </button>
+        </div>
+    </div>
+</form>
+    </div>
+</div>
+ <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -130,6 +74,3 @@
         });
     });
 </script>
-
-</body>
-</html>

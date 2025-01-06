@@ -1,126 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savings Products</title>
-    {{>toplinks}}
-    <style>
-        .table-container {
-            margin: 20px auto;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-container h2 {
-            text-align: center;
-            color: #001F3F;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #001F3F;
-            color: white;
-        }
-
-        tbody tr:nth-child(odd) {
-            background-color: #f4f4f9;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: whitesmoke;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 8px 12px;
-            font-size: 14px;
-            color: white;
-            background-color: #001F3F;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #87CEEB;
-        }
-    </style>
-</head>
-<body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        {{>sidebar}}
-
-        <!-- Main Content -->
-        <div class="flex-grow-1">
-            {{>topnav user=user.user}}
-            <div class="table-container">
-                <h2>Savings Products</h2>
-                {{#if savingsProducts.length}}
-                <table id="savings-products-table" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Interest Rate Per Annum %</th>
-                            <th>Interest Posting Frequency</th>
-                            <th>Minimum Balance</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each savingsProducts}}
-                        <tr>
-                            <td>{{this.name}}</td>
-                            <td>{{this.interest_rate}}</td>
-                            <td>{{this.interest_posting}}</td>
-                            <td>{{this.minimum_balance}}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm dropdown-toggle" style="background-color: red; color: white;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Actions
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/savings/products/edit/{{this.id}}">Edit</a></li>
-                                        <li><a class="dropdown-item text-danger" href="/savings/products/delete/{{this.id}}">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-                {{else}}
-                <p>No savings products found.</p>
-                {{/if}}
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Saving Products</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/savings/accounts/view">All Savings</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Savings</li>
+                </ol>
+              </div>
             </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+            <div class="card">
+    <div class="card-body">
+        {{#if savingsProducts.length}}
+        <table id="savings-products-table" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Interest Rate Per Annum %</th>
+                    <th>Interest Posting Frequency</th>
+                    <th>Minimum Balance</th>
+                    <th width="120">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each savingsProducts}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.interest_rate}}</td>
+                    <td>{{this.interest_posting}}</td>
+                    <td>{{this.minimum_balance}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-expanded="false">
+                                <i class="fas fa-cog me-1"></i>Actions
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                 <li>
+                                    <a class="dropdown-item" href="/savings/products/delete/{{this.id}}">
+                                        <i class="bi bi-info-circle me-2"></i> Details
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/savings/products/edit/{{this.id}}">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="/savings/products/delete/{{this.id}}">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>No savings products found.
         </div>
+        {{/if}}
     </div>
-    {{>bottomlinks}}
-    <script>
+</div>
+    </div>
+</div>
+{{> flash_message}}
+<script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
         $(document).ready(function() {
             $('#savings-products-table').DataTable({
                 paging: true,
                 searching: true,
                 dom: 'Bfrtip',
-                buttons: ['print', 'csv', 'pdf'],
+                 buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-secondary'
+                        }
+                ],
             });
         });
-    </script>
-</body>
-</html>
+</script>

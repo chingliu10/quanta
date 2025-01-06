@@ -46,8 +46,15 @@
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/savings/transactions/edit/{{this.id}}">Edit</a></li>
-                                        <li><a class="dropdown-item text-danger" href="/savings/transactions/delete/{{this.id}}">Delete</a></li>
+                                        <li><a class="dropdown-item" href="/savings/transactions/edit/{{this.id}}">
+                                            <i class="bi bi-info-circle me-2"></i> Details</a></li>
+                                        <li><a class="dropdown-item" href="/savings/transactions/edit/{{this.id}}">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="/savings/transactions/delete/{{this.id}}">
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+                                        </a></li>
                                     </ul>
                                 </div>
                             </td>

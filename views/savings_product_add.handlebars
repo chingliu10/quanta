@@ -1,74 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Savings Product</title>
-    {{>toplinks}}
-</head>
-<body>
-    <div class="d-flex">
-        {{>sidebar}}
-        <div class="flex-grow-1">
-            {{>topnav user=user.user}}
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Add Saving Product</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/savings/accounts/view">All Savings Account</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Savings</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+            <form action="/savings/products/store" method="POST">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">New Savings Product</h3>
+        </div>
+        <div class="card-body">
+            <!-- Product Name -->
+            <div class="form-group mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required 
+                    placeholder="Enter product name">
+            </div>
 
-            <div class="container mt-4">
-                <h2>Add Savings Product</h2>
-                <form action="/savings/products/store" method="POST">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" required placeholder="Enter product name">
-    </div>
+            <!-- Interest Rate -->
+            <div class="form-group mb-3">
+                <label for="interest_rate" class="form-label">Interest Rate Per Annum (%)</label>
+                <input type="number" class="form-control" id="interest_rate" name="interest_rate" 
+                    required step="0.01" placeholder="Enter interest rate">
+            </div>
 
-    <div class="form-group">
-        <label for="interest_rate">Interest Rate Per Annum (%)</label>
-        <input type="number" class="form-control" id="interest_rate" name="interest_rate" required placeholder="Enter interest rate">
-    </div>
+            <!-- Overdraw Settings -->
+            <div class="form-group mb-3">
+                <label for="allow_overdraw" class="form-label">Allow Savings Account to be Overdrawn</label>
+                <select class="form-select" id="allow_overdraw" name="allow_overdraw" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+                <div class="form-text text-muted">
+                    If you select Yes, the account can hold a negative balance.
+                </div>
+            </div>
 
-    <div class="form-group">
-        <label for="allow_overdraw">Allow Savings Account to be Overdrawn</label>
-        <select class="form-control" id="allow_overdraw" name="allow_overdraw" required>
-            <option value="0">No</option>
-            <option value="1">Yes</option>
-        </select>
-        <small>If you select Yes, the account can hold a negative balance.</small>
-    </div>
+            <!-- Interest Posting Frequency -->
+            <div class="form-group mb-3">
+                <label for="interest_posting" class="form-label">Interest Posting Frequency on Savings Accounts</label>
+                <select class="form-select" id="interest_posting" name="interest_posting" required>
+                    <option value="1">Every 1 Month</option>
+                    <option value="2">Every 2 Months</option>
+                    <option value="3">Every 3 Months</option>
+                    <option value="4">Every 4 Months</option>
+                    <option value="5">Every 5 Months</option>
+                    <option value="6">Every 6 Months</option>
+                    <option value="7">Every 12 Months</option>
+                </select>
+            </div>
 
-    <div class="form-group">
-        <label for="interest_posting">Interest Posting Frequency on Savings Accounts</label>
-        <select class="form-control" id="interest_posting" name="interest_posting" required>
-            <option value="1">Every 1 Month</option>
-            <option value="2">Every 2 Months</option>
-            <option value="3">Every 3 Months</option>
-            <option value="4">Every 4 Months</option>
-            <option value="5">Every 5 Months</option>
-            <option value="6">Every 6 Months</option>
-            <option value="7">Every 12 Months</option>
-        </select>
-    </div>
+            <!-- Interest Adding Day -->
+            <div class="form-group mb-3">
+                <label for="interest_adding" class="form-label">When Should Interest Be Added to Saving Account?</label>
+                <select class="form-select" id="interest_adding" name="interest_adding" required>
+                    {{#each days}}
+                    <option value="{{this}}">{{this}}{{ordinal this}} of the Month</option>
+                    {{/each}}
+                </select>
+            </div>
 
-    <div class="form-group">
-        <label for="interest_adding">When Should Interest Be Added to Saving Account?</label>
-        <select class="form-control" id="interest_adding" name="interest_adding" required>
-            {{#each days}}
-            <option value="{{this}}">{{this}}{{ordinal this}} of the Month</option>
-            {{/each}}
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="minimum_balance">Minimum Balance</label>
-        <input type="number" class="form-control" id="minimum_balance" name="minimum_balance" value="0" placeholder="Enter minimum balance (0 for immediate)">
-        <small>Interest is calculated only if the balance exceeds this amount.</small>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
-
+            <!-- Minimum Balance -->
+            <div class="form-group mb-3">
+                <label for="minimum_balance" class="form-label">Minimum Balance</label>
+                <input type="number" class="form-control" id="minimum_balance" name="minimum_balance" 
+                    value="0" step="0.01" placeholder="Enter minimum balance (0 for immediate)">
+                <div class="form-text text-muted">
+                    Interest is calculated only if the balance exceeds this amount.
+                </div>
             </div>
         </div>
-    </div>
 
-    {{>bottomlinks}}
-</body>
-</html>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Save
+            </button>
+        </div>
+    </div>
+</form>
+    </div>
+</div>
+{{> flash_message}}

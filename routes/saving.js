@@ -8,12 +8,12 @@ import {
     getSavingsProducts
 } from '../controllers/savingController.js';
 import handleError from '../helpers/handleError.js';
-import { title } from 'process';
+import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
 const router = express.Router();
 
 router.use(express.json());
-
+router.use(isAuthenticated)
 // View Savings Accounts
 router.get('/accounts/view', async (req, res) => {
     try {
@@ -26,7 +26,7 @@ router.get('/accounts/view', async (req, res) => {
                 user: req.session.user });
         }
         res.redirect('/dashboard');
-        
+
     } catch (error) {
         const err = handleError(error, 'fetching savings accounts');
         req.session.error = err.message;

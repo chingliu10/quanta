@@ -201,5 +201,12 @@ router.get("/groups/all",  async (req, res) => {
    
 })
 
+router.get("/groups/add", (req, res) => {
+    res.render("borrower_group_add", {
+        title : "Borrower Group Add",
+        user: req.session.user
+    } )
+})
+
 
 export default router;

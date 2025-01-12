@@ -1,0 +1,45 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Add Borrower Group</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/borrower/groups/all">Borrower Groups</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Groups</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+          <form action="/savings/products/store" method="POST">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">New Group</h3>
+        </div>
+        <div class="card-body">
+            <!-- Product Name -->
+            <div class="form-group mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required 
+                    placeholder="Enter Group Name">
+            </div>
+
+
+        </div>
+
+                <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+    </div>
+</div>
+{{> flash_message}}

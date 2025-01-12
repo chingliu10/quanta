@@ -6,7 +6,8 @@ import {
     updateBorrower,
     getBorrowerDetails,
     deleteBorrower,
-    getBorrowerGroups
+    getBorrowerGroups,
+    storeBorrowerGroup
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -207,6 +208,37 @@ router.get("/groups/add", (req, res) => {
         user: req.session.user
     } )
 })
+
+
+router.post("/groups/store", async (req, res) => {
+    let {name} = req.body
+
+    try {
+
+        let result = await storeBorrowerGroup(name)
+
+        if(!result.queryStatus) {
+           return res.status(400).render("error_page", { message : "Failed To Insert Group" })
+        }
+
+
+        if(result.message == "found") {
+
+            req.flash('warning', 'Group already exists');
+            return res.redirect("/borrower/groups/add")
+
+        }
+
+        req.flash('success', 'Group Created');
+        res.redirect("/borrower/groups/all")
+
+    }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To Insert Group" })
+
+    }
+
+} )
 
 
 export default router;

@@ -277,41 +277,33 @@ GROUP BY bg.id, bg.name;
 
 }
 
-// // Get all borrower groups
-// export const getBorrowerGroups = (req, res) => {
-//     try {
-//         res.status(200).json({
-//             success: true,
-//             data: borrowerGroups,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ success: false, message: 'Error fetching borrower groups', error });
-//     }
-// };
+export const storeBorrowerGroup = async (groupName) => {
+    try {
 
-// // Add a borrower group
-// export const addBorrowerGroup = (req, res) => {
-//     try {
-//         const { name, description } = req.body;
+        let trimName = groupName.trim()
 
-//         if (!name) {
-//             return res.status(400).json({ success: false, message: 'Group name is required' });
-//         }
+        //see if the name does exist
 
-//         const newGroup = {
-//             id: `${Date.now()}`, // Replace with a proper unique ID generator
-//             name,
-//             description: description || '',
-//         };
+        const nameExistQuery = `
+            select name from borrower_groups where name = ? limit 1
+         `
+        let result1 = await pool.query(nameExistQuery, [groupName]);
 
-//         borrowerGroups.push(newGroup);
+        if(result1[0].length > 0) {
+            return { queryStatus : true , message : "found" }
+        }
 
-//         res.status(201).json({
-//             success: true,
-//             message: 'Borrower group added successfully',
-//             data: newGroup,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ success: false, message: 'Error adding borrower group', error });
-//     }
-// };
+        const insertGroupNameQuery = `
+            INSERT into borrower_groups (name) values (?)
+        `
+
+        await pool.query(insertGroupNameQuery, [ groupName.toUpperCase() ])
+
+        return {  queryStatus : true }
+
+    }catch (error) {
+
+        return handleError(error , "Failed To Insert Group")
+
+    }
+}

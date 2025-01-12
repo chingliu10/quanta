@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Borrower Groups</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/borrower/groups">All Borrower Groups</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">groups</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+</div>
+<div class="app-content">
+    <div class="container-fluid">
+                {{#if groups.length}}
+                <table id="borrower-group-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Total Borrowers</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each groups}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>{{this.total_borrowers}}</td>
+                             <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/groups/details/{{this.borrower_group_id}}">Details</a></li>
+                                        <li><a class="dropdown-item" href="/groups/edit/{{this.borrower_group_id}}">Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="/groups/delete/{{this.borrower_group_id}}">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p class="bg-warning">No Groups Found</p>
+                {{/if}}
+    </div>
+</div>
+{{> flash_message}}
+ <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+        $(document).ready(function() {
+            $('#borrower-group-table').DataTable({
+                paging: true,
+                searching: true,
+                order: [[2, 'desc']], // Order by Balance descending
+                columnDefs: [
+                    { orderable: false, targets: [2] } // Disable sorting on Actions column
+                ],
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-secondary'
+                        }
+                ]
+            });
+        });
+</script>

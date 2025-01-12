@@ -6,10 +6,11 @@ import {
     updateBorrower,
     getBorrowerDetails,
     deleteBorrower,
-    getBorrowerLoans
+    getBorrowerGroups
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
+import { title } from 'process';
 
 
 const router = express.Router();
@@ -170,6 +171,35 @@ router.get('/delete/:id', async (req, res) => {
 
     }
 } );
+
+
+
+router.get("/groups/all",  async (req, res) => {
+
+    try {
+
+        let result = await getBorrowerGroups()
+
+        if(result.queryStatus) {
+
+          return  res.render("borrower_groups", {
+                title : "Borrower Groups",
+                groups : result.data ,
+                user: req.session.user
+            } )
+
+        }
+
+        res.status(400).render("error_page", { message : "Failed To Delete Borrower" })
+
+    }catch (error) {
+
+
+        res.status(500).render("error_page", { message : "Failed To Get Borrower Groups" })
+
+    }
+   
+})
 
 
 export default router;

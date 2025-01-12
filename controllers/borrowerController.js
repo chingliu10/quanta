@@ -250,6 +250,33 @@ WHERE
     }
 }
 
+
+export const getBorrowerGroups = async () => {
+
+
+    try {
+    const query = `
+    SELECT 
+    bg.id as borrower_group_id,
+    bg.name,
+    COUNT(bgm.borrower_id) as total_borrowers
+FROM borrower_groups bg
+LEFT JOIN borrower_group_members bgm ON bg.id = bgm.borrower_group_id
+GROUP BY bg.id, bg.name;
+    `
+
+    const [rows] = await pool.query(query);
+
+    return { queryStatus : true , data : rows }
+
+    } catch (error) {
+
+        console.log(error)
+        return handleError(error, 'Failed to Get borrower groups');
+    }
+
+}
+
 // // Get all borrower groups
 // export const getBorrowerGroups = (req, res) => {
 //     try {

@@ -9,3 +9,8 @@ ALTER TABLE branches ADD COLUMN deleted_at DATETIME NULL;
 //added updated_at on branches table
 
 ALTER TABLE branches ADD COLUMN updated_at DATETIME NULL;
+
+//how loan data works
+awaiting disbursed has status = "approved"
+pending = "pending"
+active = "disbursed"

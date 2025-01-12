@@ -10,6 +10,7 @@ import loanRoutes from "./routes/loan.js"
 import savingRoutes from "./routes/saving.js"
 import payrollRoutes from "./routes/payroll.js"
 import branchRoutes from "./routes/branch.js"
+import repaymentRoutes from "./routes/repayment.js"
 import apiRoutes from "./api/routes/index.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -62,6 +63,7 @@ app.use("/savings", savingRoutes);
 app.use("/payroll", payrollRoutes);
 app.use("/branch", branchRoutes);
 app.use("/api", apiRoutes);
+app.use("/repayment", repaymentRoutes);
 
 // View Engine Setup
 const hbs = exphbs.create({

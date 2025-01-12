@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Repayments</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/repayment/all">All Repayments</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">repayments</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+                  {{#if repayments.length}}
+                <table id="repayment-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Collection Date</th>
+                            <th>Borrower</th>
+                            <th>Posted By</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each repayments}}
+                        <tr>
+                            <td>{{formatDateTime this.collection_date}}</td>
+                            <td>{{this.borrower_firstname}} {{this.borrower_lastname}}</td>
+                            <td>{{this.user_firstname}} {{this.user_lastname}}</td>
+                            <td>{{this.repayment_method}}</td>
+                            <td>{{formatDecimalNumbers this.amount}}</td>
+                            <td>
+                                <a href="#" class="link me-1">Edit</a>
+                                <a href="#" class="link">View</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p class="bg-warning">No Repayments Found</p>
+                {{/if}}
+    </div>
+</div>
+ <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('#repayment-table').DataTable({
+    paging: true,
+    searching: true,
+    order: [[0, 'desc']], // Order by Collection Date descending
+    columnDefs: [
+      { orderable: false, targets: [5] } // Disable sorting on Actions column (index 5)
+    ],
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'print',
+        text: 'Print',
+        className: 'btn btn-secondary'
+      }
+    ]
+  });
+});
+</script>

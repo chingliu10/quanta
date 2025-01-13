@@ -257,6 +257,7 @@ router.get("/groups/details/:groupId", async (req, res) => {
 
                     return res.render("borrower_group_details",{
                         title : "Borrower Group Details",
+                        groupName : result.data[0].group_name || "N/A",
                         group_members : result.data,
                         user: req.session.user
                     })
@@ -266,6 +267,8 @@ router.get("/groups/details/:groupId", async (req, res) => {
                 res.status(400).render("error_page", { message : "Failed To Get Borrower Group" })
 
         }catch (error) {
+
+                console.log(error)
 
                 res.status(400).render("error_page", { message : "Failed To Get Borrower Group" })
 

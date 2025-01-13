@@ -316,58 +316,53 @@ export const getLoansFromGroup = async (groupName) => {
     try {
 
         const query = `
-        
-  SELECT 
+            WITH group_info AS (
+    SELECT name as group_name 
+    FROM borrower_groups 
+    WHERE id = ?
+)
+SELECT 
     borrowers.id as borrower_id,
-    borrowers.first_name AS first_name,
-    borrowers.last_name AS last_name,
-    borrowers.mobile AS mobile,
-    COUNT(DISTINCT CASE WHEN loans.id IS NOT NULL THEN loans.id END) AS total_loans,
-    SUM(COALESCE(due_totals.total_due, 0)) AS total_due,
-    SUM(COALESCE(paid_totals.total_paid, 0)) AS total_paid,
-    SUM(COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS total_balance
+    borrowers.first_name,
+    borrowers.last_name,
+    borrowers.mobile,
+    group_info.group_name,
+    COUNT(DISTINCT loans.id) AS total_loans,
+    COALESCE(SUM(ls.total_due), 0) AS total_due,
+    COALESCE(SUM(lr.total_paid), 0) AS total_paid,
+    COALESCE(SUM(ls.total_due), 0) - COALESCE(SUM(lr.total_paid), 0) AS total_balance
 FROM 
     borrower_group_members
-JOIN 
-    borrowers ON borrower_group_members.borrower_id = borrowers.id
-LEFT JOIN 
-    loans ON loans.borrower_id = borrowers.id AND loans.deleted_at IS NULL
-LEFT JOIN 
-    (
+    JOIN borrowers ON borrower_group_members.borrower_id = borrowers.id
+    CROSS JOIN group_info
+    LEFT JOIN loans ON loans.borrower_id = borrowers.id 
+        AND loans.deleted_at IS NULL
+    LEFT JOIN (
         SELECT 
             loan_id,
-            SUM(due + fees) AS total_due
-        FROM 
-            loan_schedules
-        WHERE 
-            deleted_at IS NULL
-        GROUP BY 
-            loan_id
-    ) AS due_totals 
-    ON loans.id = due_totals.loan_id
-LEFT JOIN 
-    (
+            SUM(due + fees) as total_due
+        FROM loan_schedules 
+        WHERE deleted_at IS NULL
+        GROUP BY loan_id
+    ) ls ON ls.loan_id = loans.id
+    LEFT JOIN (
         SELECT 
             loan_id,
-            SUM(amount) AS total_paid
-        FROM 
-            loan_repayments
-        WHERE 
-            deleted_at IS NULL
-        GROUP BY 
-            loan_id
-    ) AS paid_totals 
-    ON loans.id = paid_totals.loan_id
+            SUM(amount) as total_paid
+        FROM loan_repayments 
+        WHERE deleted_at IS NULL
+        GROUP BY loan_id
+    ) lr ON lr.loan_id = loans.id
 WHERE 
     borrower_group_members.borrower_group_id = ?
 GROUP BY 
-    borrowers.id, borrowers.first_name, borrowers.last_name
+    borrowers.id
 ORDER BY 
-    borrowers.first_name, borrowers.last_name
-            
+    borrowers.first_name, 
+    borrowers.last_name;
         `
     
-    const [rows] = await pool.query(query, [groupName])
+    const [rows] = await pool.query(query, [groupName , groupName])
 
 
          return { queryStatus : true , data : rows }
@@ -376,7 +371,7 @@ ORDER BY
 
     }catch (error) {
 
-
+        console.log(error)
         return handleError(error, "Failed To Get Borrower Group")
 
 

@@ -14,3 +14,34 @@ ALTER TABLE branches ADD COLUMN updated_at DATETIME NULL;
 awaiting disbursed has status = "approved"
 pending = "pending"
 active = "disbursed"
+
+
+set global query_cache_size = ?
+set global query_cache_type = 1
+
+-- Indexes for borrower_group_members table
+CREATE INDEX idx_borrower_group_id ON borrower_group_members (borrower_group_id);
+CREATE INDEX idx_borrower_id ON borrower_group_members (borrower_id);
+
+-- Indexes for borrowers table
+-- (Primary key on `id` is assumed to already exist)
+
+-- Indexes for loans table
+CREATE INDEX idx_loans_borrower_id ON loans (borrower_id);
+CREATE INDEX idx_loans_deleted_at ON loans (deleted_at);
+
+-- Indexes for loan_schedules table
+CREATE INDEX idx_loan_schedules_loan_id_deleted_at ON loan_schedules (loan_id, deleted_at);
+CREATE INDEX idx_loan_schedules_deleted_at ON loan_schedules (deleted_at);
+
+-- Indexes for loan_repayments table
+CREATE INDEX idx_loan_repayments_loan_id_deleted_at ON loan_repayments (loan_id, deleted_at);
+CREATE INDEX idx_loan_repayments_deleted_at ON loan_repayments (deleted_at);
+
+-- Index for borrower_groups table
+CREATE INDEX idx_borrower_groups_id ON borrower_groups (id);
+
+-- Additional composite indexes if needed
+-- These composite indexes optimize WHERE and JOIN conditions with multiple columns
+CREATE INDEX idx_loans_borrower_deleted ON loans (borrower_id, deleted_at);
+CREATE INDEX idx_group_members_group_borrower ON borrower_group_members (borrower_group_id, borrower_id);

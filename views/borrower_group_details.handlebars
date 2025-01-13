@@ -47,7 +47,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                <h3 class="mb-0">Group Members</h3>
+                <h3 class="mb-0">{{groupName}} Group Members</h3>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -289,17 +289,6 @@
                         return safeParseFloat(data);
                     }
                     return data;
-                }
-            }
-        ],
-        dom: 'Blfrtip',
-        buttons: [
-            {
-                extend: 'print',
-                text: 'Print',
-                className: 'btn btn-secondary',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
                 }
             }
         ],

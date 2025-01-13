@@ -307,3 +307,79 @@ export const storeBorrowerGroup = async (groupName) => {
 
     }
 }
+
+
+
+export const getLoansFromGroup = async (groupName) => {
+
+
+    try {
+
+        const query = `
+        
+  SELECT 
+    borrowers.id as borrower_id,
+    borrowers.first_name AS first_name,
+    borrowers.last_name AS last_name,
+    borrowers.mobile AS mobile,
+    COUNT(DISTINCT CASE WHEN loans.id IS NOT NULL THEN loans.id END) AS total_loans,
+    SUM(COALESCE(due_totals.total_due, 0)) AS total_due,
+    SUM(COALESCE(paid_totals.total_paid, 0)) AS total_paid,
+    SUM(COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS total_balance
+FROM 
+    borrower_group_members
+JOIN 
+    borrowers ON borrower_group_members.borrower_id = borrowers.id
+LEFT JOIN 
+    loans ON loans.borrower_id = borrowers.id AND loans.deleted_at IS NULL
+LEFT JOIN 
+    (
+        SELECT 
+            loan_id,
+            SUM(due + fees) AS total_due
+        FROM 
+            loan_schedules
+        WHERE 
+            deleted_at IS NULL
+        GROUP BY 
+            loan_id
+    ) AS due_totals 
+    ON loans.id = due_totals.loan_id
+LEFT JOIN 
+    (
+        SELECT 
+            loan_id,
+            SUM(amount) AS total_paid
+        FROM 
+            loan_repayments
+        WHERE 
+            deleted_at IS NULL
+        GROUP BY 
+            loan_id
+    ) AS paid_totals 
+    ON loans.id = paid_totals.loan_id
+WHERE 
+    borrower_group_members.borrower_group_id = ?
+GROUP BY 
+    borrowers.id, borrowers.first_name, borrowers.last_name
+ORDER BY 
+    borrowers.first_name, borrowers.last_name
+            
+        `
+    
+    const [rows] = await pool.query(query, [groupName])
+
+
+         return { queryStatus : true , data : rows }
+ 
+
+
+    }catch (error) {
+
+
+        return handleError(error, "Failed To Get Borrower Group")
+
+
+    }
+
+}

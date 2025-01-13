@@ -1,0 +1,338 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+
+<style>
+.border-left-primary {
+    border-left: .25rem solid #4e73df!important;
+}
+.border-left-success {
+    border-left: .25rem solid #1cc88a!important;
+}
+.border-left-info {
+    border-left: .25rem solid #36b9cc!important;
+}
+.border-left-warning {
+    border-left: .25rem solid #f6c23e!important;
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+}
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+}
+.text-xs {
+    font-size: .7rem;
+}
+.text-gray-300 {
+    color: #dddfeb!important;
+}
+.text-gray-800 {
+    color: #5a5c69!important;
+}
+.fs-1 {
+    font-size: 2.5rem!important;
+}
+</style>
+
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Group Members</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/borrower/groups">All Borrower Groups</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Group Details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-uppercase mb-1 text-primary text-xs font-weight-bold">
+                            Total Members
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-members"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-uppercase mb-1 text-success text-xs font-weight-bold">
+                            Total Loans
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-loans"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-currency-dollar fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-uppercase mb-1 text-info text-xs font-weight-bold">
+                            Total Due Amount
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-due"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-cash-stack fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-uppercase mb-1 text-warning text-xs font-weight-bold">
+                            Total Balance
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-balance"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-wallet2 fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Members Table -->
+        {{#if group_members.length}}
+        <table id="group-members-table" class="table card-table table-vcenter text-nowrap">
+            <thead>
+                <tr>
+                    <th>Borrower</th>
+                    <th>Mobile</th>
+                    <th>Total Loans</th>
+                    <th>Total Due</th>
+                    <th>Total Paid</th>
+                    <th>Balance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each group_members}}
+                <tr>
+                    <td>{{this.first_name}} {{this.last_name}}</td>
+                    <td>{{this.mobile}}</td>
+                    <td>{{this.total_loans}}</td>
+                    <td>{{formatDecimalNumbers this.total_due}}</td>
+                    <td>{{formatDecimalNumbers this.total_paid}}</td>
+                    <td>{{formatDecimalNumbers this.total_balance}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/borrower/details/{{this.borrower_id}}">View Borrower</a></li>
+                                <li><a class="dropdown-item" href="/borrower/loans/{{this.borrower_id}}">View Loans</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="bg-warning p-3">No Members Found in this Group</p>
+        {{/if}}
+    </div>
+</div>
+
+{{> flash_message}}
+
+<script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+  $(document).ready(function () {
+    let dataTable; // Declare dataTable in the outer scope
+    
+    // Show a loading indicator initially
+    const statsCards = [
+        '#total-members',
+        '#total-loans',
+        '#total-due',
+        '#total-balance'
+    ];
+    statsCards.forEach(id => $(id).html('<span>Loading...</span>'));
+
+    // Helper function to safely parse numeric values
+    function safeParseFloat(value) {
+        if (!value) return 0;
+        const cleanValue = value.toString().replace(/[^0-9.-]/g, '');
+        const parsed = parseFloat(cleanValue);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
+    // Function to calculate statistics using all data
+    function calculateStatistics(table) {
+        try {
+            if (!table) {
+                console.error('Table not initialized');
+                return;
+            }
+
+            let totalMembers = 0;
+            let totalLoans = 0;
+            let totalDue = 0;
+            let totalBalance = 0;
+
+            // Get all data including filtered results across all pages
+            const allData = table.rows({ search: 'applied', page: 'all' }).data();
+
+            if (!allData || allData.length === 0) {
+                console.log('No data available');
+                return;
+            }
+
+            allData.each(function(row) {
+                if (!row) return;
+                
+                totalMembers++;
+                
+                const loans = safeParseFloat(row[2]);
+                const due = safeParseFloat(row[3]);
+                const balance = safeParseFloat(row[5]);
+                
+                totalLoans += loans;
+                totalDue += due;
+                totalBalance += balance;
+            });
+
+            // Format and update the statistics cards
+            $('#total-members').text(totalMembers.toLocaleString('en-US'));
+            $('#total-loans').text(totalLoans.toLocaleString('en-US'));
+            $('#total-due').text(totalDue.toLocaleString('en-US', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
+            $('#total-balance').text(totalBalance.toLocaleString('en-US', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
+
+        } catch (error) {
+            console.error('Error calculating statistics:', error);
+            statsCards.forEach(id => $(id).html('Error'));
+        }
+    }
+
+    // Initialize DataTable
+    dataTable = $('#group-members-table').DataTable({
+        processing: true,
+        serverSide: false,
+        paging: true,
+        searching: true,
+        order: [[5, 'desc']],
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        columnDefs: [
+            { orderable: false, targets: [6] },
+            { 
+                targets: [3, 4, 5],
+                render: function(data, type, row) {
+                    if (type === 'display') {
+                        const value = safeParseFloat(data);
+                        return value.toLocaleString('en-US', {
+                            style: 'decimal',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+                    if (type === 'sort') {
+                        return safeParseFloat(data);
+                    }
+                    return data;
+                }
+            }
+        ],
+        dom: 'Blfrtip',
+        buttons: [
+            {
+                extend: 'print',
+                text: 'Print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            }
+        ],
+        // Pass the table instance to the callbacks
+        drawCallback: function(settings) {
+            calculateStatistics(this.api());
+        },
+        initComplete: function(settings, json) {
+            calculateStatistics(this.api());
+        }
+    });
+
+    // Add error handling for DataTables events
+    dataTable
+        .on('error.dt', function(e, settings, techNote, message) {
+            console.error('DataTables error:', message);
+            statsCards.forEach(id => $(id).html('Error'));
+        })
+        .on('xhr.dt', function(e, settings, json, xhr) {
+            if (!json) {
+                console.error('Invalid data received from server');
+                return;
+            }
+        });
+
+    // Recalculate on various table events
+    const events = ['search.dt', 'length.dt', 'order.dt', 'page.dt'];
+    events.forEach(event => {
+        dataTable.on(event, function() {
+            setTimeout(() => calculateStatistics(dataTable), 100);
+        });
+    });
+});
+</script>
+
+

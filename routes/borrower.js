@@ -7,7 +7,8 @@ import {
     getBorrowerDetails,
     deleteBorrower,
     getBorrowerGroups,
-    storeBorrowerGroup
+    storeBorrowerGroup,
+    getLoansFromGroup
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -239,6 +240,38 @@ router.post("/groups/store", async (req, res) => {
     }
 
 } )
+
+
+router.get("/groups/details/:groupId", async (req, res) => {
+
+        
+        // res.send(req.params.groupId);
+        try {
+
+
+                let groupName = req.params.groupId
+
+                let result = await getLoansFromGroup(groupName)
+
+                if(result.queryStatus) {
+
+                    return res.render("borrower_group_details",{
+                        title : "Borrower Group Details",
+                        group_members : result.data,
+                        user: req.session.user
+                    })
+
+                }
+
+                res.status(400).render("error_page", { message : "Failed To Get Borrower Group" })
+
+        }catch (error) {
+
+                res.status(400).render("error_page", { message : "Failed To Get Borrower Group" })
+
+        }
+
+})
 
 
 export default router;

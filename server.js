@@ -97,6 +97,10 @@ const hbs = exphbs.create({
         },
         check : (v, c) => {
             return (v === c) ? 'N/A' : v
+        },
+        sum: (...args) => {
+            const values = args.slice(0, -1); // Exclude the last `options` argument
+            return values.reduce((acc, curr) => acc + Number(curr), 0);
         }
     }
 });

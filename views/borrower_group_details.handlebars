@@ -51,6 +51,11 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
+                    <li class="me-3">
+                        <a href="/borrower/add" class="btn btn-sm btn-success add-user-btn">
+                            <i class="bi bi-plus-circle me-1"></i>Add Borrower
+                        </a>
+                    </li>
                     <li class="breadcrumb-item"><a href="/borrower/groups">All Borrower Groups</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Group Details</li>
                 </ol>
@@ -105,7 +110,7 @@
                 <div class="row align-items-center">
                     <div class="col">
                         <div class="text-uppercase mb-1 text-info text-xs font-weight-bold">
-                            Total Due Amount
+                            Amount Released
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-due"></div>
                     </div>
@@ -322,6 +327,57 @@
         });
     });
 });
+</script>
+<script>
+
+        console.log("adddaadad")
+
+            // Function to fetch all borrowers
+        const fetchAllBorrowers = async () => {
+            try {
+                const response = await fetch('/api/borrower/allborrowers', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // Include credentials if you need to send cookies/session info
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Check if the query was successful based on your API response structure
+                if (data.queryStatus) {
+                    return data.data; // Returns the array of borrowers
+                } else {
+                    throw new Error('Failed to fetch borrowers');
+                }
+
+            } catch (error) {
+                console.error('Error fetching borrowers:', error);
+                throw error;
+            }
+        };
+
+    async function displayBorrowers() {
+        try {
+            const borrowers = await fetchAllBorrowers();
+            // Do something with the borrowers data
+            borrowers.forEach(borrower => {
+                console.log(`${borrower.id} ${borrower.first_name} ${borrower.last_name}`);
+            });
+        } catch (error) {
+            // Handle any errors
+            console.error('Error:', error);
+        }
+    
+}
+
+displayBorrowers()
+
 </script>
 
 

@@ -175,8 +175,21 @@
                                 Actions
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/borrower/details/{{this.borrower_id}}">View Borrower</a></li>
-                                <li><a class="dropdown-item" href="/borrower/loans/{{this.borrower_id}}">View Loans</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="/borrower/details/{{this.borrower_id}}">
+                                        <i class="bi bi-eye me-2"></i>
+                                        View Borrower
+                                    </a>
+                                </li>
+                                <li>
+                                      <a class="dropdown-item text-warning remove-borrower" 
+                                        href="/borrower/loans/{{this.borrower_id}}"
+                                        data-borrower-name="{{this.first_name}} {{this.last_name}}"
+                                        data-borrower-id="{{this.borrower_id}}">
+                                            <i class="bi bi-person-dash me-2"></i>
+                                         Remove Borrower
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </td>
@@ -217,6 +230,24 @@
     </div>
 </div>
 <!-- Modal Popup -->
+{{!-- Confirmation Modal --}}
+<div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Removal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to remove <span id="borrowerNameSpan"></span> from this group?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmRemoveBtn" class="btn btn-danger">Remove</a>
+            </div>
+        </div>
+    </div>
+</div>
 {{> flash_message}}
 
 <script src="/js/jquery/jquery-3.6.0.min.js"></script>
@@ -491,6 +522,31 @@ document.querySelector('.add-user-btn').addEventListener('click', (event) => {
 // Initialize search functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     setupSearch();
+});
+</script>
+<script>
+    // Handle remove borrower confirmation
+$(document).on('click', '.remove-borrower', function(e) {
+    e.preventDefault();
+    
+    const link = $(this);
+    const borrowerName = link.data('borrower-name');
+    const removeUrl = link.attr('href');
+    
+    // Update modal content
+    $('#borrowerNameSpan').text(borrowerName);
+    $('#confirmRemoveBtn').attr('href', removeUrl);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('confirmRemoveModal'));
+    modal.show();
+});
+
+// Handle confirm button click
+$(document).on('click', '#confirmRemoveBtn', function(e) {
+    // The button already has the correct href, so we let it navigate normally
+    // You could also handle this with AJAX if you prefer
+    return true;
 });
 </script>
 

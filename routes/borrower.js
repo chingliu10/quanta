@@ -8,7 +8,9 @@ import {
     deleteBorrower,
     getBorrowerGroups,
     storeBorrowerGroup,
-    getLoansFromGroup
+    getLoansFromGroup,
+    addBorrowerToGroup,
+    getGroupName
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -255,8 +257,24 @@ router.get("/groups/details/:groupId", async (req, res) => {
 
                 if(result.queryStatus) {
 
+
+                    if(result.data.length == 0) {
+
+
+                        let result2 = await getGroupName(groupName)
+
+                        return res.render("borrower_group_details",{
+                        title : "Borrower Group Details",
+                        groupId : req.params.groupId,
+                        groupName : result2.data[0].name,
+                        group_members : result.data,
+                        user: req.session.user
+                         })
+                    }
+
                     return res.render("borrower_group_details",{
                         title : "Borrower Group Details",
+                        groupId : req.params.groupId,
                         groupName : result.data[0].group_name || "N/A",
                         group_members : result.data,
                         user: req.session.user
@@ -270,11 +288,55 @@ router.get("/groups/details/:groupId", async (req, res) => {
 
                 console.log(error)
 
-                res.status(400).render("error_page", { message : "Failed To Get Borrower Group" })
+                res.status(500).render("error_page", { message : "Failed To Get Borrower Group" })
 
         }
 
 })
+
+
+router.post("/groups/addborrowertogroup", async (req, res) => {
+
+    console.log(req.body);
+
+    let { borrower_id_to_be_added , groupName } = req.body
+
+
+    try {
+
+
+        let result = await addBorrowerToGroup( borrower_id_to_be_added , groupName )
+
+        if(result.queryStatus) {
+
+
+                if(result.message == "found") {
+
+
+                    req.flash("warning", "Borrower Already Added")
+                    return res.redirect(`/borrower/groups/details/${groupName}`)
+
+                }
+
+                    req.flash("success", "Borrower Has Being Added")
+                    return res.redirect(`/borrower/groups/details/${groupName}`)
+    
+
+        }
+
+        res.status(400).render("error_page", { message : "Failed To Add Borrower To Group" })
+
+
+    }catch (error) {
+
+
+        res.status(500).render("error_page", { message : "Failed To Add Borrower To Group" })
+
+    }
+
+
+
+} )
 
 
 export default router;

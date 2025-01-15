@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/css/datatables/datatables.min.css">
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
 .border-left-primary {
     border-left: .25rem solid #4e73df!important;
@@ -41,6 +41,10 @@
 .fs-1 {
     font-size: 2.5rem!important;
 }
+
+#addBorrowerToGroupForm {
+    display: none;
+}
 </style>
 
 <div class="app-content-header">
@@ -52,11 +56,11 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                     <li class="me-3">
-                        <a href="/borrower/add" class="btn btn-sm btn-success add-user-btn">
-                            <i class="bi bi-plus-circle me-1"></i>Add Borrower
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="/borrower/groups">All Borrower Groups</a></li>
+    <a href="#" class="btn btn-sm btn-success add-user-btn">
+        <i class="bi bi-plus-circle me-1"></i>Add Borrower
+    </a>
+</li>
+                    <li class="breadcrumb-item"><a href="/borrower/groups/all">All Borrower Groups</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Group Details</li>
                 </ol>
             </div>
@@ -67,7 +71,8 @@
 <div class="app-content">
     <div class="container-fluid">
         <!-- Statistics Cards -->
-        <div class="row mb-4">
+{{#if group_members.length}}
+<div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-3">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -140,8 +145,7 @@
         </div>
     </div>
 </div>
-
-
+{{/if}}
         <!-- Members Table -->
         {{#if group_members.length}}
         <table id="group-members-table" class="table card-table table-vcenter text-nowrap">
@@ -185,7 +189,34 @@
         {{/if}}
     </div>
 </div>
-
+{{!-- invisble form to add borrower to this group --}}
+<form action="/borrower/groups/addborrowertogroup" id="addBorrowerToGroupForm" method="post">
+    <h1>Hello mate</h1>
+    <input name="borrower_id_to_be_added">
+    <input name="groupName" value={{groupId}}>
+    <button id="addBorrowerSubmitButton" >Submit</button>
+</form>
+<!-- Modal Popup -->
+<div id="borrowerModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Borrower</h5>
+            </div>
+            <div class="modal-body">
+                <label for="borrowerSearch">Search Borrower:</label>
+                <input type="text" id="borrowerSearch" class="form-control" placeholder="Search for a borrower">
+                <ul id="borrowerList" class="list-group mt-3">
+                    <!-- Borrowers will be dynamically added here -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Popup -->
 {{> flash_message}}
 
 <script src="/js/jquery/jquery-3.6.0.min.js"></script>
@@ -328,56 +359,140 @@
     });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+// Function to fetch all borrowers
+const fetchAllBorrowers = async () => {
+    try {
+        const response = await fetch('/api/borrower/allborrowers', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-        console.log("adddaadad")
-
-            // Function to fetch all borrowers
-        const fetchAllBorrowers = async () => {
-            try {
-                const response = await fetch('/api/borrower/allborrowers', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    // Include credentials if you need to send cookies/session info
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                
-                // Check if the query was successful based on your API response structure
-                if (data.queryStatus) {
-                    return data.data; // Returns the array of borrowers
-                } else {
-                    throw new Error('Failed to fetch borrowers');
-                }
-
-            } catch (error) {
-                console.error('Error fetching borrowers:', error);
-                throw error;
-            }
-        };
-
-    async function displayBorrowers() {
-        try {
-            const borrowers = await fetchAllBorrowers();
-            // Do something with the borrowers data
-            borrowers.forEach(borrower => {
-                console.log(`${borrower.id} ${borrower.first_name} ${borrower.last_name}`);
-            });
-        } catch (error) {
-            // Handle any errors
-            console.error('Error:', error);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
-}
 
-displayBorrowers()
+        const data = await response.json();
 
+        if (data.queryStatus) {
+            return data.data;
+        } else {
+            throw new Error('Failed to fetch borrowers');
+        }
+    } catch (error) {
+        console.error('Error fetching borrowers:', error);
+        throw error;
+    }
+};
+
+// Function to filter and display borrowers
+const filterAndDisplayBorrowers = (borrowers, searchValue) => {
+    const borrowerList = document.getElementById('borrowerList');
+    borrowerList.innerHTML = ''; // Clear previous results
+
+    if (!searchValue.trim()) {
+        borrowerList.innerHTML = ''; // Clear list if search is empty
+        return;
+    }
+
+    // Filter and limit to 5 matching borrowers
+    const matchingBorrowers = borrowers
+        .filter(borrower => 
+            `${borrower.first_name} ${borrower.last_name}`
+                .toLowerCase()
+                .includes(searchValue.toLowerCase())
+        )
+        .slice(0, 5); // Limit to 5 results
+
+    // Display matching borrowers
+    matchingBorrowers.forEach(borrower => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item list-group-item-action';
+        listItem.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center">
+                <span>${borrower.first_name} ${borrower.last_name}</span>
+                <button class="btn btn-primary btn-sm select-borrower" 
+                        data-borrower-id="${borrower.id}">
+                    Select
+                </button>
+            </div>
+        `;
+        borrowerList.appendChild(listItem);
+    });
+};
+
+// Function to setup the search functionality
+const setupSearch = async () => {
+    const searchInput = document.getElementById('borrowerSearch');
+    let allBorrowers = [];
+    let searchTimeout;
+
+    try {
+        // Fetch borrowers once when setting up
+        allBorrowers = await fetchAllBorrowers();
+
+        // Add input event listener with debounce
+        searchInput.addEventListener('input', () => {
+            // Clear the previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            // Set a new timeout to delay the search
+            searchTimeout = setTimeout(() => {
+                filterAndDisplayBorrowers(allBorrowers, searchInput.value);
+            }, 300); // 300ms delay
+        });
+
+    } catch (error) {
+        console.error('Error setting up search:', error);
+    }
+};
+
+// Function to handle borrower selection and form submission
+const handleBorrowerSelection = async (borrowerId) => {
+    //alert(borrowerId)
+    document.querySelector("input[name='borrower_id_to_be_added']").value = borrowerId
+    document.querySelector("#addBorrowerSubmitButton").click()
+
+};
+
+// Event delegation for borrower selection
+document.getElementById('borrowerList').addEventListener('click', (event) => {
+    if (event.target.classList.contains('select-borrower')) {
+        const borrowerId = event.target.dataset.borrowerId;
+
+        // Disable selected button and submit form
+        event.target.disabled = true;
+        event.target.classList.add('disabled');
+                // Disable all "Select" buttons
+        const buttons = document.querySelectorAll('.select-borrower');
+        buttons.forEach(button => {
+            button.disabled = true;
+            button.classList.add('disabled');
+        });
+       handleBorrowerSelection(borrowerId);
+    }
+});
+
+// Event listener for the "Add Borrower" button
+document.querySelector('.add-user-btn').addEventListener('click', (event) => {
+    event.preventDefault();
+    const searchInput = document.getElementById('borrowerSearch');
+    searchInput.value = ''; // Clear search input
+    document.getElementById('borrowerList').innerHTML = ''; // Clear list
+    const modal = new bootstrap.Modal(document.getElementById('borrowerModal'));
+    modal.show();
+});
+
+// Initialize search functionality when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setupSearch();
+});
 </script>
+
 
 

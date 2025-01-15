@@ -378,3 +378,65 @@ ORDER BY
     }
 
 }
+
+
+export const addBorrowerToGroup = async (borrower , group) => {
+
+
+    try {
+
+
+        const query = `
+            select id from borrower_group_members where borrower_group_id = ? and borrower_id = ? LIMIT 1
+        `
+
+        let [ rows ] = await pool.query(query, [ group , borrower ])
+
+        if(rows.length > 0) {
+
+            return { queryStatus : true , message : "found" }
+
+        }
+
+        const currentTimestamp = new Date()
+
+        const query2 = `
+            insert into borrower_group_members (borrower_group_id , borrower_id, created_at, updated_at)
+            values (?, ?, ? , ?)
+        `
+
+        await pool.query(query2, [ group , borrower , currentTimestamp , currentTimestamp ])
+
+        return { queryStatus : true , message : "done" }
+
+
+    }catch (error) {
+
+
+        console.log(error)
+        return handleError(error , "Failed To Add Borrower To Group")
+
+
+    }
+
+}
+
+
+
+export const getGroupName = async (group) => {
+
+    try {
+
+        let query = `
+            select name from borrower_groups where id = ? limit 1
+        `
+        let [rows] = await pool.query(query , [group])
+
+        return { queryStatus : true , data : rows }
+
+    }catch (error) {
+
+        return handleError("Failed To Get Group Name")
+
+    }
+}

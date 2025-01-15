@@ -262,6 +262,7 @@ export const getBorrowerGroups = async () => {
     COUNT(bgm.borrower_id) as total_borrowers
 FROM borrower_groups bg
 LEFT JOIN borrower_group_members bgm ON bg.id = bgm.borrower_group_id
+where bgm.deleted_at is null
 GROUP BY bg.id, bg.name;
     `
 
@@ -355,6 +356,7 @@ FROM
     ) lr ON lr.loan_id = loans.id
 WHERE 
     borrower_group_members.borrower_group_id = ?
+        and borrower_group_members.deleted_at is null
 GROUP BY 
     borrowers.id
 ORDER BY 
@@ -387,7 +389,8 @@ export const addBorrowerToGroup = async (borrower , group) => {
 
 
         const query = `
-            select id from borrower_group_members where borrower_group_id = ? and borrower_id = ? LIMIT 1
+            select id from borrower_group_members where borrower_group_id = ? and borrower_id = ?
+                and deleted_at is NULL LIMIT 1
         `
 
         let [ rows ] = await pool.query(query, [ group , borrower ])
@@ -439,4 +442,30 @@ export const getGroupName = async (group) => {
         return handleError("Failed To Get Group Name")
 
     }
+}
+
+export const removeBorrowerFromGroup = async (group, borrower) => {
+
+
+    try {
+
+        let currentTimestamp = new Date()
+
+        let query = `
+            update borrower_group_members set deleted_at = ?
+                where borrower_group_id = ? and borrower_id = ?
+        `
+
+        await pool.query(query, [currentTimestamp, group, borrower])
+
+        return {
+            queryStatus : true
+        }
+
+    }catch (error) {
+
+        handleError(error, "Failed To Remove Borrower From Group")
+
+    }
+
 }

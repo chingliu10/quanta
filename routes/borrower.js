@@ -10,7 +10,8 @@ import {
     storeBorrowerGroup,
     getLoansFromGroup,
     addBorrowerToGroup,
-    getGroupName
+    getGroupName,
+    removeBorrowerFromGroup,
 } from '../controllers/borrowerController.js';
 
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -337,6 +338,34 @@ router.post("/groups/addborrowertogroup", async (req, res) => {
 
 
 } )
+
+
+//remove borrower from a given group
+
+router.post("/groups/removeborrower", async (req, res) => {
+
+    let { borrower_id , group_id } = req.body
+
+    try {
+
+        let result = await removeBorrowerFromGroup(group_id , borrower_id)
+
+        if(result.queryStatus) {
+
+            req.flash("success", "Borrower Has Being Removed")
+            return res.redirect(`/borrower/groups/details/${group_id}`)
+
+        }
+
+        res.status(400).render("error_page", { message : "Failed To Remove Borrower From Group" })
+
+    }catch (error) {
+
+
+        res.status(500).render("error_page", { message : "Failed To Remove Borrower From Group" })
+    }
+
+})
 
 
 export default router;

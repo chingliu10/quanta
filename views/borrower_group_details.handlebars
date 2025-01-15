@@ -182,13 +182,13 @@
                                     </a>
                                 </li>
                                 <li>
-                                      <a class="dropdown-item text-warning remove-borrower" 
-                                        href="/borrower/loans/{{this.borrower_id}}"
-                                        data-borrower-name="{{this.first_name}} {{this.last_name}}"
-                                        data-borrower-id="{{this.borrower_id}}">
-                                            <i class="bi bi-person-dash me-2"></i>
-                                         Remove Borrower
-                                    </a>
+                                     <a class="dropdown-item text-warning remove-borrower" 
+   href="#"
+   data-borrower-name="{{this.first_name}} {{this.last_name}}"
+   data-borrower-id="{{this.borrower_id}}">
+    <i class="bi bi-person-dash me-2"></i>
+    Remove Borrower
+</a>
                                 </li>
                             </ul>
                         </div>
@@ -231,23 +231,45 @@
 </div>
 <!-- Modal Popup -->
 {{!-- Confirmation Modal --}}
+{{!-- Hidden form for removing borrower --}}
+<!-- Hidden Form for Removing Borrower -->
+<form action="/borrower/groups/removeborrower" id="removeBorrowerForm" method="post" style="display: none;">
+    <input type="hidden" name="borrower_id" id="borrowerIdToRemove">
+    <input type="hidden" name="group_id" value="{{groupId}}">
+</form>
+
+{{!-- Remove Borrower Modal --}}
 <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Removal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 bg-danger bg-opacity-10 px-4 py-3">
+                <h5 class="modal-title text-danger fw-semibold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Confirm Removal
+                </h5>
             </div>
-            <div class="modal-body">
-                Are you sure you want to remove <span id="borrowerNameSpan"></span> from this group?
+            <div class="modal-body px-4 py-4">
+                <p class="mb-1 text-muted fw-medium">You are about to remove</p>
+                <p class="h4 mb-3 fw-bold text-dark" id="borrowerNameSpan"></p>
+                <p class="mb-0 text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This action cannot be undone. The borrower will be removed from this group immediately.
+                </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="#" id="confirmRemoveBtn" class="btn btn-danger">Remove</a>
+            <div class="modal-footer border-0 px-4 pb-4">
+                <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-x me-1"></i>
+                    Cancel
+                </button>
+                <a href="#" id="confirmRemoveBtn" class="btn btn-danger fw-medium px-4">
+                    <i class="bi bi-trash3 me-1"></i>
+                    Remove Borrower
+                </a>
             </div>
         </div>
     </div>
 </div>
+{{!-- Remove Borrower Modal --}}
 {{> flash_message}}
 
 <script src="/js/jquery/jquery-3.6.0.min.js"></script>
@@ -522,33 +544,39 @@ document.querySelector('.add-user-btn').addEventListener('click', (event) => {
 // Initialize search functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     setupSearch();
+       // Variables for modal and form
+        const modal = new bootstrap.Modal(document.getElementById('confirmRemoveModal'));
+        const borrowerNameSpan = document.getElementById('borrowerNameSpan');
+        const confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
+        const borrowerIdInput = document.getElementById('borrowerIdToRemove');
+        const form = document.getElementById('removeBorrowerForm');
+
+        // Attach click event to all remove-borrower links
+        document.querySelectorAll('.remove-borrower').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent default link behavior
+
+                // Get data attributes from the clicked link
+                const borrowerId = this.getAttribute('data-borrower-id');
+                const borrowerName = this.getAttribute('data-borrower-name');
+
+                // Update modal content with borrower details
+                borrowerNameSpan.textContent = borrowerName;
+
+                // Update the hidden form with borrower ID
+                borrowerIdInput.value = borrowerId;
+
+                // Show the modal
+                modal.show();
+            });
+        });
+
+        // Handle confirm button click
+        confirmRemoveBtn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+
+            // Submit the form
+            form.submit();
+        });
 });
 </script>
-<script>
-    // Handle remove borrower confirmation
-$(document).on('click', '.remove-borrower', function(e) {
-    e.preventDefault();
-    
-    const link = $(this);
-    const borrowerName = link.data('borrower-name');
-    const removeUrl = link.attr('href');
-    
-    // Update modal content
-    $('#borrowerNameSpan').text(borrowerName);
-    $('#confirmRemoveBtn').attr('href', removeUrl);
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('confirmRemoveModal'));
-    modal.show();
-});
-
-// Handle confirm button click
-$(document).on('click', '#confirmRemoveBtn', function(e) {
-    // The button already has the correct href, so we let it navigate normally
-    // You could also handle this with AJAX if you prefer
-    return true;
-});
-</script>
-
-
-

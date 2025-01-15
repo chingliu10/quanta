@@ -45,3 +45,6 @@ CREATE INDEX idx_borrower_groups_id ON borrower_groups (id);
 -- These composite indexes optimize WHERE and JOIN conditions with multiple columns
 CREATE INDEX idx_loans_borrower_deleted ON loans (borrower_id, deleted_at);
 CREATE INDEX idx_group_members_group_borrower ON borrower_group_members (borrower_group_id, borrower_id);
+
+--Add deleted_at column on borrower_group_members
+ALTER TABLE borrower_group_members ADD COLUMN deleted_at DATETIME NULL;

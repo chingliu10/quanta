@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Loan Products</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                     <li class="me-3">
+            <a href="/loan/loan_product_create" class="btn btn-sm btn-success add-user-btn">
+                <i class="bi bi-plus-circle me-1"></i>Create Product
+            </a>
+        </li>
+                  <li class="breadcrumb-item"><a href="/loan/products">Loan Products</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">products</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+     <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="loanProductsTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Default Principal</th>
+                                        <th>Interest Method</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each data}}
+                                    <tr>
+                                        <td>{{name}}</td>
+                                        <td>
+                                               {{formatDecimalNumbers default_principal}} 
+                                        </td>
+                                        <td>
+                                            {{#if (eq interest_method "flat_rate")}}
+                                                <span class="badge bg-primary">Flat Rate</span>
+                                            {{else if (eq interest_method "declining_equal_installments")}}
+                                                <span class="badge bg-info">Declining Balance-Equal Installments</span>
+                                            {{else if (eq interest_method "declining_equal_principal")}}
+                                                <span class="badge bg-warning">Declining Balance-Equal Principal</span>
+                                            {{else}}
+                                                <span class="badge bg-secondary">Interest Only</span>
+                                            {{/if}}
+                                        </td>
+                                        <td>
+                                             <div class="dropdown">
+                                                <button class="btn btn-primary btn-sm dropdown-toggle" 
+                                                        type="button" 
+                                                        data-bs-toggle="dropdown" 
+                                                        aria-expanded="false">
+                                                    Action
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href="/loan/product/view/{{id}}">
+                                                            <i class="bi bi-eye me-2"></i> View
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="/loan/product/edit/{{id}}">
+                                                            <i class="bi bi-pencil-square me-2"></i> Edit
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" 
+                                                           href="#" 
+                                                           onclick="confirmDelete('{{id}}'); return false;">
+                                                            <i class="bi bi-trash me-2"></i> Delete
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this loan product?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" action="/loan/product/delete" method="POST" style="display: inline;">
+                        <input type="hidden" id="deleteId" name="id">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> flash_message}}
+     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#loanProductsTable').DataTable({
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": false,
+                "pageLength": 10
+            });
+        });
+
+        function confirmDelete(id) {
+            document.getElementById('deleteId').value = id;
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+    </script>

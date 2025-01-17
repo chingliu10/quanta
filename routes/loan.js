@@ -2,7 +2,9 @@ import express from 'express';
 import {
     getAllLoans,
     getArrearsLoans,
-    getPendingLoans
+    getPendingLoans,
+    createLoanProduct,
+    getAllLoansProducts
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -148,6 +150,66 @@ router.get("/closed", async (req, res) => {
         res.status(500).render("error_page", { message : result.activity  })  
 
     }
+
+})
+
+
+router.get("/products", async (req, res) => {
+
+    try {
+
+        let result = await getAllLoansProducts();
+
+        if(result.queryStatus) {
+
+          return  res.render("loan_products", { title : "Loan Products", user : req.session.user  , data : result.data })
+
+        }
+
+        res.status(400).render("error_page", { message : result.activity  }) 
+
+    }catch (error) {
+
+
+        res.status(500).render("error_page", { message : "Failed TO Get Loan Products"  })
+
+    }
+
+
+})
+
+router.get("/loan_product_create", (req, res) => {
+    res.render("loan_product_create", {  title : "Create Loan Product", user : req.session.user  } )
+})
+
+router.post("/loan_product_create", async (req, res) => {
+
+    try {
+
+        let result = await createLoanProduct(req.body)
+
+        if(result.message == "found") {
+
+            req.flash("warning", "Loan Product Name Does Exist")
+            return res.redirect(`/loan/loan_product_create`)
+        }
+
+        if(result.message == "done") {
+
+            req.flash("success", "Loan Product Created")
+            return res.redirect("/loan/products")
+        }
+
+        res.status(400).render("error_page", { message : result.activity  })  
+
+    }catch (error) {
+
+        
+        res.status(500).render("error_page", { message : "Failed To Create Loan Product" })  
+
+    }
+
+
 
 })
 

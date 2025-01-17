@@ -153,3 +153,89 @@ export const getPendingLoans = async (branch) => {
 }
 
 
+export const createLoanProduct = async ({
+    productName, 
+    defaultPrincipal,
+    minPrincipal,
+    maxPrincipal,
+    interestMethod,
+    interestPeriod,
+    defaultInterest,
+    minInterest,
+    maxInterest,
+    defaultDuration,
+    durationType,
+    repaymentCycle
+}) => {
+
+    try {
+
+        //check if there is a name
+        const checkIfProductExist = `
+            SELECT name from loan_products where name = ? and deleted_at is null limit 1;
+        `
+
+        let [rows] = await pool.query(checkIfProductExist, [productName])
+
+        if(rows.length > 0){
+
+            return {
+                queryStatus : true,
+                message : "found"
+            }
+
+        } 
+
+        let insertQuery = `
+            INSERT INTO loan_products (name, minimum_principal, default_principal, maximum_principal , interest_method
+                interest_period, default_interest_rate, minimum_interest_rate, maximum_interest_rate, default_loan_duration,
+                    default_loan_duration_type, repayment_cycle
+                ) values (?,?,?,?,?,?,?,?,?,?,?,?)
+        `
+
+        let [rows2] = await pool.query(insertQuery, [  
+         productName.toUpperCase() , minPrincipal, defaultPrincipal, maxPrincipal, interestMethod, interestPeriod,
+            defaultInterest,
+            minInterest,
+            maxInterest,
+            defaultDuration,
+            durationType,
+            repaymentCycle])
+
+        
+        return {
+            queryStatus : true,
+            message : "done"
+        }
+
+    }catch (error) {
+
+        console.log(error)
+        return handleError(error, 'Failed To Create Loan Product');
+
+    }
+
+}
+
+
+export const getAllLoansProducts = async () => {
+    try {
+
+        let query = `
+            select name, default_principal, interest_method from loan_products where deleted_at is null
+        `
+        let [rows] = await pool.query(query)
+
+        return {
+            queryStatus : true,
+            data : rows
+        }
+
+
+    }catch (error){
+
+        return handleError(error, 'Failed To Get Loan Products');
+
+    }
+}
+

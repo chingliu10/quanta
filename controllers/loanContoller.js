@@ -187,7 +187,7 @@ export const createLoanProduct = async ({
         } 
 
         let insertQuery = `
-            INSERT INTO loan_products (name, minimum_principal, default_principal, maximum_principal , interest_method
+            INSERT INTO loan_products (name, minimum_principal, default_principal, maximum_principal , interest_method,
                 interest_period, default_interest_rate, minimum_interest_rate, maximum_interest_rate, default_loan_duration,
                     default_loan_duration_type, repayment_cycle
                 ) values (?,?,?,?,?,?,?,?,?,?,?,?)

@@ -1,0 +1,393 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0"> Add Loan</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/loan/all">All Loans</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Loan</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+        <form id="loanApplicationForm" action="/loan/add" method="POST">
+             <!-- Borrower Selection -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Borrower</h3>
+                        </div>
+                        <div class="card-body">
+                            {{#if borrowerId}}
+                            <input type="hidden" name="borrowerId" value="{{borrower.id}}">
+                            <div class="alert alert-info">
+                                <strong>Selected Borrower:</strong> {{borrower.first_name}} {{borrower.last_name}}
+                            </div>
+                            {{else}}
+                            <div class="form-group">
+                                <select class="form-select select2" name="borrowerId" id="borrowerSelect" required>
+                                    <option value="">Choose Borrower or Search by Name</option>
+                                    {{#each borrowers}}
+                                    <option value="{{id}}">{{first_name}} {{last_name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <br/>
+            <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Loan Product</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <select class="form-select select2" name="loanProductId" id="loanProductSelect" required>
+                                    <option value="">Select Loan Product</option>
+                                    {{#each loanProducts.data}}
+                                    <option value="{{id}}" 
+                                            data-min-principal="{{minimum_principal}}"
+                                            data-max-principal="{{maximum_principal}}"
+                                            data-default-principal="{{default_principal}}"
+                                            data-interest-method="{{interest_method}}"
+                                            data-default-interest="{{default_interest_rate}}"
+                                            data-min-interest="{{minimum_interest_rate}}"
+                                            data-max-interest="{{maximum_interest_rate}}">
+                                        {{name}}
+                                    </option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+            </div>
+                          <!-- Loan Details -->
+                          <br/>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Loan Terms</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Disbursement Method -->
+                            <div class="form-group">
+                                <label>Disbursed By</label>
+                                <select class="form-select" name="disbursementMethod" required>
+                                    <option value="cash">Cash</option>
+                                    <option value="cheque">Cheque</option>
+                                    <option value="wire">Wire Transfer</option>
+                                    <option value="online">Online Transfer</option>
+                                </select>
+                            </div>
+
+                            <!-- Principal Amount -->
+                            <div class="form-group">
+                                <label>Principal Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" name="principalAmount" id="principalAmount" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="principalLimits"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Release Date -->
+                            <div class="form-group">
+                                <label>Loan Release Date</label>
+                                <input type="date" class="form-control" name="releaseDate" required>
+                            </div>
+
+                            <!-- Interest Configuration -->
+                            <div class="form-group">
+                                <label>Interest Method</label>
+                                <select class="form-select" name="interestMethod" id="interestMethod" required>
+                                    <option value="flat_rate">Flat Rate</option>
+                                    <option value="declining_equal_installments">Reducing Balance - Equal Installments</option>
+                                    <option value="declining_equal_principal">Reducing Balance - Equal Principal</option>
+                                    <option value="interest_only">Interest-Only</option>
+                                    <option value="compound">Compound Interest</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Interest Type</label>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" name="interestType" value="percentage" checked>
+                                    <label class="form-check-label">Percentage based (%)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" name="interestType" value="fixed">
+                                    <label class="form-check-label">Fixed amount per cycle</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Interest Rate</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" name="interestRate" id="interestRate" required>
+                                    <select class="form-select" name="interestPeriod" style="max-width: 150px;">
+                                        <option value="day">Per Day</option>
+                                        <option value="week">Per Week</option>
+                                        <option value="month">Per Month</option>
+                                        <option value="year">Per Year</option>
+                                        <option value="loan">Per Loan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="form-group">
+                                <label>Loan Duration</label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementDuration()">-</button>
+                                    <input type="number" class="form-control" name="duration" id="duration" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementDuration()">+</button>
+                                    <select class="form-select" name="durationType" style="max-width: 150px;">
+                                        <option value="days">Days</option>
+                                        <option value="weeks">Weeks</option>
+                                        <option value="months">Months</option>
+                                        <option value="years">Years</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Repayment Configuration -->
+                            <div class="form-group">
+                                <label>Repayment Cycle</label>
+                                <select class="form-select" name="repaymentCycle" required>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="biweekly">Biweekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="bimonthly">Bimonthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="4months">Every 4 Months</option>
+                                    <option value="semiannual">Semi-Annual</option>
+                                    <option value="9months">Every 9 Months</option>
+                                    <option value="yearly">Yearly</option>
+                                    <option value="lumpsum">Lump-Sum</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of Repayments</label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementRepayments()">-</button>
+                                    <input type="number" class="form-control" name="numberOfRepayments" id="numberOfRepayments" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementRepayments()">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </form>
+    </div>
+
+                  {{!-- <!-- Loan Details -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Loan Terms</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Disbursement Method -->
+                            <div class="form-group">
+                                <label>Disbursed By</label>
+                                <select class="form-select" name="disbursementMethod" required>
+                                    <option value="cash">Cash</option>
+                                    <option value="cheque">Cheque</option>
+                                    <option value="wire">Wire Transfer</option>
+                                    <option value="online">Online Transfer</option>
+                                </select>
+                            </div>
+
+                            <!-- Principal Amount -->
+                            <div class="form-group">
+                                <label>Principal Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" name="principalAmount" id="principalAmount" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="principalLimits"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Release Date -->
+                            <div class="form-group">
+                                <label>Loan Release Date</label>
+                                <input type="date" class="form-control" name="releaseDate" required>
+                            </div>
+
+                            <!-- Interest Configuration -->
+                            <div class="form-group">
+                                <label>Interest Method</label>
+                                <select class="form-select" name="interestMethod" id="interestMethod" required>
+                                    <option value="flat_rate">Flat Rate</option>
+                                    <option value="declining_equal_installments">Reducing Balance - Equal Installments</option>
+                                    <option value="declining_equal_principal">Reducing Balance - Equal Principal</option>
+                                    <option value="interest_only">Interest-Only</option>
+                                    <option value="compound">Compound Interest</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Interest Type</label>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" name="interestType" value="percentage" checked>
+                                    <label class="form-check-label">Percentage based (%)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" name="interestType" value="fixed">
+                                    <label class="form-check-label">Fixed amount per cycle</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Interest Rate</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" name="interestRate" id="interestRate" required>
+                                    <select class="form-select" name="interestPeriod" style="max-width: 150px;">
+                                        <option value="day">Per Day</option>
+                                        <option value="week">Per Week</option>
+                                        <option value="month">Per Month</option>
+                                        <option value="year">Per Year</option>
+                                        <option value="loan">Per Loan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="form-group">
+                                <label>Loan Duration</label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementDuration()">-</button>
+                                    <input type="number" class="form-control" name="duration" id="duration" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementDuration()">+</button>
+                                    <select class="form-select" name="durationType" style="max-width: 150px;">
+                                        <option value="days">Days</option>
+                                        <option value="weeks">Weeks</option>
+                                        <option value="months">Months</option>
+                                        <option value="years">Years</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Repayment Configuration -->
+                            <div class="form-group">
+                                <label>Repayment Cycle</label>
+                                <select class="form-select" name="repaymentCycle" required>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="biweekly">Biweekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="bimonthly">Bimonthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="4months">Every 4 Months</option>
+                                    <option value="semiannual">Semi-Annual</option>
+                                    <option value="9months">Every 9 Months</option>
+                                    <option value="yearly">Yearly</option>
+                                    <option value="lumpsum">Lump-Sum</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of Repayments</label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementRepayments()">-</button>
+                                    <input type="number" class="form-control" name="numberOfRepayments" id="numberOfRepayments" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementRepayments()">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+</div>
+        {{!-- <section class="content">
+            <div class="container-fluid">
+                <form id="loanApplicationForm" action="/loan/create" method="POST">
+
+      
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Create Loan</button>
+                        <a href="/loans" class="btn btn-secondary float-end">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </section> --}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                theme: 'bootstrap-5'
+            });
+
+            // Handle loan product selection
+            $('#loanProductSelect').change(function() {
+                const selectedOption = $(this).find(':selected');
+                const minPrincipal = selectedOption.data('min-principal');
+                const maxPrincipal = selectedOption.data('max-principal');
+                const defaultPrincipal = selectedOption.data('default-principal');
+                const interestMethod = selectedOption.data('interest-method');
+                const defaultInterest = selectedOption.data('default-interest');
+                const minInterest = selectedOption.data('min-interest');
+                const maxInterest = selectedOption.data('max-interest');
+
+                // Update principal limits display
+                $('#principalLimits').text(`Min: $${minPrincipal} | Max: $${maxPrincipal}`);
+                
+                // Set default values
+                $('#principalAmount').val(defaultPrincipal);
+                $('#interestMethod').val(interestMethod);
+                $('#interestRate').val(defaultInterest);
+
+                // Update validation
+                $('#principalAmount').attr({
+                    'min': minPrincipal,
+                    'max': maxPrincipal
+                });
+
+                $('#interestRate').attr({
+                    'min': minInterest,
+                    'max': maxInterest
+                });
+            });
+        });
+
+        // Helper functions for increment/decrement
+        function incrementDuration() {
+            const input = document.getElementById('duration');
+            input.value = parseInt(input.value || 0) + 1;
+        }
+
+        function decrementDuration() {
+            const input = document.getElementById('duration');
+            const newValue = parseInt(input.value || 0) - 1;
+            input.value = newValue > 0 ? newValue : 0;
+        }
+
+        function incrementRepayments() {
+            const input = document.getElementById('numberOfRepayments');
+            input.value = parseInt(input.value || 0) + 1;
+        }
+
+        function decrementRepayments() {
+            const input = document.getElementById('numberOfRepayments');
+            const newValue = parseInt(input.value || 0) - 1;
+            input.value = newValue > 0 ? newValue : 0;
+        }
+
+        function generateLoanNumber() {
+            const timestamp = new Date().getTime().toString().slice(-6);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            document.getElementById('loanNumber').value = `LN${timestamp}${random}`;
+        }
+    </script>

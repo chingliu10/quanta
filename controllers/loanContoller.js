@@ -222,7 +222,9 @@ export const getAllLoansProducts = async () => {
     try {
 
         let query = `
-            select name, default_principal, interest_method from loan_products where deleted_at is null
+            select name, minimum_principal, default_principal, maximum_principal , interest_method,
+                interest_period, default_interest_rate, minimum_interest_rate, maximum_interest_rate, default_loan_duration,
+                    default_loan_duration_type, repayment_cycle from loan_products where deleted_at is null
         `
         let [rows] = await pool.query(query)
 
@@ -237,5 +239,54 @@ export const getAllLoansProducts = async () => {
         return handleError(error, 'Failed To Get Loan Products');
 
     }
+}
+
+
+export const getBorrowerDetails = async (borrowerId) => {
+
+    try {
+
+        let query = `
+            select id, first_name , last_name from borrowers where id = ? and deleted_at is null limit 1
+        `
+
+        let [rows] = await pool.query(query, [borrowerId])
+
+        
+        return {
+            queryStatus : true,
+            data : rows
+        }
+
+
+    }catch (error) {
+
+        return handleError(error, "Failed To Get Borrower")
+    }
+
+}
+
+
+export const getAllBorrowers = async () => {
+
+    try {
+
+        let query = `
+            SELECT id, first_name, last_name from borrowers where deleted_at is null
+        `
+
+        let [rows] = await pool.query(query)
+
+        return {
+            queryStatus : true,
+            data : rows
+        }
+
+    }catch (error) {
+
+        return handleError(error, "Failed To Get Borrowers")
+
+    }
+
 }
 

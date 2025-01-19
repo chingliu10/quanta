@@ -173,7 +173,7 @@ class LoanProductCalculator {
 // yearlyInterestLoan.printSchedule();
 
 console.log("\nWEEKLY PAYMENTS WITH MONTHLY INTEREST (FLAT):");
-const weeklyPaymentLoan = new LoanProductCalculator(300000, 3.5, 24, {
+const weeklyPaymentLoan = new LoanProductCalculator(100000, 3.5, 4, {
     paymentFrequency: 'weekly',
     interestFrequency: 'monthly',
     interestType: 'flat'

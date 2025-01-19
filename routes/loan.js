@@ -4,7 +4,9 @@ import {
     getArrearsLoans,
     getPendingLoans,
     createLoanProduct,
-    getAllLoansProducts
+    getAllLoansProducts,
+    getBorrowerDetails,
+    getAllBorrowers,
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -206,6 +208,44 @@ router.post("/loan_product_create", async (req, res) => {
 
         
         res.status(500).render("error_page", { message : "Failed To Create Loan Product" })  
+
+    }
+
+
+
+})
+
+
+//route to add loan
+router.get("/add/:borrowerId?", async (req, res) => {
+
+    let { borrowerId } = req.params
+    console.log(borrowerId)
+    //get borrowers or single borrower
+
+    let loanProducts = await getAllLoansProducts()
+
+    console.log(loanProducts.data)
+
+    if(borrowerId) {
+        
+        let borrower = await getBorrowerDetails(borrowerId)
+        return res.render("loan_add", {  
+            title : "Add Loan", 
+            user : req.session.user , 
+            loanProducts , 
+            borrowerId ,
+            borrower : borrower.data[0]
+          })
+        //get single borrower detail
+    }else{
+
+        let borrowers = await getAllBorrowers()
+        return res.render("loan_add", {  
+            title : "Add Loan", 
+            user : req.session.user ,
+            loanProducts , 
+            borrowers : borrowers.data })
 
     }
 

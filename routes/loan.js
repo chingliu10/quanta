@@ -56,32 +56,7 @@ router.get('/arrears', async (req, res) => {
 
 router.get("/pending", async (req, res) => {
 
-    res.send("dsfsdfsfsdfsfs")
-
-    // try {
-
-    //     const result = await getPendingLoans(req.session.user.branchId);
-
-    //     if(result.queryStatus) {
-
-    //         res.render("loan_pending", { title : "Pending Loans" ,  loans : result.data , user : req.session.user })
-
-    //     }
-
-    //     res.status(400).render("error_page", { message : result.activity  })  
-
-
-    // }catch (error) {
-
-
-    //     res.status(500).render("error_page", { message : result.activity  })  
-
-    // }
-
-
-})
-
-router.get("/pending", async (req, res) => {
+   
 
     try {
 
@@ -89,7 +64,7 @@ router.get("/pending", async (req, res) => {
 
         if(result.queryStatus) {
 
-            res.render("loan_pending", { title : "Pending Loans" ,  loans : result.data , user : req.session.user })
+            return res.render("loan_pending", { title : "Pending Loans" ,  loans : result.data , user : req.session.user })
 
         }
 
@@ -103,7 +78,10 @@ router.get("/pending", async (req, res) => {
 
     }
 
+
 })
+
+
 
 
 router.get("/awaiting_disbursement", async (req, res) => {
@@ -221,27 +199,42 @@ router.get("/add/:borrowerId?", async (req, res) => {
 
     let { borrowerId } = req.params
     //get borrowers or single borrower
-    let loanProducts = await getAllLoansProducts()
+    try {
 
-    if(borrowerId) {
+        let loanProducts = await getAllLoansProducts()
+
+        if(borrowerId) {
+            
+            let borrower = await getBorrowerDetails(borrowerId)
+            return res.render("loan_add", {  
+                title : "Add Loan", 
+                user : req.session.user , 
+                loanProducts , 
+                borrowerId ,
+                borrower : borrower.data[0]
+            })
+            //get single borrower detail
+        }
+
+        if(!borrowerId) {
+            let borrowers = await getAllBorrowers()
+            return res.render("loan_add", {  
+                title : "Add Loan", 
+                user : req.session.user ,
+                loanProducts , 
+                borrowers : borrowers.data })
+
+        }
+
+
         
-        let borrower = await getBorrowerDetails(borrowerId)
-        return res.render("loan_add", {  
-            title : "Add Loan", 
-            user : req.session.user , 
-            loanProducts , 
-            borrowerId ,
-            borrower : borrower.data[0]
-          })
-        //get single borrower detail
-    }else{
+        res.status(400).render("error_page", { message : "Failed To Get Loan Product"  })
+       
+        
 
-        let borrowers = await getAllBorrowers()
-        return res.render("loan_add", {  
-            title : "Add Loan", 
-            user : req.session.user ,
-            loanProducts , 
-            borrowers : borrowers.data })
+    }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To Get Loan Product"  })
 
     }
 
@@ -257,7 +250,17 @@ router.post("/add", async (req, res) => {
 
         let result = await insertPendingLoan(req.session.user.id, req.session.user.branchId , req.body)
 
+        if(result.queryStatus) {
+
+           req.flash("success", "Loan Was Added")
+           return res.redirect("/loan/pending")
+        }
+
+        res.status(400).render("error_page", { message : result.activity  })
+
     }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To Add Loan"  })
 
     }
 })

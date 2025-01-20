@@ -48,3 +48,7 @@ CREATE INDEX idx_group_members_group_borrower ON borrower_group_members (borrowe
 
 --Add deleted_at column on borrower_group_members
 ALTER TABLE borrower_group_members ADD COLUMN deleted_at DATETIME NULL;
+
+--Adding indexes
+CREATE INDEX idx_loans_status_branch ON loans(status, branch_id, deleted_at);
+CREATE INDEX idx_borrowers_composite ON borrowers(id, deleted_at);

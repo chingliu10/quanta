@@ -1,0 +1,90 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Pending Loans</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/loan/all">All loans</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Loans</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+         {{#if loans.length}}
+                <table id="all-loans-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Borrower</th>
+                            <th>Principal</th>
+                            <th>Released</th>
+                            <th>Method</th>
+                            <th>Interest %</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each loans}}
+                        <tr>
+                            <td>{{this.first_name}} {{this.last_name}}</td>
+                            <td>{{formatDecimalNumbers this.principal}}</td>
+                            <td>{{formatDateTime this.release_date}}</td>
+                            <td>{{this.interest_method}}</td>
+                            <td>{{formatDecimalNumbers this.interest_rate}}%/{{this.interest_period}}</td>
+                            <td>{{this.loan_duration}} {{this.loan_duration_type}}</td>
+                            <td> <span class=" text-white" style="padding:  0 5px;background-color : orange;">Pending Approval</span> </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/loan/details/{{this.loan_id}}">Details</a></li>
+                                        <li><a class="dropdown-item" href="/loan/edit/{{this.loan_id}}">Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="/loan/delete/{{this.loan_id}}">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p>No Pending loans found.</p>
+                {{/if}}
+    </div>
+</div>
+{{> flash_message}}
+<script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+        $(document).ready(function() {
+            $('#all-loans-table').DataTable({
+                paging: true,
+                searching: true,
+                order: [[4, 'desc']], // Order by Balance descending
+                columnDefs: [
+                    { orderable: false, targets: [4] } // Disable sorting on Actions column
+                ],
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-secondary'
+                        }
+                ]
+            });
+        });
+</script> 

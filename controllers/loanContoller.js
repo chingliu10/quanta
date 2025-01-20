@@ -133,9 +133,12 @@ export const getPendingLoans = async (branch) => {
     try {
 
         const query = `
-            SELECT * FROM loans where status = "pending" 
-                AND deleted_at is null
-                    AND branch_id = ?
+          select loans.id as loan_id , loans.principal , loans.release_date,
+   loans.interest_rate , loans.interest_method, loans.interest_period , 
+	  loans.loan_duration, loans.loan_duration_type, 
+		borrowers.first_name , borrowers.last_name	from loans join borrowers on loans.borrower_id = borrowers.id
+	where loans.status = 'pending' and loans.deleted_at is null and borrowers.deleted_at is null
+		and loans.branch_id = ?;
         `
         const [rows] = await pool.query(query, [branch])
 
@@ -346,7 +349,7 @@ export const insertPendingLoan = async (user, branch , {
     }catch(error) {
 
 
-        console.log(error)
+        return handleError(error, "Failed To Add Loan")
 
     }
 

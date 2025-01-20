@@ -222,7 +222,7 @@ export const getAllLoansProducts = async () => {
     try {
 
         let query = `
-            select name, minimum_principal, default_principal, maximum_principal , interest_method,
+            select id, name, minimum_principal, default_principal, maximum_principal , interest_method,
                 interest_period, default_interest_rate, minimum_interest_rate, maximum_interest_rate, default_loan_duration,
                     default_loan_duration_type, repayment_cycle from loan_products where deleted_at is null
         `
@@ -285,6 +285,68 @@ export const getAllBorrowers = async () => {
     }catch (error) {
 
         return handleError(error, "Failed To Get Borrowers")
+
+    }
+
+}
+
+
+export const insertPendingLoan = async (user, branch , {
+  borrowerId,
+  loanProductId,
+  principalAmount,
+  releaseDate,
+  interestMethod,
+  interestRate,
+  interestPeriod,
+  duration,
+  durationType,
+  repaymentCycle,
+}) => {
+
+    try {
+
+        let currentTimeStamp = new Date()
+
+        if(interestMethod == "flat_rate") {
+
+                    
+                const query = `
+                insert into loans (user_id, borrower_id, loan_product_id, release_date, principal, interest_method, interest_rate,
+                interest_period, loan_duration, loan_duration_type, repayment_cycle, loan_status, created_at, updated_at, status, branch_id)
+                values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            `
+
+             await   pool.query(query, [
+                    user,
+                    borrowerId,
+                    loanProductId,
+                    releaseDate,
+                    principalAmount,
+                    interestMethod,
+                    interestRate,
+                    interestPeriod,
+                    duration,
+                    durationType,
+                    repaymentCycle,
+                    'open',
+                    currentTimeStamp,
+                    currentTimeStamp,
+                    "pending",
+                    branch
+                ])
+
+        }
+
+        return {
+            queryStatus : true,
+            message : "done"
+        }
+
+    }catch(error) {
+
+
+        console.log(error)
 
     }
 

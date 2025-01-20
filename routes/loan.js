@@ -7,17 +7,15 @@ import {
     getAllLoansProducts,
     getBorrowerDetails,
     getAllBorrowers,
+    insertPendingLoan
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
-import { title } from 'process';
+
 
 const router = express.Router();
-
-router.use(isAuthenticated)
 router.use(express.json());
-
-
+router.use(isAuthenticated)
 
 router.get('/all', async (req, res) => {
     try {
@@ -58,25 +56,27 @@ router.get('/arrears', async (req, res) => {
 
 router.get("/pending", async (req, res) => {
 
-    try {
+    res.send("dsfsdfsfsdfsfs")
 
-        const result = await getPendingLoans(req.session.user.branchId);
+    // try {
 
-        if(result.queryStatus) {
+    //     const result = await getPendingLoans(req.session.user.branchId);
 
-            res.render("loan_pending", { title : "Pending Loans" ,  loans : result.data , user : req.session.user })
+    //     if(result.queryStatus) {
 
-        }
+    //         res.render("loan_pending", { title : "Pending Loans" ,  loans : result.data , user : req.session.user })
 
-        res.status(400).render("error_page", { message : result.activity  })  
+    //     }
+
+    //     res.status(400).render("error_page", { message : result.activity  })  
 
 
-    }catch (error) {
+    // }catch (error) {
 
 
-        res.status(500).render("error_page", { message : result.activity  })  
+    //     res.status(500).render("error_page", { message : result.activity  })  
 
-    }
+    // }
 
 
 })
@@ -220,12 +220,8 @@ router.post("/loan_product_create", async (req, res) => {
 router.get("/add/:borrowerId?", async (req, res) => {
 
     let { borrowerId } = req.params
-    console.log(borrowerId)
     //get borrowers or single borrower
-
     let loanProducts = await getAllLoansProducts()
-
-    console.log(loanProducts.data)
 
     if(borrowerId) {
         
@@ -252,5 +248,25 @@ router.get("/add/:borrowerId?", async (req, res) => {
 
 
 })
+
+
+router.post("/add", async (req, res) => {
+    console.log("platinum symbian cargo")
+    console.log(req.body)
+    try {
+
+        let result = await insertPendingLoan(req.session.user.id, req.session.user.branchId , req.body)
+
+    }catch (error) {
+
+    }
+})
+
+
+// router.get("/pending", async (req, res) => {
+
+//     res.send("dfsfsdfsd")
+
+// })
 
 export default router;

@@ -75,6 +75,11 @@ const hbs = exphbs.create({
         ifEquals: function(arg1, arg2, options) {
             return arg1 === arg2 ? options.fn(this) : options.inverse(this);
         },
+        formatDecimalNumbersWithoutComma 
+: (value) => {
+            if (!value) return '0';
+            return Math.round(parseFloat(value)).toString();
+        },
         formatDecimalNumbers: (value) => {
             if (!value) return '0';
             return parseFloat(value).toLocaleString('en-US', {

@@ -54,13 +54,17 @@
                                     <option value="">Select Loan Product</option>
                                     {{#each loanProducts.data}}
                                     <option value="{{id}}" 
-                                            data-min-principal="{{minimum_principal}}"
-                                            data-max-principal="{{maximum_principal}}"
-                                            data-default-principal="{{default_principal}}"
+                                            data-min-principal="{{formatDecimalNumbers minimum_principal}}"
+                                            data-max-principal="{{formatDecimalNumbers maximum_principal}}"
+                                            data-default-principal="{{formatDecimalNumbersWithoutComma default_principal}}"
                                             data-interest-method="{{interest_method}}"
-                                            data-default-interest="{{default_interest_rate}}"
-                                            data-min-interest="{{minimum_interest_rate}}"
-                                            data-max-interest="{{maximum_interest_rate}}">
+                                            data-default-interest="{{formatDecimalNumbersWithoutComma default_interest_rate}}"
+                                            data-min-interest="{{formatDecimalNumbersWithoutComma minimum_interest_rate}}"
+                                            data-max-interest="{{formatDecimalNumbersWithoutComma maximum_interest_rate}}"
+                                            data-default-duration="{{formatDecimalNumbersWithoutComma default_loan_duration}}"
+                                           data-duration-type="{{default_loan_duration_type}}"
+                                           data-default-repayment-cycle="{{repayment_cycle}}"
+                                           data-interest-rate-type="{{interest_period}}">
                                         {{name}}
                                     </option>
                                     {{/each}}
@@ -75,59 +79,33 @@
                             <h3 class="card-title">Loan Terms</h3>
                         </div>
                         <div class="card-body">
-                            <!-- Disbursement Method -->
-                            <div class="form-group">
-                                <label>Disbursed By</label>
-                                <select class="form-select" name="disbursementMethod" required>
-                                    <option value="cash">Cash</option>
-                                    <option value="cheque">Cheque</option>
-                                    <option value="wire">Wire Transfer</option>
-                                    <option value="online">Online Transfer</option>
-                                </select>
-                            </div>
-
                             <!-- Principal Amount -->
                             <div class="form-group">
                                 <label>Principal Amount</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
                                     <input type="number" class="form-control" name="principalAmount" id="principalAmount" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="principalLimits"></span>
-                                    </div>
+                                    <span class="input-group-text bg-secondary text-white" id="principalLimits"></span>
                                 </div>
                             </div>
-
+                            <br/>
                             <!-- Release Date -->
                             <div class="form-group">
                                 <label>Loan Release Date</label>
                                 <input type="date" class="form-control" name="releaseDate" required>
                             </div>
-
+                            <br/>
                             <!-- Interest Configuration -->
                             <div class="form-group">
                                 <label>Interest Method</label>
                                 <select class="form-select" name="interestMethod" id="interestMethod" required>
                                     <option value="flat_rate">Flat Rate</option>
-                                    <option value="declining_equal_installments">Reducing Balance - Equal Installments</option>
-                                    <option value="declining_equal_principal">Reducing Balance - Equal Principal</option>
+                                    {{!-- <option value="declining_equal_installments">Reducing Balance - Equal Installments</option>
+                                    <option value="declining_equal_principal">Reducing Balance - Equal Principal</option> --}}
                                     <option value="interest_only">Interest-Only</option>
-                                    <option value="compound">Compound Interest</option>
+                                    <option value="compound_interest">Compound Interest</option>
                                 </select>
                             </div>
-
-                            <div class="form-group">
-                                <label>Interest Type</label>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="interestType" value="percentage" checked>
-                                    <label class="form-check-label">Percentage based (%)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="interestType" value="fixed">
-                                    <label class="form-check-label">Fixed amount per cycle</label>
-                                </div>
-                            </div>
-
+                            <br/>
                             <div class="form-group">
                                 <label>Interest Rate</label>
                                 <div class="input-group">
@@ -137,11 +115,11 @@
                                         <option value="week">Per Week</option>
                                         <option value="month">Per Month</option>
                                         <option value="year">Per Year</option>
-                                        <option value="loan">Per Loan</option>
                                     </select>
+                                   <span class="input-group-text bg-secondary text-white" id="interestLimits"></span>
                                 </div>
                             </div>
-
+                            <br/>
                             <!-- Duration -->
                             <div class="form-group">
                                 <label>Loan Duration</label>
@@ -150,177 +128,43 @@
                                     <input type="number" class="form-control" name="duration" id="duration" required>
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementDuration()">+</button>
                                     <select class="form-select" name="durationType" style="max-width: 150px;">
-                                        <option value="days">Days</option>
-                                        <option value="weeks">Weeks</option>
-                                        <option value="months">Months</option>
-                                        <option value="years">Years</option>
+                                        <option value="day">Days</option>
+                                        <option value="week">Weeks</option>
+                                        <option value="month">Months</option>
+                                        <option value="year">Years</option>
                                     </select>
                                 </div>
                             </div>
-
+                            <br/>
                             <!-- Repayment Configuration -->
                             <div class="form-group">
                                 <label>Repayment Cycle</label>
                                 <select class="form-select" name="repaymentCycle" required>
                                     <option value="daily">Daily</option>
                                     <option value="weekly">Weekly</option>
-                                    <option value="biweekly">Biweekly</option>
                                     <option value="monthly">Monthly</option>
-                                    <option value="bimonthly">Bimonthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="4months">Every 4 Months</option>
-                                    <option value="semiannual">Semi-Annual</option>
-                                    <option value="9months">Every 9 Months</option>
-                                    <option value="yearly">Yearly</option>
-                                    <option value="lumpsum">Lump-Sum</option>
+                                    <option value="annually">Yearly</option>
                                 </select>
                             </div>
-
-                            <div class="form-group">
+                            <br/>
+                            {{!-- <div class="form-group">
                                 <label>Number of Repayments</label>
                                 <div class="input-group">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementRepayments()">-</button>
                                     <input type="number" class="form-control" name="numberOfRepayments" id="numberOfRepayments" required>
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementRepayments()">+</button>
                                 </div>
-                            </div>
+                            </div> --}}
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Add Loan</button>
                         </div>
                     </div>
+                     
         </form>
     </div>
-
-                  {{!-- <!-- Loan Details -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Loan Terms</h3>
-                        </div>
-                        <div class="card-body">
-                            <!-- Disbursement Method -->
-                            <div class="form-group">
-                                <label>Disbursed By</label>
-                                <select class="form-select" name="disbursementMethod" required>
-                                    <option value="cash">Cash</option>
-                                    <option value="cheque">Cheque</option>
-                                    <option value="wire">Wire Transfer</option>
-                                    <option value="online">Online Transfer</option>
-                                </select>
-                            </div>
-
-                            <!-- Principal Amount -->
-                            <div class="form-group">
-                                <label>Principal Amount</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" name="principalAmount" id="principalAmount" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="principalLimits"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Release Date -->
-                            <div class="form-group">
-                                <label>Loan Release Date</label>
-                                <input type="date" class="form-control" name="releaseDate" required>
-                            </div>
-
-                            <!-- Interest Configuration -->
-                            <div class="form-group">
-                                <label>Interest Method</label>
-                                <select class="form-select" name="interestMethod" id="interestMethod" required>
-                                    <option value="flat_rate">Flat Rate</option>
-                                    <option value="declining_equal_installments">Reducing Balance - Equal Installments</option>
-                                    <option value="declining_equal_principal">Reducing Balance - Equal Principal</option>
-                                    <option value="interest_only">Interest-Only</option>
-                                    <option value="compound">Compound Interest</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Interest Type</label>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="interestType" value="percentage" checked>
-                                    <label class="form-check-label">Percentage based (%)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="interestType" value="fixed">
-                                    <label class="form-check-label">Fixed amount per cycle</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Interest Rate</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control" name="interestRate" id="interestRate" required>
-                                    <select class="form-select" name="interestPeriod" style="max-width: 150px;">
-                                        <option value="day">Per Day</option>
-                                        <option value="week">Per Week</option>
-                                        <option value="month">Per Month</option>
-                                        <option value="year">Per Year</option>
-                                        <option value="loan">Per Loan</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Duration -->
-                            <div class="form-group">
-                                <label>Loan Duration</label>
-                                <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementDuration()">-</button>
-                                    <input type="number" class="form-control" name="duration" id="duration" required>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementDuration()">+</button>
-                                    <select class="form-select" name="durationType" style="max-width: 150px;">
-                                        <option value="days">Days</option>
-                                        <option value="weeks">Weeks</option>
-                                        <option value="months">Months</option>
-                                        <option value="years">Years</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Repayment Configuration -->
-                            <div class="form-group">
-                                <label>Repayment Cycle</label>
-                                <select class="form-select" name="repaymentCycle" required>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="biweekly">Biweekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="bimonthly">Bimonthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="4months">Every 4 Months</option>
-                                    <option value="semiannual">Semi-Annual</option>
-                                    <option value="9months">Every 9 Months</option>
-                                    <option value="yearly">Yearly</option>
-                                    <option value="lumpsum">Lump-Sum</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Number of Repayments</label>
-                                <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementRepayments()">-</button>
-                                    <input type="number" class="form-control" name="numberOfRepayments" id="numberOfRepayments" required>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementRepayments()">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
 </div>
-        {{!-- <section class="content">
-            <div class="container-fluid">
-                <form id="loanApplicationForm" action="/loan/create" method="POST">
-
-      
-
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Create Loan</button>
-                        <a href="/loans" class="btn btn-secondary float-end">Cancel</a>
-                    </div>
-                </form>
-            </div>
-        </section> --}}
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
     <script>
@@ -340,9 +184,13 @@
                 const defaultInterest = selectedOption.data('default-interest');
                 const minInterest = selectedOption.data('min-interest');
                 const maxInterest = selectedOption.data('max-interest');
+                const defaultDuration = selectedOption.data('default-duration');
+                const durationType = selectedOption.data('duration-type');
+                const defaultRepaymentCycle = selectedOption.data('default-repayment-cycle');
+                const interestRateType = selectedOption.data('interest-rate-type');
 
                 // Update principal limits display
-                $('#principalLimits').text(`Min: $${minPrincipal} | Max: $${maxPrincipal}`);
+                $('#principalLimits').text(`Min: ${minPrincipal} | Max: ${maxPrincipal}`);
                 
                 // Set default values
                 $('#principalAmount').val(defaultPrincipal);
@@ -355,12 +203,18 @@
                     'max': maxPrincipal
                 });
 
-                $('#interestRate').attr({
-                    'min': minInterest,
-                    'max': maxInterest
-                });
-            });
-        });
+                $('#interestLimits').text(`Min: ${minInterest} | Max: ${maxInterest}`)
+
+                 $('select[name="interestPeriod"]').val(interestRateType);
+
+                // Set default duration
+                $('#duration').val(defaultDuration);
+                $('select[name="durationType"]').val(durationType);
+
+                // Set default repayment cycle
+                $('select[name="repaymentCycle"]').val(defaultRepaymentCycle);
+                        });
+                    });
 
         // Helper functions for increment/decrement
         function incrementDuration() {
@@ -383,11 +237,5 @@
             const input = document.getElementById('numberOfRepayments');
             const newValue = parseInt(input.value || 0) - 1;
             input.value = newValue > 0 ? newValue : 0;
-        }
-
-        function generateLoanNumber() {
-            const timestamp = new Date().getTime().toString().slice(-6);
-            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-            document.getElementById('loanNumber').value = `LN${timestamp}${random}`;
         }
     </script>

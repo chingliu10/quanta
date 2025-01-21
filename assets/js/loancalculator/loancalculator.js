@@ -37,7 +37,7 @@ export default class LoanScheduleCalculator {
         for (let i = 0; i < this.duration; i++) {
             const principal = Number(principalPerPayment.toFixed(2));
             const interest = Number(interestPerPayment.toFixed(2));
-            const fees = i === 0 ? 27000 : 0; // Initial fees for first payment
+            const fees = i === 0 ? 0 : 0; // Initial fees for first payment
             const due = principal + interest + fees;
 
             remainingPrincipal -= principal;

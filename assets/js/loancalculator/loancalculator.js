@@ -1,4 +1,4 @@
-class LoanScheduleCalculator {
+export default class LoanScheduleCalculator {
     constructor(loanData) {
         this.principal = parseFloat(loanData.principalAmount);
         this.startDate = new Date(loanData.releaseDate);
@@ -63,37 +63,37 @@ class LoanScheduleCalculator {
     }
 }
 
-// Example usage for weekly interest:
-const weeklyLoanData = {
-    principalAmount: '800000',
-    releaseDate: '2024-08-09',
-    interestMethod: 'flat_rate',
-    interestRate: '35',
-    interestPeriod: 'week',
-    duration: '32',
-    durationType: 'week',
-    repaymentCycle: 'weekly'
-};
+// // Example usage for weekly interest:
+// const weeklyLoanData = {
+//     principalAmount: '800000',
+//     releaseDate: '2024-08-09',
+//     interestMethod: 'flat_rate',
+//     interestRate: '35',
+//     interestPeriod: 'week',
+//     duration: '32',
+//     durationType: 'week',
+//     repaymentCycle: 'weekly'
+// };
 
-// Example usage for monthly interest:
-const monthlyLoanData = {
-    principalAmount: '300000',
-    releaseDate: '2024-08-09',
-    interestMethod: 'flat_rate',
-    interestRate: '3.5',
-    interestPeriod: 'month',
-    duration: '1',
-    durationType: 'monthly',
-    repaymentCycle: 'monthly'
-};
+// // Example usage for monthly interest:
+// const monthlyLoanData = {
+//     principalAmount: '300000',
+//     releaseDate: '2024-08-09',
+//     interestMethod: 'flat_rate',
+//     interestRate: '3.5',
+//     interestPeriod: 'month',
+//     duration: '1',
+//     durationType: 'monthly',
+//     repaymentCycle: 'monthly'
+// };
 
-// Generate schedule for weekly interest
-const weeklyCalculator = new LoanScheduleCalculator(weeklyLoanData);
-const weeklySchedule = weeklyCalculator.generateSchedule();
+// // Generate schedule for weekly interest
+// const weeklyCalculator = new LoanScheduleCalculator(weeklyLoanData);
+// const weeklySchedule = weeklyCalculator.generateSchedule();
 
-// Generate schedule for monthly interest
-const monthlyCalculator = new LoanScheduleCalculator(monthlyLoanData);
-const monthlySchedule = monthlyCalculator.generateSchedule();
+// // Generate schedule for monthly interest
+// const monthlyCalculator = new LoanScheduleCalculator(monthlyLoanData);
+// const monthlySchedule = monthlyCalculator.generateSchedule();
 
-// Example output (first item of weekly schedule)
-console.log(monthlySchedule);
+// // Example output (first item of weekly schedule)
+// console.log(monthlySchedule);

@@ -41,7 +41,7 @@
                             <td>{{this.interest_method}}</td>
                             <td>{{formatDecimalNumbers this.interest_rate}}%/{{this.interest_period}}</td>
                             <td>{{this.loan_duration}} {{this.loan_duration_type}}</td>
-                            <td> <span class=" text-white" style="padding:  0 5px;background-color : orange;">Pending Approval</span> </td>
+                            <td> <span class=" text-white" style="padding:  0 5px;background-color : orange;border-radius: 4px;">pending</span> </td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -59,7 +59,7 @@
                     </tbody>
                 </table>
                 {{else}}
-                <p>No Pending loans found.</p>
+                <p class="bg-warning p-2">No Pending loans found.</p>
                 {{/if}}
     </div>
 </div>

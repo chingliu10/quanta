@@ -77,6 +77,7 @@ export const getAllLoans = async (branch) => {
                 loans.release_date AS release_date,
                 loans.maturity_date AS maturity_date,
                 loans.interest_rate AS interest_rate,
+                loans.interest_period,
                 COALESCE(due_totals.total_due, 0) AS total_due,
                 COALESCE(paid_totals.total_paid, 0) AS total_paid,
                 (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS balance,

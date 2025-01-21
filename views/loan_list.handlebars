@@ -19,6 +19,10 @@
         .badge-disbursed {
             background-color: #87CEEB;
         }
+
+        .badge-pending {
+            background-color: orange;
+        }
 </style>
 <div class="app-content-header">
           <!--begin::Container-->
@@ -62,7 +66,7 @@
                             <td>{{this.loan_id}}</td>
                             <td>{{formatDecimalNumbers this.principal}}</td>
                             <td>{{formatDateTime this.release_date}}</td>
-                            <td>{{formatDecimalNumbers this.interest_rate}}%/month</td>
+                            <td>{{formatDecimalNumbers this.interest_rate}}%/{{this.interest_period}}</td>
                             <td>{{formatDecimalNumbers this.total_due}}</td>
                             <td>{{formatDecimalNumbers this.total_paid}}</td>
                             <td>{{formatDecimalNumbers this.balance}}</td>
@@ -72,6 +76,7 @@
                                     {{#if (eq this.status 'closed')}}badge-closed{{/if}}
                                     {{#if (eq this.status 'Past Maturity')}}badge-maturity{{/if}}
                                     {{#if (eq this.status 'Disbursed')}}badge-disbursed{{/if}}
+                                    {{#if (eq this.status 'pending')}}badge-pending{{/if}}
                                 ">
                                     {{this.status}}
 
@@ -93,7 +98,7 @@
                     </tbody>
                 </table>
                 {{else}}
-                <p>No loans found.</p>
+                <p class="bg-warning p-2">No loans found.</p>
                 {{/if}}
     </div>
 </div>

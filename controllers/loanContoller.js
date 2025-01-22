@@ -300,6 +300,7 @@ export const insertPendingLoan = async (user, branch , {
   loanProductId,
   principalAmount,
   releaseDate,
+  disbursementDate,
   interestMethod,
   interestRate,
   interestPeriod,
@@ -314,9 +315,9 @@ export const insertPendingLoan = async (user, branch , {
 
         if(interestMethod == "flat_rate") {
 
-                    
+                  //******i was tired so disbursement date was exchanged with release date********  
                 const query = `
-                insert into loans (user_id, borrower_id, loan_product_id, release_date, principal, interest_method, interest_rate,
+                insert into loans (user_id, borrower_id, loan_product_id, release_date, first_payment_date, principal, interest_method, interest_rate,
                 interest_period, loan_duration, loan_duration_type, repayment_cycle, loan_status, created_at, updated_at, status, branch_id)
                 values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             `
@@ -325,6 +326,7 @@ export const insertPendingLoan = async (user, branch , {
                     user,
                     borrowerId,
                     loanProductId,
+                    disbursementDate,
                     releaseDate,
                     principalAmount,
                     interestMethod,

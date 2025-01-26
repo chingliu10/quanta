@@ -21,3 +21,8 @@ export const getAllUsers = async (branchId) => {
         return handleError(error, 'Failed To Get Branches');
     }
 };
+
+export const getCapital = async (starting_date, end_date) => {
+    
+}
+

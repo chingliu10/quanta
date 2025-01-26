@@ -1,0 +1,109 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Banks</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/capital/bank/data">Bank List</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Banks</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+          {{#if banks.length}}
+                <table id="all-loans-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each banks}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/capital/bank/edit/{{this.id}}">
+                                            <i class="bi bi-pencil-square me-2"></i>Edit</a></li>
+                                        <li><button class="dropdown-item text-danger"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#deleteBankModal" 
+                                              data-bank-id="{{this.id}}" 
+                                              data-bank-name="{{this.name}}" >
+                                            <i class="bi bi-trash me-2"></i> Delete</button></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p class="bg-warning p-2">No Banks Found</p>
+                {{/if}}
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteBankModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0 position-relative">
+                <div class="rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-x-circle text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <h4 class="mb-3 text-center">Are you sure?</h4>
+                <p class="mb-4 text-center">Do you really want to delete Bank <strong id="bankName" class="text-danger"></strong>? This process cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteButton" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---end of delete modal-->
+<!--deleting form--->
+<form method="post" action="/capital/bank/delete">
+    <input type="text" name="bank_id">
+    <button id="deleteBankBtn">submit</button>
+</form>
+{{> flash_message}}
+ <script>
+                 const deleteBorrowerModal = document.getElementById('deleteBankModal');
+                const borrowerNameElement = document.getElementById('bankName');
+                const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+
+                deleteBorrowerModal.addEventListener('show.bs.modal', (event) => {
+                    // Get the triggering element
+                    const trigger = event.relatedTarget;
+                    const borrowerId = trigger.getAttribute('data-bank-id');
+                    const borrowerName = trigger.getAttribute('data-bank-name');
+
+                    // Update modal content
+                    borrowerNameElement.textContent = borrowerName;
+                    document.querySelector('input[name="bank_id"]').value = borrowerId
+                
+                });
+
+                confirmDeleteButton.addEventListener("click", function () {
+
+                    document.querySelector("#deleteBankBtn").click()
+
+                })
+        
+    </script>

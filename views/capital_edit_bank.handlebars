@@ -1,0 +1,44 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Edit Bank {{bank.name}}</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/capital/bank/data">Bank List</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Banks</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+            <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Bank Details</h3>
+                    </div>
+                    <form method="post" action="/capital/bank/edit">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="bank-name">Bank Name</label>
+                                <input type="text" class="form-control" id="bank-name" name="bank_name" value="{{bank.name}}"
+                                       placeholder="Enter bank name" required maxlength="100">
+                                <input type="text" value="{{bank.id}}" name="bank_id" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> flash_message}}

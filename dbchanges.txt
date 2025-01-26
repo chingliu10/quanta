@@ -10,14 +10,6 @@ ALTER TABLE branches ADD COLUMN deleted_at DATETIME NULL;
 
 ALTER TABLE branches ADD COLUMN updated_at DATETIME NULL;
 
-//how loan data works
-awaiting disbursed has status = "approved"
-pending = "pending"
-active = "disbursed"
-
-
-set global query_cache_size = ?
-set global query_cache_type = 1
 
 -- Indexes for borrower_group_members table
 CREATE INDEX idx_borrower_group_id ON borrower_group_members (borrower_group_id);
@@ -52,3 +44,22 @@ ALTER TABLE borrower_group_members ADD COLUMN deleted_at DATETIME NULL;
 --Adding indexes
 CREATE INDEX idx_loans_status_branch ON loans(status, branch_id, deleted_at);
 CREATE INDEX idx_borrowers_composite ON borrowers(id, deleted_at);
+
+
+ALTER TABLE loan_repayments ADD INDEX idx_loan_id (loan_id);
+ALTER TABLE loan_schedules ADD INDEX idx_loan_id (loan_id);
+CREATE INDEX idx_borrower_deleted ON loans (borrower_id);
+
+CREATE INDEX idx_loan_id_deleted ON loan_schedules (deleted_at)
+CREATE INDEX idx_loan_id_deleted ON loan_repayments (deleted_at)
+
+
+---on bank accounts
+ALTER TABLE bank_accounts
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;
+
+--add column on capital table
+ALTER TABLE capital
+ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;

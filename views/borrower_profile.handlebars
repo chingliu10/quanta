@@ -1,349 +1,315 @@
-<style>
-    #borrowerId {
-        display: none;
-    }
+{{!-- <style>
+    #borrowerId { display: none; }
+    .profile-gradient { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); }
+    .avatar-badge { width: 24px; height: 24px; }
+    .hover-scale { transition: transform 0.2s; }
+    .hover-scale:hover { transform: translateY(-2px); }
+    .stat-card { border-left: 4px solid #3b82f6; }
 </style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/css/datatables/datatables.min.css">
+
 <!-- Content Header -->
-<div id="borrowerId">
-    {{borrower.id}}
-</div>
-<div class="app-content-header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-6">
-                <h3 class="mb-0">Borrower Details</h3>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="/borrower/view">Borrowers</a></li>
-                    <li class="breadcrumb-item active">Borrower Details</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
+<div id="borrowerId">{{borrower.id}}</div>
 <div class="app-content">
     <div class="container-fluid">
-        <!-- Borrower Profile Card with Curved Design -->
-        <div class="card border-0 position-relative overflow-hidden mb-4">
-            <!-- Gradient background with modern wave effect -->
-            <div class="position-absolute w-100" style="height: 180px; background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);">
-                <svg class="position-absolute bottom-0" style="width: 100%; height: 40px;" preserveAspectRatio="none" viewBox="0 0 1440 48">
-                    <path fill="#fff" fill-opacity="1" d="M0,32L80,37.3C160,43,320,53,480,48C640,43,800,21,960,16C1120,11,1280,21,1360,26.7L1440,32L1440,48L1360,48C1280,48,1120,48,960,48C800,48,640,48,480,48C320,48,160,48,80,48L0,48Z"></path>
-                </svg>
+          <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Branches</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Branch</li>
+                </ol>
+              </div>
             </div>
+        <!-- Profile Header Card -->
+        <div class="card profile-header-card border-0 shadow-lg overflow-hidden mb-4">
             
-            <div class="card-body position-relative pt-4 px-4">
-                <!-- Profile Header -->
-                <div class="d-flex align-items-start mb-4">
-                    <!-- Modern Avatar Section with Overlay -->
-                    <div class="position-relative me-4">
-                        <div class="rounded-circle bg-white p-2 shadow-sm">
-    <div class="position-relative">
-        <div class="rounded-circle d-flex align-items-center justify-content-center bg-gradient"
-             style="width: 80px; height: 80px; background: linear-gradient(45deg, #2c3e50, #3498db);">
-            <!-- Using a more detailed person icon -->
-            <i class="bi bi-person text-primary" style="font-size: 84px;"></i>
-        </div>
-    </div>
-</div>
+            <div class="card-body position-relative pt-0">
+                <div class="d-flex align-items-start">
+                    <!-- Avatar -->
+                    <div class="avatar-container position-relative me-4">
+                        <div class="avatar bg-white p-2 shadow-lg rounded-circle" style="width: 100px; height: 100px;">
+                            <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center h-100">
+                                <i class="fas fa-user text-black fa-3x"></i>
+                            </div>
+                        </div>
+                        <span class="badge bg-success avatar-badge rounded-circle position-absolute bottom-0 end-0 border-2 border-white">
+                            <i class="fas fa-check text-white"></i>
+                        </span>
                     </div>
-                    
-                    <!-- Enhanced Profile Info -->
-                    <div class="flex-grow-1">
-                        <h4 class=" text-white mt-4">{{borrower.first_name}} {{borrower.last_name}},  </h4>
-                        <div class="badge bg-white bg-opacity-25 text-white">
-                            <i class="bi bi-shield-check me-1"></i>Active Borrower
-                        </div> 
+
+                    <!-- Profile Info -->
+                    <div class="flex-grow-1 pt-3">
+                        <h2 class="text-dark mb-1">{{borrower.first_name}} {{borrower.last_name}}</h2>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-success bg-opacity-10 text-success fw-normal">
+                                <i class="fas fa-circle-small me-1"></i>Active Borrower
+                            </span>
+                            <span class="text-muted">·</span>
+                            <a href="#" class="text-primary text-decoration-none hover-scale">
+                                <i class="fas fa-share-nodes me-1"></i>Share Profile
+                            </a>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Info Grid with Enhanced Cards -->
-                <div class="row g-4">
-                    <!-- Personal Info Card with Modern Design -->
-            <div class="col-12 col-lg-6">
-                        <div class="p-4 rounded-4 h-100 bg-white border-0 shadow-sm">
-                    <h6 class="text-dark mb-4 d-flex align-items-center fs-7">
-                        <span class="bg-primary bg-opacity-10 p-2 rounded-3 me-2">
-                            <i class="bi bi-person-vcard text-primary"></i>
-                        </span>
-                        Personal Details
-                    </h6>
-    
-                     <div class="list-group list-group-flush">
-                        <!-- Business Name -->
-                        <div class="list-group-item bg-transparent px-0 py-2">
-                            <div class="d-flex align-items-center">
-                                <span class="bg-secondary bg-opacity-10 p-1 rounded-2 me-2">
-                                    <i class="bi bi-building text-secondary small"></i>
-                                </span>
-                                <span class="text-body-secondary small">
-                                   <span style="font-weight: bold;"> Business Name : </span> 
+        <!-- Main Content Grid -->
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Details Card -->
+                <div class="card shadow-sm border-0 hover-scale">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-id-card text-primary me-2"></i>
+                            Profile Details
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-building text-muted me-2"></i>
+                                        <dt class="text-sm text-muted">Business</dt>
+                                    </div>
+                                    <dd class="fw-medium ps-4 mb-4">
                                         {{#check borrower.business_name ""}}
                                             {{borrower.business_name}}
                                         {{/check}}
-                                    </span>
-                            </div>
-                        </div>
-        
-                        <!-- Address -->
-                        <div class="list-group-item bg-transparent px-0 py-2">
-                            <div class="d-flex align-items-center">
-                                <span class="bg-secondary bg-opacity-10 p-1 rounded-2 me-2">
-                                    <i class="bi bi-geo-alt text-secondary small"></i>
-                                </span>
-                                <span class="text-body-secondary small">
-                                    <span style="font-weight: bold;"> Address : </span> 
-                                        {{#check borrower.address ""}}
-                                            {{borrower.address}}
-                                        {{/check}}
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
+                                    </dd>
 
-                        <!-- Group -->
-                        <div class="list-group-item bg-transparent px-0 py-2">
-                            <div class="d-flex align-items-center">
-                                <span class="bg-secondary bg-opacity-10 p-1 rounded-2 me-2">
-                                    <i class="bi bi-people-fill text-secondary small"></i>
-                                </span>
-                                <span class="text-body-secondary small">
-                                     <span style="font-weight: bold;"> Group Name : </span> 
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-map-marker-alt text-muted me-2"></i>
+                                        <dt class="text-sm text-muted">Address</dt>
+                                    </div>
+                                    <dd class="text-truncate ps-4 mb-4">
                                         {{#check borrower.address ""}}
                                             {{borrower.address}}
                                         {{/check}}
-                                    </span>
-                                </span>
+                                    </dd>
+                                </dl>
                             </div>
-                        </div>
-                        
-                        <!-- Mobile -->
-                        <div class="list-group-item bg-transparent px-0 py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="bg-secondary bg-opacity-10 p-1 rounded-2 me-2">
-                                        <i class="bi bi-telephone-fill text-secondary small"></i>
-                                    </span>
-                                    <span class="text-body-secondary small">
-                                         <span style="font-weight: bold;"> Mobile : </span> 
-                                            {{#check borrower.mobile ""}}
-                                                {{borrower.mobile}}
-                                            {{/check}}
-                                        </span>
-                                    </span>
-                                </div>
-                                <button class="btn btn-primary btn-sm rounded-pill px-2 py-1" style="font-size: 0.75rem;">
-                                    <i class="bi bi-send-fill me-1"></i>
-                                    <span>Send SMS</span>
-                                </button>
-                            </div>
-                        </div>
-        
-                        <!-- Email -->
-                        <div class="list-group-item bg-transparent px-0 py-2 border-bottom-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="bg-secondary bg-opacity-10 p-1 rounded-2 me-2">
-                                        <i class="bi bi-envelope-fill text-secondary small"></i>
-                                    </span>
-                                    <span class="text-body-secondary small">
-                                         <span style="font-weight: bold;"> Email : </span> 
-                                            {{#check borrower.email ""}}
-                                                {{borrower.email}}
-                                            {{/check}}
-                                        </span>
-                                    </span>
-                                </div>
-                                <button class="btn btn-primary btn-sm rounded-pill px-2 py-1" style="font-size: 0.75rem;">
-                                    <i class="bi bi-send-fill me-1"></i>
-                                    <span>Email</span>
-                                </button>
+
+                            <div class="col-md-6">
+                                <dl class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-users text-muted me-2"></i>
+                                        <dt class="text-sm text-muted">Group</dt>
+                                    </div>
+                                    <dd class="fw-medium ps-4 mb-4">
+                                        {{#check borrower.group ""}}
+                                            {{borrower.group}}
+                                        {{/check}}
+                                    </dd>
+
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-mobile-alt text-muted me-2"></i>
+                                        <dt class="text-sm text-muted">Contact</dt>
+                                    </div>
+                                    <dd class="ps-4 mb-4">
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">
+                                                {{#check borrower.mobile ""}}
+                                                    {{borrower.mobile}}
+                                                {{/check}}
+                                            </span>
+                                            <a href="#" class="btn btn-icon btn-sm btn-outline-primary rounded-circle">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </a>
+                                        </div>
+                                        <div class="d-flex align-items-center mt-2">
+                                            <span class="me-2 text-truncate">
+                                                {{#check borrower.email ""}}
+                                                    {{borrower.email}}
+                                                {{/check}}
+                                            </span>
+                                            <a href="#" class="btn btn-icon btn-sm btn-outline-primary rounded-circle">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </a>
+                                        </div>
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
                     </div>
                 </div>
-                    </div>
 
-                    <!-- Quick Actions Card with Modern Design -->
-                    <div class="col-12 col-lg-6">
-                        <div class="p-4 rounded-4 h-100 bg-white border-0 shadow-sm">
-                            <h6 class="text-dark mb-4 d-flex align-items-center">
-                                <span class="bg-primary bg-opacity-10 p-2 rounded-3 me-2">
-                                    <i class="bi bi-lightning-charge text-primary"></i>
-                                </span>
-                                Quick Actions
-                            </h6>
+                <!-- Loans Card -->
+                <div class="card shadow-sm border-0 mt-4 hover-scale">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-hand-holding-usd text-success me-2"></i>
+                            Active Loans
+                        </h5>
+                        <a href="/loan/add/{{borrower.id}}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>New Loan
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="loansTable" class="table table-hover align-middle" style="min-width: 800px">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Loan #</th>
+                                        <th>Amount</th>
+                                        <th>Rate</th>
+                                        <th>Due Date</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th class="pe-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- DataTable content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Quick Actions Card -->
+                <div class="card shadow-sm border-0 hover-scale">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-bolt text-warning me-2"></i>
+                            Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/borrower/statement/" class="btn btn-action-card text-start p-3 rounded-2">
+                                <i class="fas fa-file-invoice me-2"></i>
+                                <div>
+                                    <div class="fw-medium">Generate Statement</div>
+                                    <small class="text-muted">Last 30 days activity</small>
+                                </div>
+                            </a>
                             
-                            <div class="d-grid gap-3">
-                                <a href="/loan/add/{{borrower.id}}" class="btn btn-primary btn-lg rounded-4 d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-plus-circle-fill me-2"></i>
-                                    Add New Loan
-                                </a>
-                                
-                                <a href="/borrower/statement/" class="btn btn-outline-primary btn-lg rounded-4 d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-file-text-fill me-2"></i>
-                                    View Statement
-                                </a>
-                                
-                                <a href="/borrower/edit/{{borrower.id}}" class="btn btn-light btn-lg rounded-4 d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-pencil-square me-2"></i>
-                                    Edit Profile
-                                </a>
-                            </div>
+                            <a href="/borrower/edit/{{borrower.id}}" class="btn btn-action-card text-start p-3 rounded-2">
+                                <i class="fas fa-user-edit me-2"></i>
+                                <div>
+                                    <div class="fw-medium">Edit Profile</div>
+                                    <small class="text-muted">Update personal details</small>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Loans Card with Modern Design -->
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-header bg-white p-4 border-bottom-0">
-                <h5 class="card-title mb-0 d-flex align-items-center">
-                    <span class="bg-warning bg-opacity-10 p-2 rounded-3 me-2">
-                        <i class="bi bi-cash-stack text-warning"></i>
-                    </span>
-                 Loans
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table id="loansTable" class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="border-0 px-4">#</th>
-                                <th class="border-0">Principal</th>
-                                <th class="border-0">Released</th>
-                                <th class="border-0">Interest %</th>
-                                <th class="border-0">Due</th>
-                                <th class="border-0">Paid</th>
-                                <th class="border-0">Balance</th>
-                                <th class="border-0">Status</th>
-                                <th class="border-0 px-4">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="loansTable">
-                            <!-- Table content remains the same but with updated icons -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Repayments Card with Modern Design -->
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-header bg-white p-4 border-bottom-0">
-                <h5 class="card-title mb-0 d-flex align-items-center">
-                    <span class="bg-success bg-opacity-10 p-2 rounded-3 me-2">
-                        <i class="bi bi-clock-history text-success"></i>
-                    </span>
-                    Recent Repayments
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table id="repaymentTable" class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="border-0 px-4">Collection Date</th>
-                                <th class="border-0">Collected By</th>
-                                <th class="border-0">Amount</th>
-                                <th class="border-0">Action</th>
-                                <th class="border-0 px-4">Receipt</th>
-                            </tr>
-                        </thead>
-                        <tbody id="repaymentTable">
-                            <!-- Table content remains the same but with updated icons -->
-                        </tbody>
-                    </table>
+                <!-- Recent Activity -->
+                <div class="card shadow-sm border-0 mt-4 hover-scale">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-clock-rotate-left text-info me-2"></i>
+                            Recent Repayments
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="repaymentTable" class="table table-borderless">
+                                <tbody>
+                                    <!-- DataTable content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
- <script src="/js/jquery/jquery-3.6.0.min.js"></script>
-<script src="/js/jquery/jquery.datatables.min.js"></script>
-<script src="/js/jquery/datatables.buttons.min.js"></script>
-<script src="/js/jquery/buttons.print.min.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const borrowerId = document.querySelector("#borrowerId").textContent;
+    console.log('Borrower ID:', borrowerId);
 
-document.addEventListener("DOMContentLoaded", async (event) => {
-    const borrowerId = document.querySelector("#borrowerId").innerText;
+    // Add loading states
+    const loansTable = $('#loansTable').DataTable();
+    const repaymentsTable = $('#repaymentTable').DataTable();
+    loansTable.processing(true);
+    repaymentsTable.processing(true);
 
-    // Fetch loans (already implemented)
     try {
+        // 1. Debug Loans Data
+        console.log('Fetching loans...');
         const loanResponse = await fetch(`/api/loan/get_borrower_loans/${borrowerId}`);
+        console.log('Loan Response Status:', loanResponse.status);
+        
         const loanData = await loanResponse.json();
+        console.log('Loan API Response:', loanData);
 
-        if (loanData.loans.queryStatus) {
-            const loanTbody = document.querySelector("#loansTable");
-            loanTbody.innerHTML = loanData.loans.data.map((loan, index) => `
-                <tr>
-                    <td class="px-4">${index + 1}</td>
-                    <td>${parseFloat(loan.principal).toLocaleString()}</td>
-                    <td>${new Date(loan.release_date).toLocaleDateString()}</td>
-                    <td>${parseFloat(loan.interest_rate)}%</td>
-                    <td>${parseFloat(loan.total_due).toLocaleString()}</td>
-                    <td>${parseFloat(loan.total_paid).toLocaleString()}</td>
-                    <td>${parseFloat(loan.balance).toLocaleString()}</td>
-                    <td><span class="badge ${loan.status === 'Past Maturity' ? 'bg-danger' : 'bg-success'}">${loan.status}</span></td>
-                    <td class="px-4">
-                        <a href="/loan/view/${loan.loan_id}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                    </td>
-                </tr>
-            `).join('');
-            $('#loansTable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                lengthChange: true,
-                pageLength: 10
-            }); // Initialize DataTables
+        if (loanData.loans?.queryStatus) {
+            console.log('Processing loans data:', loanData.loans.data);
+            
+            loansTable.clear().rows.add(loanData.loans.data.map((loan, index) => [
+                `#${loan.loan_id}`,
+                parseFloat(loan.principal).toLocaleString(),
+                `${loan.interest_rate}%`,
+                new Date(loan.due_date).toLocaleDateString(),
+                parseFloat(loan.balance).toLocaleString(),
+                `<span class="badge ${loan.status === 'Past Maturity' ? 'bg-danger' : 'bg-success'} rounded-pill">
+                    ${loan.status}
+                </span>`,
+                `<div class="d-flex gap-2">
+                    <a href="/loan/view/${loan.loan_id}" class="btn btn-sm btn-icon btn-outline-primary rounded-circle">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </div>`
+            ])).draw();
+        } else {
+            console.error('Loan data structure unexpected:', loanData);
+            Toast.fire({ icon: 'warning', title: 'No loan data found' });
         }
-    } catch (error) {
-        console.error("Error fetching loans:", error);
-    }
 
-    // Fetch repayments
-    try {
+        // 2. Debug Repayments Data
+        console.log('Fetching repayments...');
         const repaymentResponse = await fetch(`/api/repayment/get_borrower_repayments/${borrowerId}`);
+        console.log('Repayment Response Status:', repaymentResponse.status);
+        
         const repaymentData = await repaymentResponse.json();
+        console.log('Repayment API Response:', repaymentData);
 
-        if (repaymentData.repayments.queryStatus) {
-            const repaymentTbody = document.querySelector("#repaymentTable");
-            repaymentTbody.innerHTML = repaymentData.repayments.data.map((repayment) => `
-                <tr>
-                    <td class="px-4">${new Date(repayment.collection_date).toLocaleDateString()}</td>
-                    <td>${repayment.first_name} ${repayment.last_name}</td>
-                    <td>${parseFloat(repayment.amount).toLocaleString()}</td>
-                    <td>
-                        <a href="/repayment/view/${repayment.id}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                    </td>
-                    <td class="px-4">
-                        <a href="/repayment/receipt/${repayment.id}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-receipt"></i> Receipt
-                        </a>
-                    </td>
-                </tr>
-            `).join('');
-            $('#repaymentTable').DataTable(
-                {
-                    paging: true,
-                    searching: true,
-                    ordering: true,
-                    lengthChange: true,
-                    pageLength: 10
-                }
-            ); // Initialize DataTables
+        if (repaymentData.repayments?.queryStatus) {
+            console.log('Processing repayments data:', repaymentData.repayments.data);
+            
+            repaymentsTable.clear().rows.add(repaymentData.repayments.data.map(repayment => [
+                `<div class="d-flex align-items-center gap-3">
+                    <div class="bg-success bg-opacity-10 p-2 rounded-circle">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <div>
+                        <div class="fw-medium">₱${parseFloat(repayment.amount).toLocaleString()}</div>
+                        <small class="text-muted">${new Date(repayment.collection_date).toLocaleDateString()}</small>
+                    </div>
+                </div>`,
+                `<a href="/repayment/receipt/${repayment.id}" class="btn btn-sm btn-link text-decoration-none">
+                    Receipt <i class="fas fa-arrow-up-right-from-square ms-2"></i>
+                </a>`
+            ])).draw();
+        } else {
+            console.error('Repayment data structure unexpected:', repaymentData);
+            Toast.fire({ icon: 'warning', title: 'No repayment history' });
         }
+
     } catch (error) {
-        console.error("Error fetching repayments:", error);
+        console.error("Full Error:", error);
+        Toast.fire({ 
+            icon: 'error', 
+            title: 'Data Load Failed',
+            text: 'Check console for details'
+        });
+    } finally {
+        loansTable.processing(false);
+        repaymentsTable.processing(false);
     }
 });
-</script>
+</script> --}}
+

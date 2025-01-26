@@ -11,7 +11,9 @@ import savingRoutes from "./routes/saving.js"
 import payrollRoutes from "./routes/payroll.js"
 import branchRoutes from "./routes/branch.js"
 import repaymentRoutes from "./routes/repayment.js"
+import reportRoutes from "./routes/report.js"
 import apiRoutes from "./api/routes/index.js"
+import capitalRoutes from "./routes/capital.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv';
@@ -64,6 +66,8 @@ app.use("/payroll", payrollRoutes);
 app.use("/branch", branchRoutes);
 app.use("/api", apiRoutes);
 app.use("/repayment", repaymentRoutes);
+app.use("/report", reportRoutes)
+app.use("/capital", capitalRoutes)
 
 // View Engine Setup
 const hbs = exphbs.create({

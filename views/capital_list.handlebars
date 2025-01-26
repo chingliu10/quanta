@@ -1,0 +1,69 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Capital Deposits</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                                  <li class="me-3">
+            <a href="/capital/add" class="btn btn-sm btn-info add-user-btn">
+                <i class="bi bi-plus-circle me-1"></i>Add Capital
+            </a>
+        </li>
+                  <li class="breadcrumb-item"><a href="/capital/data">Capital</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">capital</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+        {{#if deposits.length}}
+                <table id="all-loans-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Bank</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{#each deposits}}
+                    <tr>
+                        <td>{{this.bank}}</td>
+                        <td>{{formatDateTime this.capital_deposited_at}}</td>
+                        <td>{{formatDecimalNumbers this.capital_amount}}</td>
+                        <td>{{this.capital_notes}}</td>
+                        <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/capital/edit/{{this.capital_id}}">
+                                            <i class="bi bi-pencil-square me-2"></i>Edit</a></li>
+                                        {{!-- <li><button class="dropdown-item text-danger"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#deleteBankModal" 
+                                              data-bank-id="{{this.id}}" 
+                                              data-bank-name="{{this.name}}" >
+                                            <i class="bi bi-trash me-2"></i> Delete</button></li> --}}
+                                    </ul>
+                                </div>
+                          </td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+        {{else}}
+          <p class="bg-warning p-2">No Capital Deposits Found</p>
+        {{/if}}
+    </div>
+</div>
+{{> flash_message}}

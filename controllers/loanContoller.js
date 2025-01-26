@@ -98,7 +98,7 @@ export const getAllLoans = async (branch) => {
                     FROM 
                         loan_schedules
                     WHERE 
-                        deleted_at IS NULL
+                        branch_id = ? and deleted_at IS NULL
                     GROUP BY 
                         loan_id
                 ) AS due_totals 
@@ -120,7 +120,7 @@ export const getAllLoans = async (branch) => {
                 loans.deleted_at IS NULL
                 and loans.branch_id = ?
         `;
-        const [rows] = await pool.query(query, [branch]);
+        const [rows] = await pool.query(query, [branch, branch]);
         return { queryStatus: true, data: rows, message: 'success' };
     } catch (error) {
         console.log(error)

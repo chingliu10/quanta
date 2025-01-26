@@ -48,12 +48,12 @@
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="/capital/edit/{{this.capital_id}}">
                                             <i class="bi bi-pencil-square me-2"></i>Edit</a></li>
-                                        {{!-- <li><button class="dropdown-item text-danger"
+                                            <li><button class="dropdown-item text-danger"
                                               data-bs-toggle="modal"
-                                              data-bs-target="#deleteBankModal" 
-                                              data-bank-id="{{this.id}}" 
-                                              data-bank-name="{{this.name}}" >
-                                            <i class="bi bi-trash me-2"></i> Delete</button></li> --}}
+                                              data-bs-target="#deleteDepositModal" 
+                                              data-capital-id="{{this.capital_id}}" 
+                                              data-deposit-amount="{{formatDecimalNumbers this.capital_amount}}" >
+                                            <i class="bi bi-trash me-2"></i> Delete</button></li>
                                     </ul>
                                 </div>
                           </td>
@@ -66,4 +66,55 @@
         {{/if}}
     </div>
 </div>
+
+<div class="modal fade" id="deleteDepositModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0 position-relative">
+                <div class="rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-x-circle text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <h4 class="mb-3 text-center">Are you sure?</h4>
+                <p class="mb-4 text-center">Do you really want to delete bank deposit of amount <strong id="depositAmount" class="text-danger"></strong>? This process cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteButton" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---end of delete modal-->
+<!--deleting form--->
+<form method="post" action="/capital/delete" style="display: none;">
+    <input type="text" name="deposit_id">
+    <button id="deleteDepositBtn">submit</button>
+</form>
 {{> flash_message}}
+<script>
+                const deleteDepositModal = document.getElementById('deleteDepositModal');
+                const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+                const amountDepositElement = document.getElementById('depositAmount');
+
+                 deleteDepositModal.addEventListener('show.bs.modal', (event) => {
+                    
+                    const trigger = event.relatedTarget;
+                    const depositAmount = trigger.getAttribute('data-deposit-amount');
+                    const depositId = trigger.getAttribute('data-capital-id');
+
+                    amountDepositElement.textContent = depositAmount
+                    document.querySelector('input[name="deposit_id"]').value = depositId
+                });
+
+                confirmDeleteButton.addEventListener("click", function () {
+                    
+
+                    document.querySelector("#deleteDepositBtn").click()
+                })
+
+
+        
+</script>

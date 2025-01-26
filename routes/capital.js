@@ -7,6 +7,7 @@ import {
     deleteBank,
     addCapital,
     getAllCapitalDeposits,
+    deleteDeposit,
  } from '../controllers/capitalController.js';
 import handleError from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -37,6 +38,29 @@ router.get("/data", async (req, res) => {
     
 })
 
+//delete capital
+router.post("/delete", async (req, res) => {
+    
+    try {
+
+        let result = await deleteDeposit( req.body.deposit_id )
+
+        if(result.queryStatus){
+
+            req.flash("success", "Capital Deleted Successfully")
+            return res.redirect(`/capital/data`)
+
+        }
+
+        res.status(400).render("error_page", { message : result.activity })
+
+    }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To Delete Deposit/r" })
+
+    }
+
+})
 
 //were capital is added
 router.get("/add", async (req, res) => {
@@ -200,8 +224,7 @@ router.post("/bank/edit", async (req, res) => {
 router.post("/bank/delete", async (req, res) => {
 
     let { bank_id } = req.body
-
-    console.log(bank_id)
+    
     try {
         let result = await deleteBank(bank_id)
 
@@ -216,6 +239,7 @@ router.post("/bank/delete", async (req, res) => {
     }catch(error) {
         res.status(500).render("error_page", { message : "Failed To Delete Bank/r" })
     }
+
 })
 
 

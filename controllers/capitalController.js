@@ -130,30 +130,64 @@ export const changeBankDetails = async ({ bank_id, bank_name }) => {
     
 }
 
+// export const deleteBank = async (bank_id) => {
+
+//     try {
+
+//         let timeStamp = new Date()
+
+//         const query = `
+//             update bank_accounts set deleted_at = ? 
+//                 where id = ?
+//         `
+
+//         await pool.query(query, [timeStamp, bank_id])
+
+//         return {
+//             queryStatus : true
+//         }
+
+//     }catch (error) {
+
+//         return handleError(error, "Failed To Delete Bank")
+
+//     }
+
+// }
+
 export const deleteBank = async (bank_id) => {
 
+    const connection = await pool.getConnection();
+    
     try {
+        await connection.beginTransaction();
+        
+        const timeStamp = new Date();
+        
+        await connection.query(
+            'UPDATE bank_accounts SET deleted_at = ? WHERE id = ?', 
+            [timeStamp, bank_id]
+        );
 
-        let timeStamp = new Date()
-
-        const query = `
-            update bank_accounts set deleted_at = ? 
-                where id = ?
-        `
-
-        await pool.query(query, [timeStamp, bank_id])
-
+        await connection.query(
+            `UPDATE capital set deleted_at = ? where bank_account_id = ?`,
+            [timeStamp, bank_id]
+        )
+       
+        await connection.commit();
+        
         return {
-            queryStatus : true
-        }
-
-    }catch (error) {
-
-        return handleError(error, "Failed To Delete Bank")
-
+            queryStatus: true,
+        };
+        
+    } catch (error) {
+        console.log(error)
+        await connection.rollback();
+        return handleError(error, "Failed To Delete Bank");
+    } finally {
+        connection.release(); // This is necessary for transaction management
     }
-
-}
+};
 
 
 export const addCapital = async ( userWhoHasPosted, branch, {bank, amount, date, description}) => {
@@ -208,6 +242,34 @@ export const getAllCapitalDeposits = async (branch) => {
     }
 
 
+
+}
+
+export const deleteDeposit = async (deposit_id) => {
+
+    try {
+
+        let timeStamp = new Date()
+
+        let query = `
+        
+            update capital set deleted_at = ? where id = ?
+        
+        `
+
+        await pool.query(query, [timeStamp, deposit_id])
+
+        return {
+            queryStatus : true
+        }
+
+    }catch (error) {
+
+        console.log(error)
+        return handleError(error, "Failed To Delete Deposit/c")
+
+
+    }
 
 }
 

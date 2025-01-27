@@ -110,7 +110,8 @@ const hbs = exphbs.create({
         sum: (...args) => {
             const values = args.slice(0, -1); // Exclude the last `options` argument
             return values.reduce((acc, curr) => acc + Number(curr), 0);
-        }
+        },
+        json: (context) => JSON.stringify(context)
     }
 });
 

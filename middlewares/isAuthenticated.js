@@ -3,16 +3,14 @@ export const isAuthenticated = (req, res, next) => {
         return next(); // User is authenticated, proceed to the next middleware
     }
 
-    // Check the Accept header to determine the response format
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-        // Respond with JSON for API requests
-        return res.status(401).json({
-            success: false,
-            error: 'Unauthorized',
-            message: 'You must be logged in to access this resource.',
-        });
-    }
+    console.log(req.baseUrl)
 
+    if(req.baseUrl == "/api"){
+        return res.status(401).json({
+            success : false,
+            error : "Unauthorized"
+        })
+    }
     // Default behavior: redirect for UI requests
     res.redirect('/login');
 };

@@ -245,6 +245,30 @@ export const getAllCapitalDeposits = async (branch) => {
 
 }
 
+export const getCapitalDepositDetail = async (capitalDepositId) => {
+
+    console.log(capitalDepositId);
+    try {
+
+        let query = `
+            select id, amount , created_at , bank_account_id from capital where deleted_at is null
+                and id = ? limit 1
+        `
+
+        let [rows] = await pool.query(query, [capitalDepositId])
+
+        return {
+            queryStatus : true,
+            data : rows
+        }
+
+    }catch (error) {
+
+        return handleError(error, "Failed To Get Capital Deposit/c")
+
+    }
+}
+
 export const deleteDeposit = async (deposit_id) => {
 
     try {

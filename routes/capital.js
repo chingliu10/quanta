@@ -8,6 +8,7 @@ import {
     addCapital,
     getAllCapitalDeposits,
     deleteDeposit,
+    getCapitalDepositDetail,
  } from '../controllers/capitalController.js';
 import handleError from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -104,6 +105,47 @@ router.post("/add", async (req, res) => {
 
         res.status(500).render("error_page", { message : "Failed To Deposit Capital" })
 
+    }
+
+})
+
+//edit capital
+router.get("/edit/:capitalId", async (req, res) => {
+
+    let { capitalId } = req.params
+
+    try {
+
+        let result = await getCapitalDepositDetail(capitalId)
+
+        if(result.queryStatus) {
+
+
+            let result2 = await getAllBanks()
+
+            if(result2.queryStatus) {
+
+                console.log(result.data)
+                console.log(result2.data)
+                return res.render("capital_edit", {
+                    title : "Edit Capital Deposit", 
+                    user : req.session.user,
+                    capitalDetail : result.data[0],
+                    bank_accounts : "[ { id: 3, name: 'CRDB' }, { id: 4, name: 'STANDARD CHARTERED' } ]"
+                })
+
+            }
+
+            return  res.status(400).render("error_page", { message : result2.activity })
+
+        }
+
+        return  res.status(400).render("error_page", { message : result.activity })
+
+    }catch (error) {
+
+
+        res.status(500).render("error_page", { message : "Failed To Edit Capital Deposit/r" })
     }
 
 })
@@ -224,7 +266,7 @@ router.post("/bank/edit", async (req, res) => {
 router.post("/bank/delete", async (req, res) => {
 
     let { bank_id } = req.body
-    
+
     try {
         let result = await deleteBank(bank_id)
 

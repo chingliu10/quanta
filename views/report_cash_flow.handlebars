@@ -1,0 +1,39 @@
+<form id="cashflowFormDates">
+<input type="date" name="start_date">
+<input type="date" name="end_date">
+<button>Submit</button>
+</form>
+<script>
+
+    let form = document.querySelector("#cashflowFormDates")
+
+    form.addEventListener("submit", async (e) => {
+
+        e.preventDefault()
+
+    let start_date = document.querySelector("input[name='start_date']").value
+    let end_date = document.querySelector("input[name='end_date']").value
+
+        let urls = [ "/api/get_total_capital" ]
+
+        if(start_date && end_date) {
+
+            if(start_date > end_date) {
+
+                 return alert("Start Date Should Be Smaller Than End Date")
+            }
+
+            for(let x = 0; x < urls.length; x++) {
+                urls[x] += `?start_date=${start_date}&end_date=${end_date}`
+            }
+
+        }
+
+        const fetchPromises = urls.map(url => fetch(url).then(response => response.json()));
+
+        const results = await Promise.all(fetchPromises)
+
+    })
+
+
+</script>

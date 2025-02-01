@@ -63,3 +63,6 @@ ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;
 --add column on capital table
 ALTER TABLE capital
 ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;
+
+--add column deleted_at 
+ALTER TABLE savings_transactions ADD COLUMN deleted_at DATETIME NULL;

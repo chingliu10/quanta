@@ -14,7 +14,9 @@
     let start_date = document.querySelector("input[name='start_date']").value
     let end_date = document.querySelector("input[name='end_date']").value
 
-        let urls = [ "/api/get_total_capital" ]
+    let baseUrl = "/api"
+
+        let urls = [ `${baseUrl}/get_total_capital`, `${baseUrl}/total_principal_released`, `${baseUrl}/total_savings_deposited`  ]
 
         if(start_date && end_date) {
 

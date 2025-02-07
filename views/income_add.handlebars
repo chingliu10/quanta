@@ -1,0 +1,99 @@
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="mb-0">Add Income</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/income/all">All Incomes</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Income</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="/income/add">
+          <!-- Required Fields Section -->
+          <div class="mb-4"> 
+            <div class="mb-3">
+              <label class="form-label text-bold">Income Type</label>
+              <select class="form-select" name="income_type" required>
+                <option value="">select income type</option>
+                {{#each incomeTypes}}
+                    <option value={{this.id}}>{{this.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-bold">Income Amount</label>
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-secondary" onclick="decrementAmount()">-</button>
+                <input type="number" class="form-control" name="amount" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="incrementAmount()">+</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-bold">Date</label>
+              <input type="date" class="form-control" name="income_date" required>
+            </div>
+          </div>
+
+            <div class="mb-3">
+              <label class="form-label text-bold">Description</label>
+              <textarea class="form-control" rows="3" name="notes"></textarea>
+            </div>
+
+          <!-- Optional Fields Section -->
+          {{!-- <div class="mb-4">
+            <h5 class="text-bold">Optional Fields</h5>
+            
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Files (doc, pdf, image)</label>
+              <input type="file" class="form-control" multiple accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" 
+                     onchange="validateFiles(this)" data-max-files="30">
+              <small class="text-muted">You can select up to 30 files. Hold Ctrl button to select multiple files.</small>
+            </div>
+          </div> --}}
+
+          <!-- Custom Fields Section -->
+
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/*function validateFiles(input) {
+  if (input.files.length > 30) {
+    alert('You can only select up to 30 files');
+    input.value = '';
+  }
+} */
+
+
+function incrementAmount() {
+  const input = document.querySelector('input[type="number"]');
+  input.value = (parseInt(input.value) || 0) + 1;
+}
+
+function decrementAmount() {
+  const input = document.querySelector('input[type="number"]');
+  input.value = Math.max((parseInt(input.value) || 0) - 1, 0);
+}
+</script>

@@ -1,19 +1,14 @@
 <link rel="stylesheet" href="/css/datatables/datatables.min.css">
 <div class="app-content-header">
-            <!--begin::Container-->
+          <!--begin::Container-->
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">All Income Types</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">Incomes</h3></div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                     <li class="me-3">
-            <a href="/income/type/add" class="btn btn-sm btn-info add-user-btn">
-                <i class="bi bi-plus-circle me-1"></i>Add Income Type
-            </a>
-        </li>
-                  <li class="breadcrumb-item"><a href="/income/view">All Incomes</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Income</li>
+                  <li class="breadcrumb-item"><a href="/branch/view">Branches</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Branch</li>
                 </ol>
               </div>
             </div>
@@ -23,30 +18,33 @@
  </div>
 <div class="app-content">
     <div class="container-fluid">
-     {{#if incomeTypes.length}}
-                <table id="all-income-types-table" class="table card-table table-vcenter text-nowrap">
+     {{#if incomes.length}}
+                <table id="all-income-table" class="table card-table table-vcenter text-nowrap">
                     <thead>
                         <tr>
                             <th>Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                             <th>Description</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{#each incomeTypes}}
+                        {{#each incomes}}
                             <tr>
-                                <td>{{this.name}}</td>
-                                <td>
+                                <td>{{this.income_type}}</td>
+                                <td>{{this.amount}}</td>
+                                <td>{{formatDateTime this.date}}</td>
+                                <td>{{this.description}}</td>
+                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Actions
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="/loan/details/{{this.id}}">
-                                                <i class="bi bi-info-circle"></i> Details</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="/loan/edit/{{this.id}}">
+                                            <li><a class="dropdown-item" href="/income/edit/{{this.income_id:}}">
                                                 <i class="bi bi-pencil-square"></i> Edit</a></li>
-                                            <li><a class="dropdown-item text-danger" href="/loan/delete/{{this.id}}">
+                                            <li><a class="dropdown-item text-danger" href="/income/delete/{{this.income_id:}}">
                                                 <i class="bi bi-trash"></i>Delete</a></li>
                                         </ul>
                                     </div>
@@ -56,9 +54,9 @@
                     </tbody>
                 </table>
                 {{else}}
-                <p class="bg-warning p-2">No Income Types Found</p>
+                <p class="bg-warning p-2">No Incomes</p>
                 {{/if}}
-        </div>
+    </div>
 </div>
 {{> flash_message}}
  <script src="/js/jquery/jquery-3.6.0.min.js"></script>
@@ -67,7 +65,7 @@
 <script src="/js/jquery/buttons.print.min.js"></script>
 <script>
         $(document).ready(function() {
-            $('#all-income-types-table').DataTable({
+            $('#all-income-table').DataTable({
                 paging: true,
                 searching: true,
                 order: [[1, 'desc']], // Order by Balance descending

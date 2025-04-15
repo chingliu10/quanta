@@ -81,3 +81,9 @@ ADD COLUMN branch_id INTEGER;
 
 #added deleted_at column
 ALTER TABLE other_income ADD COLUMN deleted_at DATETIME NULL;
+
+#expense type additional colums
+ALTER TABLE expense_types 
+  ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ADD COLUMN deleted_at DATETIME DEFAULT NULL;

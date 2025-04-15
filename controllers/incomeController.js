@@ -13,7 +13,7 @@ export const storeIncomeType = async (income_type, branch ) => {
 
         const query = `
            INSERT INTO other_income_types 
-            (name, created_at, updated_at, branch_id) values (?, ?, ?, ?)
+            (name, created_at, updated_at) values (?, ?, ?)
         `;
 
         await pool.query(query, [income_type.toUpperCase(), timeStamp , timeStamp, branch ])
@@ -34,7 +34,7 @@ export const getAllIncomeTypes = async ( branch ) => {
     try {
 
         const query = `
-            SELECT id, name FROM other_income_types where branch_id = ?
+            SELECT id, name FROM other_income_types
         `
 
         let [rows] = await pool.query(query, [ branch ])

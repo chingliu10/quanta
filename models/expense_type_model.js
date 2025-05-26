@@ -5,18 +5,23 @@ import connection from '../config/connection.js';
 const { pool } = connection;
 
 // Helper: Check if name exists (case-insensitive)
-const checkNameExists = async (name, excludeId = null) => {
-  const query = `
-    SELECT id FROM ${TABLES.EXPENSE_TYPE}
+const checkNameExists = async (name) => {
+  console.log("8888")
+  console.log(name)
+  
+
+  // return rows.length > 0;
+   const query = `
+    SELECT 1 FROM ${TABLES.EXPENSE_TYPE}
     WHERE UPPER(name) = UPPER(?)
     AND deleted_at IS NULL
-    ${excludeId ? 'AND id != ?' : ''}
+    LIMIT 1
   `;
-  
-  const params = [name.trim()];
-  if (excludeId) params.push(excludeId);
 
-  const [rows] = await pool.query(query, params);
+  const [rows] = await pool.query(query, [name.trim()]);
+  console.log("-----")
+  console.log(rows)
+  console.log(rows.length > 0)
   return rows.length > 0;
 };
 

@@ -1,45 +1,46 @@
-import { createExpenseType } from '../models/expense_type_model.js';
+import { createExpenseType , getAllExpenseTypes } from '../models/expense_type_model.js';
+import handleError from '../helpers/handleError.js';
 
-export const createExpense = async (req, res) => {
+export const createExpense = async ({ expense_type }) => {
   try {
-    const { expense_type_add } = req.body;
-
-
-    console.log(expense_type_add)
-
-    return
-    
+  
     // Validate input
-    if (!expense_type_add?.trim()) {
-      return res.status(400).render('your-template', {
-        error: 'Expense type name is required',
-        formData: req.body
-      });
-    }
+    // if (!expense_type?.trim()) {
+    //   return res.status(400).render('your-template', {
+    //     error: 'Expense type name is required',
+    //     formData: req.body
+    //   });
+    // }
 
     // Create using model
-    const newType = await createExpenseType(expense_type_add);
-    
-    // Redirect to prevent duplicate form submissions
-    res.redirect('/expense/types?success=true');
+    await createExpenseType(expense_type);
+    return {
+      queryStatus : true
+    }
+
   } catch (error) {
-    res.status(400).render('your-template', {
-      error: error.message,
-      formData: req.body
-    });
+
+    console.log(error)
+    return handleError(error,  error.errorMessage || 'Failed To Create Expense Type/c');
+
   }
 };
 
 export const getExpenseTypes = async (req, res) => {
   try {
-    const types = await getAllExpenseTypes();
-    res.render('your-template', {
-      types,
-      success: req.query.success
-    });
+    const rows = await getAllExpenseTypes();
+    
+    return {
+      status : true,
+      data : rows
+    }
   } catch (error) {
-    res.status(500).render('your-template', {
-      error: 'Failed to load expense types'
-    });
+    
+    return handleError(error,  error.errorMessage || 'Failed To Fetch Expenses Types');
+
   }
 };
+
+// export const deleteExpenseType = async (req, res) => {
+
+// }

@@ -1,0 +1,69 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Edit Expense Type</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/expense/type/view">Expense Type List</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Expense Types</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+            <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Type Details</h3>
+                    </div>
+                    <form method="post" action="/expense/type/update">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="type-name">Expense Type Name</label>
+                                <input type="text" class="form-control" id="type-name" name="expense_type_name" value="{{expenseType.name}}"
+                                       placeholder="Enter Expense name" required maxlength="100">
+                                <input type="text" value="{{expenseType.id}}" name="expense_id" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> flash_message}}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const nameInput = document.querySelector('input[name="expense_type_name"]');
+    const submitBtn = document.querySelector('button[type="submit"]');
+    const originalValue = nameInput.value.trim();
+
+    function checkInput() {
+      const currentValue = nameInput.value.trim();
+      
+      // Disable if empty or unchanged
+      if (currentValue === '' || currentValue === originalValue) {
+        submitBtn.disabled = true;
+      } else {
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Run check on page load
+    checkInput();
+
+    // Run check on every input change
+    nameInput.addEventListener('input', checkInput);
+  });
+</script>
+

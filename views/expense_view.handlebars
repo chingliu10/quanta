@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="/css/datatables/datatables.min.css">
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
+<div class="app-content-header">
+            <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">All Expenses</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                     <li class="me-3">
+            <a href="/expense/type/create" class="btn btn-sm btn-info add-user-btn">
+                <i class="bi bi-plus-circle me-1"></i>Add Expenses
+            </a>
+        </li>
+                  <li class="breadcrumb-item"><a href="/expense/type/view">All Expenses</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Expense Types</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <form id="deleteExpenseForm" method="POST" style="display: none;">
+    </form>
+    <div class="container-fluid">
+     {{#if expenses.length}}
+                <table id="all-income-types-table" class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Expense Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Recurring</th>
+                            <th>Description</th>
+                            <th>Files</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each expenses}}
+                            <tr>
+                                <td>{{this.expense_type_name}}</td>
+                                <td>{{this.amount}}</td>
+                                <td>{{formatDateTime this.date}}</td>
+                                <td>{{this.recurring}}</td>
+                                <td>{{this.description}}</td>
+                                <td>
+                                    {{#each this.files}}
+                                        <a href="/receipts/{{this}}" target="_blank">
+                                            {{fifteenCharacters this 15}}
+                                        </a>
+                                    {{/each}}
+                                </td>
+                                <td>
+                                     <div class="dropdown">
+                                        <button class="btn btn-sm dropdown-toggle btn-primary"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/expense/edit/{{this.id}}">
+                                                <i class="bi bi-pencil-square"></i> Edit</a>
+                                            </li>
+                                                {{!-- <li>
+                                                             <button 
+                                                                class="dropdown-item text-danger"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteExpenseTypeModal"
+                                                                data-expense-type-id="{{this.id}}"
+                                                                data-expense-type-name="{{this.name}}"
+                                                                >
+                                                                <i class="bi bi-trash me-2"></i> Delete
+                                                            </button>
+                                                </li>
+                                        </ul> --}}
+                                    </div>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <p class="bg-warning p-2">No Expenses Found</p>
+                {{/if}}
+        </div>
+</div>
+{{> flash_message}}
+<!-- Delete Confirmation Modal -->
+
+<!---end of delete modal-->
+ <script src="/js/jquery/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery/jquery.datatables.min.js"></script>
+<script src="/js/jquery/datatables.buttons.min.js"></script>
+<script src="/js/jquery/buttons.print.min.js"></script>
+<script>
+        $(document).ready(function() {
+            $('#all-income-types-table').DataTable({
+                paging: true,
+                searching: true,
+                order: [[1, 'desc']], // Order by Balance descending
+                columnDefs: [
+                    { orderable: false, targets: [1] } // Disable sorting on Actions column
+                ],
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-secondary'
+                        }
+                ]
+            });
+
+        });
+</script>

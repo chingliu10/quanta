@@ -6,11 +6,7 @@ const { pool } = connection;
 
 // Helper: Check if name exists (case-insensitive)
 const checkNameExists = async (name) => {
-  console.log("8888")
-  console.log(name)
-  
 
-  // return rows.length > 0;
    const query = `
     SELECT 1 FROM ${TABLES.EXPENSE_TYPE}
     WHERE UPPER(name) = UPPER(?)
@@ -19,9 +15,6 @@ const checkNameExists = async (name) => {
   `;
 
   const [rows] = await pool.query(query, [name.trim()]);
-  console.log("-----")
-  console.log(rows)
-  console.log(rows.length > 0)
   return rows.length > 0;
 };
 
@@ -59,7 +52,11 @@ export const updateExpenseType = async (id, newName) => {
 
   // Check uniqueness excluding current record
   if (await checkNameExists(trimmedName, id)) {
-    throw new Error('Expense type with this name already exists');
+    // throw new Error('Expense type with this name already exists');
+    return {
+      msg : "Expense Type With This Name Already Exsits"
+    }
+
   }
 
   // Update record
@@ -71,8 +68,10 @@ export const updateExpenseType = async (id, newName) => {
     [trimmedName.toUpperCase(), id]
   );
 
-  // Return updated record
-  return getExpenseTypeById(id);
+  return {
+      msg : "Done"
+  }
+
 };
 
 // Soft delete expense type
@@ -90,7 +89,7 @@ export const deleteExpenseType = async (id) => {
 export const getAllExpenseTypes = async (includeDeleted = false) => {
   const whereClause = includeDeleted ? '' : 'WHERE deleted_at IS NULL';
   const [rows] = await pool.query(
-    `SELECT id, name, created_at, updated_at
+    `SELECT id, name
      FROM ${TABLES.EXPENSE_TYPE}
      ${whereClause}`
   );
@@ -100,7 +99,7 @@ export const getAllExpenseTypes = async (includeDeleted = false) => {
 // Get single expense type by ID
 export const getExpenseTypeById = async (id) => {
   const [rows] = await pool.query(
-    `SELECT id, name, created_at, updated_at
+    `SELECT id, name
      FROM ${TABLES.EXPENSE_TYPE}
      WHERE id = ?
      AND deleted_at IS NULL`,

@@ -80,6 +80,10 @@ const hbs = exphbs.create({
     layoutsDir: path.join(__dirname, 'views', 'layouts'),
     partialsDir: path.join(__dirname, 'views', 'partials'),
     helpers: {
+        fifteenCharacters : function (str, len = 15)  {
+             if (!str || typeof str !== 'string') return '';
+             return str.length > len ? str.substring(0, len) + '...' : str;
+        },
         ifEquals: function(arg1, arg2, options) {
             return arg1 === arg2 ? options.fn(this) : options.inverse(this);
         },

@@ -8,7 +8,7 @@ import {
 } from "../controllers/expenseController.js"
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 import { deleteExpenseType ,getExpenseTypeById, updateExpenseType } from '../models/expense_type_model.js';
-import { createExpense, getAllExpenses, getExpenseById , updateExpense } from '../models/expense.js';
+import { createExpense, getAllExpenses, getExpenseById , updateExpense, deleteExpense } from '../models/expense.js';
 
 // Reconstruct __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -175,7 +175,6 @@ router.get("/view", async (req, res) => {
 
     // Pass branchId to filter expenses
     const expenses = await getAllExpenses({ branch_id: branchId });
-
     res.render("expense_view", {
       title: "Add Expenses",
       user: req.session.user,
@@ -298,5 +297,25 @@ router.post("/update", upload.single("receipt"), async (req, res) => {
   }
 });
 
+
+router.post("/delete/:id", async (req, res) => {
+
+    let id = req.params.id 
+
+    try {
+
+        await deleteExpense(id)
+        req.flash("success", "Expense Deleted Successfully");
+        res.redirect("/expense/view");
+
+
+    }catch (error) {
+
+        console.error(err);
+        res.status(500).render("error_page", { message: "Failed To Delete Expense" });
+
+    }
+
+})
 
 export default router;

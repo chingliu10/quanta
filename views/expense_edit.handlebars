@@ -1,0 +1,128 @@
+<div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Edit Expense</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/expense/view">All Expenses</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Expenses</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+ </div>
+<div class="app-content">
+    <div class="container-fluid">
+         <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Expense</h3>
+                    </div>
+                    <form method="post" action="/expense/update" enctype="multipart/form-data" id="expenseForm">
+    <div class="card-body">
+        <input type="hidden" name="id" value="{{expenseDetails.id}}">
+        <div class="form-group">
+            <label for="bank">Expense Type</label>
+            <select class="form-select" id="expense_type" name="expense_type" required>
+                <option value="">Select Expense Type</option>
+                {{#each expenseTypes}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../expenseDetails.expense_type_id)}}selected{{/if}}>
+                    {{this.name}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" 
+                   step="0.01" min="0" placeholder="Enter amount" value="{{expenseDetails.amount}}" required>
+        </div>
+        <br/>
+        
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" name="date" value="{{inputDate expenseDetails.date}}"  required>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description"
+                      rows="3" placeholder="Enter description" value="{{expenseDetails.description}}" ></textarea>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label for="receipt">Upload Receipt (optional)</label>
+
+            {{#if expenseDetails.files.[0]}}
+                <div class="mb-2">
+                <p>Existing File: 
+                    <a href="/receipts/{{expenseDetails.files.[0]}}" target="_blank">
+                        {{fifteenCharacters expenseDetails.files.[0] 15}}
+                    </a>
+                </p>
+                </div>
+            {{/if}}
+
+             <input type="file" class="form-control" id="receipt" name="receipt">
+        </div>
+
+    </div>
+
+       <div class="card-footer">
+        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Save</button>
+    </div>
+</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> flash_message}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("expenseForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Capture initial values
+    const initialData = new FormData(form);
+    const initialEntries = [...initialData.entries()].filter(([k, v]) => k !== 'receipt');
+
+    // Compare function
+    function hasChanged() {
+        const currentData = new FormData(form);
+        const currentEntries = [...currentData.entries()].filter(([k, v]) => k !== 'receipt');
+
+        // Check if any value differs
+        for (let i = 0; i < initialEntries.length; i++) {
+            const [key, initialValue] = initialEntries[i];
+            const currentValue = currentData.get(key);
+
+            if (initialValue !== currentValue) {
+                return true;
+            }
+        }
+
+        // Check if file input has any file selected
+        if (currentData.get('receipt') && currentData.get('receipt').name !== "") {
+            return true;
+        }
+
+        return false;
+    }
+
+    // Listen to input changes
+    form.addEventListener("input", () => {
+        submitBtn.disabled = !hasChanged();
+    });
+
+    form.addEventListener("change", () => {
+        submitBtn.disabled = !hasChanged();
+    });
+});
+</script>

@@ -8,7 +8,7 @@ import {
 } from "../controllers/expenseController.js"
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 import { deleteExpenseType ,getExpenseTypeById, updateExpenseType } from '../models/expense_type_model.js';
-import { createExpense, getAllExpenses } from '../models/expense.js';
+import { createExpense, getAllExpenses, getExpenseById , updateExpense } from '../models/expense.js';
 
 // Reconstruct __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -226,5 +226,73 @@ router.post("/add", upload.single("receipt"), async (req, res) => {
 
   }
 });
+
+router.get("/edit/:id", async (req, res) => {
+    
+    let expenseId = req.params.id
+
+    try {
+
+        
+        let expenseDetails = await getExpenseById (expenseId)
+        let expenseTypes = await getExpenseTypes()
+
+        console.log(expenseTypes)
+        console.log(expenseDetails)
+        res.render("expense_edit", { title : "Edit Expense" , user : req.session.user , expenseDetails , expenseTypes : expenseTypes.data })
+
+
+    }catch (e) {
+
+        res.status(500).render("error_page", { message : "Failed To Edit Expense" })
+
+    }
+})
+
+
+router.post("/update", upload.single("receipt"), async (req, res) => {
+  try {
+    const user_id = req.session.user.id;
+    const branch_id = req.session.user.branchId;
+
+    const {
+      id, // hidden field from the form for expense ID
+      expense_type,
+      amount,
+      date,
+      description,
+    } = req.body;
+
+    const receipt = req.file;
+
+    // Get the existing expense
+    const existing = await getExpenseById(id);
+    if (!existing) {
+      req.flash("error", "Expense not found");
+      return res.redirect("/expense/view");
+    }
+
+    const files = receipt ? [receipt.filename] : existing.files;
+
+    const updateData = {
+      expense_type_id: expense_type,
+      amount,
+      date,
+      notes: description,
+      user_id,
+      branch_id,
+      files,
+    };
+
+    await updateExpense(id, updateData);
+
+    req.flash("success", "Expense Updated Successfully");
+    res.redirect("/expense/view");
+  } catch (err) {
+    console.error(err);
+    res.status(500).render("error_page", { message: "Failed To Update Expense" });
+  }
+});
+
 
 export default router;

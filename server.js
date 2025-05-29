@@ -84,6 +84,9 @@ const hbs = exphbs.create({
              if (!str || typeof str !== 'string') return '';
              return str.length > len ? str.substring(0, len) + '...' : str;
         },
+        eq : function (a, b) {
+            return String(a) === String(b); // not ===
+        },
         ifEquals: function(arg1, arg2, options) {
             return arg1 === arg2 ? options.fn(this) : options.inverse(this);
         },
@@ -106,6 +109,21 @@ const hbs = exphbs.create({
               } catch (error) {
                 return 'Invalid Date';
               }
+        },
+          inputDate: (dateString) => {
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return ''; // Invalid date
+
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+            } catch (error) {
+                return '';
+            }
+            
         },
         ordinal: (day) => {
             const suffixes = ["th", "st", "nd", "rd"];

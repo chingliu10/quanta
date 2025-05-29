@@ -140,6 +140,7 @@ export const getAllExpenses = async (filters = {}) => {
    let query = `
     SELECT 
       et.name AS expense_type_name,
+      e.id AS expense_id,
       e.amount,
       e.date,
       e.recurring,
@@ -182,10 +183,22 @@ export const getAllExpenses = async (filters = {}) => {
 
 // Get single expense by ID
 export const getExpenseById = async (id) => {
+  console.log(id)
   const [rows] = await pool.query(
-    `SELECT * FROM ${TABLES.EXPENSES} WHERE id = ?`,
+    `SELECT 
+      id ,
+      expense_type_id,
+      amount,
+      date,
+      recurring,
+      notes as description,
+      files
+    FROM ${TABLES.EXPENSES} WHERE id = ? LIMIT 1`,
     [id]
   );
+  console.log("iopiop")
+  console.log(rows)
+  console.log("iopiop")
   return rows[0] ? {
     ...rows[0],
     files: rows[0].files ? JSON.parse(rows[0].files) : null

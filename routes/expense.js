@@ -170,20 +170,24 @@ router.get("/add", async (req, res) => {
 
 //view all expenses
 router.get("/view", async (req, res) => {
+  try {
+    const branchId = req.session.user.branchId;
 
-    try {
+    // Pass branchId to filter expenses
+    const expenses = await getAllExpenses({ branch_id: branchId });
 
-        let expenses = await getAllExpenses()
-        console.log(expenses)
-        res.render("expense_view", { title : "Add Epenses" , user : req.session.user , expenses })
-        
-    }catch (error) {
-        console.log(error)
-        res.status(500).render("error_page", { message : "Failed To Open Add Expense Page" })
+    res.render("expense_view", {
+      title: "Add Expenses",
+      user: req.session.user,
+      expenses
+    });
 
-    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("error_page", { message: "Failed To Open Add Expense Page" });
+  }
+});
 
-})
 
 //post expense 
 

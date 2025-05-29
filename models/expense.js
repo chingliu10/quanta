@@ -162,6 +162,7 @@ export const getAllExpenses = async (filters = {}) => {
     whereClauses.push('e.expense_type_id = ?');
     params.push(filters.expense_type_id);
   }
+
   if (filters.branch_id) {
     whereClauses.push('e.branch_id = ?');
     params.push(filters.branch_id);

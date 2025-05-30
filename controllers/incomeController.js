@@ -168,3 +168,19 @@ export const updateIncome = async ({ income_id, income_type, amount, income_date
         return handleError(error, "Failed To Update Income/c");
     }
 };
+
+export const softDeleteIncome = async (income_id) => {
+    try {
+        const query = `
+            UPDATE other_income 
+            SET deleted_at = ? 
+            WHERE id = ? 
+        `;
+        const timeStamp = new Date();
+        await pool.query(query, [timeStamp, income_id]);
+
+        return { queryStatus: true };
+    } catch (error) {
+        throw handleError(error, "Failed To Delete Income/c");
+    }
+};

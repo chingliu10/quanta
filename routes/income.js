@@ -5,7 +5,8 @@ import {
     storeIncome,
     getAllIncomes,
     getIncomeById,
-    updateIncome
+    updateIncome,
+    softDeleteIncome
 } from '../controllers/incomeController.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
@@ -194,6 +195,23 @@ router.post("/update", async (req, res) => {
         console.log(error)
         res.status(500).render("error_page", { message: "Failed To Update Income/c" });
 
+    }
+});
+
+
+
+router.post("/delete/:id", async (req, res) => {
+    const { id } = req.params;
+    // or however you store the branch
+    try {
+        await softDeleteIncome(id);
+        req.flash("success", "Income deleted successfully.");
+        res.redirect("/income/all")
+    } catch (error) {
+
+        req.flash("warning", "Failed to delete income.");
+        res.redirect("back");
+        // res.status(500).render("error_page", { message: "Failed To Delete Income/c" });
     }
 });
 

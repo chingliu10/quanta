@@ -86,8 +86,7 @@ export const getAllIncomes = async (branch) => {
     try {
 
         let query = `
-            select other_income.other_income_type_id as 
-	income_id  , other_income.amount as amount , 
+            select other_income.id as income_id, other_income.amount as amount , 
 		other_income.date as date , other_income.notes as description ,
 		  other_income_types.name as income_type	from other_income join other_income_types on other_income.other_income_type_id = 
 	other_income_types.id where  other_income.branch_id = ? and  other_income.deleted_at is null
@@ -109,3 +108,63 @@ export const getAllIncomes = async (branch) => {
 
     }
 }
+
+export const getIncomeById = async (income_id) => {
+    try {
+
+        const query = `
+            SELECT 
+                other_income.id AS income_id,
+                other_income.amount,
+                other_income.date,
+                other_income.notes,
+                other_income.other_income_type_id,
+                other_income_types.name AS income_type
+            FROM other_income
+            JOIN other_income_types 
+                ON other_income.other_income_type_id = other_income_types.id
+            WHERE other_income.id = ? AND other_income.deleted_at IS NULL
+              AND other_income_types.deleted_at IS NULL
+            LIMIT 1
+        `;
+
+        const [rows] = await pool.query(query, [income_id])
+
+        return {
+            queryStatus: true,
+            data: rows[0],
+        }
+
+    }catch (error) {
+
+        handleError(error , "Failed To Get Income/c")
+
+    }
+}
+
+export const updateIncome = async ({ income_id, income_type, amount, income_date, notes }, branch) => {
+    try {
+        const timeStamp = new Date();
+
+        const query = `
+            UPDATE other_income 
+            SET 
+                other_income_type_id = ?, 
+                date = ?, 
+                amount = ?, 
+                notes = ?, 
+                updated_at = ?
+            WHERE 
+                id = ? AND branch_id = ? AND deleted_at IS NULL
+        `;
+
+        await pool.query(query, [
+            income_type, income_date, amount, notes, timeStamp, income_id, branch
+        ]);
+
+        return { queryStatus: true };
+
+    } catch (error) {
+        return handleError(error, "Failed To Update Income/c");
+    }
+};

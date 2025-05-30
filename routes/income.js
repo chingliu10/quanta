@@ -3,9 +3,10 @@ import {
     getAllIncomeTypes,
     storeIncomeType,
     storeIncome,
-    getAllIncomes
+    getAllIncomes,
+    getIncomeById,
+    updateIncome
 } from '../controllers/incomeController.js';
-import handleError from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.get("/all", async (req, res) => {
     try {
 
         let result = await getAllIncomes(req.session.user.branchId)
+        console.log(result)
 
         if(result.queryStatus) {
 
@@ -141,6 +143,59 @@ router.post("/type/add", async (req, res) => {
     }
 
 })
+
+
+router.get("/edit/:incomeId", async (req, res) => {
+
+    let id = req.params.incomeId
+
+    try {
+
+        let income = await getIncomeById(id)
+        let incomeTypes = await getAllIncomeTypes()
+
+        if(income.queryStatus && incomeTypes.queryStatus) {
+
+            return res.render("income_edit", { title : "All Income" , user : req.session.user , income : income.data , incomeTypes : incomeTypes.data})           
+
+        }
+
+
+        res.status(400).render("error_page", { message : "Failed To View Income" })
+
+    }catch (error) {
+
+        res.status(500).render("error_page", { message : "Failed To View Income" })
+
+    }
+
+})
+
+
+router.post("/update", async (req, res) => {
+
+    const { income_id, income_type, amount, income_date, notes } = req.body;
+    console.log(req.body)
+    const branch = req.session.user.branchId;
+
+    try {
+
+        const result = await updateIncome({ income_id, income_type, amount, income_date, notes }, branch);
+
+        if (result.queryStatus) {
+            req.flash("success", "Income Updated Successfully");
+            return res.redirect("/income/all");
+        }
+
+        res.status(400).render("error_page", { message: result.activity });
+
+    } catch (error) {
+
+        console.log(error)
+        res.status(500).render("error_page", { message: "Failed To Update Income/c" });
+
+    }
+});
 
 
 

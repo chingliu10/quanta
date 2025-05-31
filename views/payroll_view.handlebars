@@ -19,7 +19,7 @@
     </div>
 </div>
 <div class="app-content">
-    <form id="deleteIncomeForm" method="POST" style="display: none;"></form>
+    <form id="deletePayrollForm" method="POST" style="display: none;"></form>
 
     <div class="container-fluid">
         {{#if payrolls.length}}
@@ -40,9 +40,9 @@
                         <tr>
                             <td>{{this.first_name}} {{this.last_name}}</td>
                             <td>{{formatDateTime this.last_pay_date}}</td>
-                            <td>{{this.last_paid_amount}}</td>
+                            <td>{{formatDecimalNumbers  this.last_paid_amount}}</td>
                             <td></td>
-                            <td>{{this.last_paid_amount}}</td>
+                            <td>{{formatDecimalNumbers  this.last_paid_amount}}</td>
                             <td></td>
                             <td>
                                   <div class="dropdown">
@@ -61,9 +61,10 @@
                                             <button 
                                                 class="dropdown-item text-danger"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#deleteIncomeModal"
-                                                data-income-id="{{this.income_id}}"
-                                                data-income-amount="{{this.amount}}"
+                                                data-bs-target="#deletePayrollModal"
+                                                data-payroll-id="{{this.payroll_id}}"
+                                                data-staff-first-name="{{this.first_name}}"
+                                                data-staff-last-name="{{this.last_name}}"
                                             >
                                                 <i class="bi bi-trash me-2"></i> Delete
                                             </button>
@@ -84,7 +85,7 @@
 {{> flash_message}}
 
 <!-- Delete Confirmation Modal -->
-{{!-- <div class="modal fade" id="deleteIncomeModal" tabindex="-1" aria-labelledby="deleteIncomeModalLabel" aria-hidden="true">
+<div class="modal fade" id="deletePayrollModal" tabindex="-1" aria-labelledby="deletePayrollModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow">
             <!-- Modal Header -->
@@ -100,7 +101,7 @@
                     <i class="bi bi-trash3-fill text-danger" style="font-size: 3rem;"></i>
                 </div>
                 <p class="mb-4">
-                    Are you sure you want to delete the Income of Amount <strong id="IncomeAmount" class="text-danger"></strong>? 
+                    Are you sure you want to delete the Payroll of Stuff <strong id="payrollName" class="text-danger"></strong>? 
                     This action <span class="fw-bold">cannot</span> be undone.
                 </p>
             </div>
@@ -110,13 +111,13 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <a id="confirmDeleteIncomeButton" href="#" class="btn btn-danger">
+                <a id="confirmDeleteButton" href="#" class="btn btn-danger">
                     <i class="bi bi-trash-fill me-1"></i>Delete
                 </a>
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 <!-- End of Delete Modal -->
 
 <script src="/js/jquery/jquery-3.6.0.min.js"></script>
@@ -126,6 +127,7 @@
 
 <script>
     $(document).ready(function () {
+
         $('#all-income-table').DataTable({
             paging: true,
             searching: true,
@@ -142,6 +144,29 @@
                 }
             ]
         });
+
+        const deletePayrollModal = document.getElementById('deletePayrollModal');
+        const payrollNameElement = document.getElementById('payrollName');
+        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+        const deleteForm = document.getElementById('deletePayrollForm');
+
+        deletePayrollModal.addEventListener('show.bs.modal', (event) => {
+                const trigger = event.relatedTarget;
+                const payrollId = trigger.getAttribute('data-payroll-id');
+                const payrollFirstName = trigger.getAttribute('data-staff-first-name');
+                const payrollLastName = trigger.getAttribute('data-staff-last-name');
+                // Update modal content
+                payrollNameElement.textContent = `${payrollFirstName} ${payrollLastName}`;
+                
+                // Set form action with expenseTypeId
+                deleteForm.action = `/payroll/delete/${payrollId}`;
+            });
+
+        // Handle form submission
+        confirmDeleteButton.addEventListener('click', () => {
+                deleteForm.submit();
+        });
+
 
     });
 </script>

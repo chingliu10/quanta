@@ -3,7 +3,8 @@ import {
     getAllPayrolls,
     getEmployees,
     storePayroll,
-    getPayrollById
+    getPayrollById,
+    deletePayroll
 } from '../controllers/payrollController.js';
 import handleError from '../helpers/handleError.js';
 
@@ -67,6 +68,27 @@ router.post('/store', async (req, res) => {
     }
 });
 
+
+router.post("/delete/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await deletePayroll(id);
+        if (!result.queryStatus) {
+            req.flash('warning', 'Internal server error while deleting payroll.');
+            return res.redirect('back');
+        }
+
+        req.flash("success", "Payroll Deleted Successfully")
+        return res.redirect('/payroll/view');
+
+    } catch (error) {
+
+         req.flash('warning', 'Internal server error while deleting payroll.');
+         return res.redirect('back');
+
+    }
+});
 
 // Payroll slip view
 router.get('/slip/:id', async (req, res) => {

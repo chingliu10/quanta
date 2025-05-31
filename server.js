@@ -96,11 +96,23 @@ const hbs = exphbs.create({
             return Math.round(parseFloat(value)).toString();
         },
         formatDecimalNumbers: (value) => {
-            if (!value) return '0';
-            return parseFloat(value).toLocaleString('en-US', {
-                maximumFractionDigits: 0,
-            });
-        },
+    if (!value) return '0';
+    
+    const num = parseFloat(value);
+
+    // If decimal part is exactly 0, return without decimals
+    if (num % 1 === 0) {
+        return num.toLocaleString('en-US', {
+            maximumFractionDigits: 0,
+        });
+    }
+
+    // Otherwise, show the number as-is, with up to 1 decimal
+    return num.toLocaleString('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+    });
+},
         eq: (a, b) => a === b,
         formatDateTime: (dateString) => {
             try {

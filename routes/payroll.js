@@ -2,7 +2,8 @@ import express from 'express';
 import {
     getAllPayrolls,
     getEmployees,
-    storePayroll
+    storePayroll,
+    getPayrollById
 } from '../controllers/payrollController.js';
 import handleError from '../helpers/handleError.js';
 
@@ -15,6 +16,7 @@ router.get('/view', async (req, res) => {
     try {
         const result = await getAllPayrolls();
 
+        console.log(result)
         if (result.queryStatus) {
             return res.render('payroll_view', { payrolls: result.data, user: req.session.user });
         }
@@ -52,17 +54,35 @@ router.post('/store', async (req, res) => {
         const result = await storePayroll(req.body);
 
         if (result.queryStatus) {
-            req.session.success = result.message;
+             req.flash("success", "Payroll Added Successfully")
             return res.redirect('/payroll/view');
         }
 
-        req.session.error = result.message;
+        req.flash("warning", "Failed To Add Payroll")
         return res.redirect('/payroll/add');
     } catch (error) {
         const err = handleError(error, 'storing payroll');
-        req.session.error = err.message;
+        req.flash("warning", `${err.message}`)
         return res.redirect('/payroll/add');
     }
 });
+
+
+// Payroll slip view
+router.get('/slip/:id', async (req, res) => {
+    try {
+        const result = await getPayrollById(req.params.id);
+        if (!result.queryStatus) {
+            return res.status(404).render('404', { message: result.message || 'Payroll not found' });
+        }
+
+        res.render('payroll_slip', { layout: false, payroll: result.data, user: req.session.user });
+    } catch (error) {
+        const err = handleError(error, 'fetching payroll slip');
+        res.status(500).render('500', { message: err.message });
+    }
+});
+
+
 
 export default router;

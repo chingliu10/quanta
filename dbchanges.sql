@@ -87,3 +87,11 @@ ALTER TABLE expense_types
   ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ADD COLUMN deleted_at DATETIME DEFAULT NULL;
+
+#added deleted_at on payroll
+ALTER TABLE payroll
+ADD COLUMN deleted_at DATETIME NULL AFTER updated_at;
+
+#added users
+ALTER TABLE users
+ADD COLUMN deleted_at DATETIME NULL AFTER updated_at;

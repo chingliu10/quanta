@@ -12,8 +12,7 @@ export const getAllPayrolls = async () => {
                 u.last_name AS last_name,
                 p.date AS last_pay_date,
                 p.paid_amount AS last_paid_amount,
-                p.description AS description,
-                p.comments AS comments
+                p.id as payroll_id
             FROM 
                 payroll p
             JOIN 
@@ -114,5 +113,37 @@ export const getEmployees = async () => {
         return { queryStatus: true, data: rows, message: 'Employees fetched successfully.' };
     } catch (error) {
         return handleError(error, 'fetching employees');
+    }
+};
+
+
+export const getPayrollById = async (id) => {
+    try {
+        const query = `
+            SELECT 
+                u.first_name,
+                u.last_name,
+                p.date,
+                p.paid_amount,
+                p.description,
+                p.comments,
+                p.payment_method,
+                p.bank_name,
+                p.account_number
+            FROM 
+                payroll p
+            JOIN 
+                users u ON p.user_id = u.id
+            WHERE 
+                p.id = ? AND p.deleted_at IS NULL
+            LIMIT 1;
+        `;
+        const [rows] = await pool.query(query, [id]);
+        if (rows.length === 0) {
+            return { queryStatus: false, message: 'Payroll not found' };
+        }
+        return { queryStatus: true, data: rows[0], message: 'Payroll fetched successfully' };
+    } catch (error) {
+        return handleError(error, `fetching payroll by ID: ${id}`);
     }
 };

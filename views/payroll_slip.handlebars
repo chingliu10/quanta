@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Payslip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .payslip-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .employee-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #666;
+            min-width: 120px;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .earnings-deductions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .line-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            background: #f0f0f0;
+            margin: 10px -10px -10px -10px;
+            padding: 12px 10px;
+            border-radius: 4px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .payment-details h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .comments {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+        }
+        
+        .comments h4 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .comments p {
+            color: #856404;
+            line-height: 1.4;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .print-button {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    z-index: 10;
+    }
+
+    .print-button:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    /* Hide the button when printing */
+    @media print {
+        .print-button {
+            display: none;
+        }
+    }
+        
+        @media (max-width: 768px) {
+            .employee-info,
+            .earnings-deductions {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payslip-container">
+        <div class="header">
+             <button class="print-button" onclick="window.print()">🖨️ Print Payslip</button>
+            <h1>Employee Payslip</h1>
+            <p>Confidential Document</p>
+        </div>
+        
+        <div class="content">
+            <div class="employee-info">
+                <div class="info-section">
+                    <h3>Employee Information</h3>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">{{payroll.first_name}} {{payroll.last_name}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Employee ID:</span>
+                        <span class="info-value">{{payroll.employee_id}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Department:</span>
+                        <span class="info-value">{{payroll.department}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Position:</span>
+                        <span class="info-value">{{payroll.position}}</span>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Pay Period</h3>
+                    <div class="info-row">
+                        <span class="info-label">Pay Date:</span>
+                        <span class="info-value">{{formatDateTime payroll.last_pay_date}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Period Start:</span>
+                        <span class="info-value">{{formatDateTime payroll.period_start}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Period End:</span>
+                        <span class="info-value">{{formatDateTime payroll.period_end}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pay Frequency:</span>
+                        <span class="info-value">{{payroll.pay_frequency}}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="earnings-deductions">
+                <div class="section">
+                    <h3>Earnings</h3>
+                    <div class="line-item">
+                        <span>Basic Salary</span>
+                        <span>${{payroll.basic_salary}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Overtime ({{payroll.overtime_hours}} hrs)</span>
+                        <span>${{payroll.overtime_pay}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Allowances</span>
+                        <span>${{payroll.allowances}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Bonus</span>
+                        <span>${{payroll.bonus}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Total Gross Pay</span>
+                        <span>${{payroll.gross_pay}}</span>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Deductions</h3>
+                    <div class="line-item">
+                        <span>Income Tax</span>
+                        <span>${{payroll.income_tax}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Social Security</span>
+                        <span>${{payroll.social_security}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Health Insurance</span>
+                        <span>${{payroll.health_insurance}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Retirement Fund</span>
+                        <span>${{payroll.retirement_contribution}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Other Deductions</span>
+                        <span>${{payroll.other_deductions}}</span>
+                    </div>
+                    <div class="line-item">
+                        <span>Total Deductions</span>
+                        <span>${{payroll.total_deductions}}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary">
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Gross Pay</div>
+                        <div class="summary-value">${{payroll.gross_pay}}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Total Deductions</div>
+                        <div class="summary-value">${{payroll.total_deductions}}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Net Pay</div>
+                        <div class="summary-value">${{payroll.last_paid_amount}}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-details">
+                <h3>Payment Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Payment Method:</span>
+                    <span class="info-value">{{payroll.payment_method}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Bank Name:</span>
+                    <span class="info-value">{{payroll.bank_name}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Account Number:</span>
+                    <span class="info-value">****{{payroll.account_number}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Routing Number:</span>
+                    <span class="info-value">{{payroll.routing_number}}</span>
+                </div>
+            </div>
+            
+            {{#if payroll.comments}}
+            <div class="comments">
+                <h4>Additional Notes</h4>
+                <p>{{payroll.comments}}</p>
+            </div>
+            {{/if}}
+        </div>
+        
+        <div class="footer">
+            <p>This is a computer-generated payslip. No signature is required.</p>
+            <p>For questions regarding your pay, please contact HR at hr@company.com</p>
+        </div>
+    </div>
+</body>
+</html>

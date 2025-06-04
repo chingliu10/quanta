@@ -114,6 +114,12 @@ const hbs = exphbs.create({
     });
 },
         eq: (a, b) => a === b,
+        formatDate : (date) => {
+            return new Date(date).toLocaleDateString();
+        },
+         formatCurrency : function(amount) {
+            return parseFloat(amount).toLocaleString();
+        },
         formatDateTime: (dateString) => {
             try {
                 const date = new Date(dateString);

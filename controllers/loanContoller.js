@@ -358,3 +358,87 @@ export const insertPendingLoan = async (user, branch , {
 
 }
 
+export const getLoanDetails = async (loanId) => {
+    try {
+        // 1. Get loan main details
+        const loanQuery = `
+            SELECT 
+                loans.id AS loan_id,
+                loans.principal,
+                loans.release_date,
+                loans.first_payment_date,
+                loans.interest_method,
+                loans.interest_rate,
+                loans.interest_period,
+                loans.loan_duration,
+                loans.loan_duration_type,
+                loans.repayment_cycle,
+                loans.status,
+                loans.created_at,
+                loans.updated_at,
+                borrowers.id AS borrower_id,
+                borrowers.first_name,
+                borrowers.last_name,
+                loan_products.name AS product_name
+            FROM loans
+            JOIN borrowers ON borrowers.id = loans.borrower_id
+            LEFT JOIN loan_products ON loan_products.id = loans.loan_product_id
+            WHERE loans.id = ? AND loans.deleted_at IS NULL
+            LIMIT 1
+        `;
+        const [loanRows] = await pool.query(loanQuery, [loanId]);
+        if (loanRows.length === 0) {
+            return { queryStatus: false, message: "Loan not found" };
+        }
+
+         const loan = loanRows[0];
+        // console.log(loan)
+
+        // // 2. Get loan schedule
+        const scheduleQuery = `
+            SELECT 
+                id, due_date, due, fees, principal, interest
+            FROM 
+                loan_schedules
+            WHERE 
+                loan_id = ? AND deleted_at IS NULL
+            ORDER BY due_date ASC
+        `;
+        const [schedule] = await pool.query(scheduleQuery, [loanId]);
+    
+        // 3. Get repayments
+        const repaymentQuery = `
+        SELECT 
+        loan_repayments.id AS id,
+        amount,
+        collection_date,
+        created_at,
+            loan_repayment_methods.name AS method_of_payment
+        FROM 
+            loan_repayments
+        JOIN
+            loan_repayment_methods ON loan_repayments.repayment_method_id = loan_repayment_methods.id
+        WHERE 
+            loan_id = ? AND loan_repayments.deleted_at IS NULL
+        ORDER BY 
+            collection_date ASC
+
+        `;
+        const [repayments] = await pool.query(repaymentQuery, [loanId]);
+
+        return {
+            queryStatus: true,
+            message: "success",
+            data: {
+                loan,
+                schedule,
+                repayments
+            }
+        };
+
+    } catch (error) {
+        return handleError(error, "Failed to fetch loan details");
+    }
+};
+
+

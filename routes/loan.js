@@ -7,7 +7,8 @@ import {
     getAllLoansProducts,
     getBorrowerDetails,
     getAllBorrowers,
-    insertPendingLoan
+    insertPendingLoan,
+    getLoanDetails
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -272,4 +273,39 @@ router.post("/add", async (req, res) => {
 
 // })
 
+
+router.get("/details/:loan_id", async (req, res) => {
+
+    let { loan_id } = req.params;
+
+try {
+    const result = await getLoanDetails(loan_id);
+
+    if (!result.queryStatus) {
+        // Optional: render an error page or return a 404
+        return res.status(404).render('loan_not_found', { message: result.message });
+    }
+
+    const loanStatus = result.data.loan.status.toLowerCase();
+
+    if (loanStatus === 'pending') {
+
+        console.log(result.data)
+        return res.render('loan_unapproved', { data : result.data });
+    }
+
+    if (loanStatus === 'closed' || loanStatus === 'disbursed') {
+        return res.render('loan_active_or_closed', { data: result.data });
+    }
+
+    // Optional: handle unknown status
+    return res.render('loan_unknown_status', { status: loanStatus, data: result.data });
+
+} catch (error) {
+    console.error(error);
+    res.status(500).render('error_page', { message: 'Internal Server Error' });
+}
+
+
+})
 export default router;

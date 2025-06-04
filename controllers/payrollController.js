@@ -129,7 +129,8 @@ export const getPayrollById = async (id) => {
                 p.comments,
                 p.payment_method,
                 p.bank_name,
-                p.account_number
+                p.account_number,
+                p.id as payroll_id
             FROM 
                 payroll p
             JOIN 
@@ -145,5 +146,58 @@ export const getPayrollById = async (id) => {
         return { queryStatus: true, data: rows[0], message: 'Payroll fetched successfully' };
     } catch (error) {
         return handleError(error, `fetching payroll by ID: ${id}`);
+    }
+};
+
+// Update a payroll entry
+export const updatePayroll = async (data) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        const {
+            payroll_id,
+            payment_method,
+            bank_name,
+            account_number,
+            paid_amount,
+            date,
+            comments
+        } = data;
+
+        const query = `
+            UPDATE payroll
+            SET 
+                payment_method = ?,
+                bank_name = ?,
+                account_number = ?,
+                paid_amount = ?,
+                date = ?,
+                comments = ?,
+                year = YEAR(?),
+                month = MONTH(?),
+                updated_at = NOW()
+            WHERE id = ?;
+        `;
+
+        await connection.query(query, [
+            payment_method,
+            bank_name,
+            account_number,
+            paid_amount,
+            date,
+            comments,
+            date,
+            date,
+            payroll_id
+        ]);
+
+        await connection.commit();
+        return { queryStatus: true, message: 'Payroll updated successfully.' };
+    } catch (error) {
+        await connection.rollback();
+        return handleError(error, 'updating payroll entry');
+    } finally {
+        connection.release();
     }
 };

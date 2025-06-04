@@ -4,13 +4,16 @@ import {
     getEmployees,
     storePayroll,
     getPayrollById,
-    deletePayroll
+    deletePayroll,
+    updatePayroll
 } from '../controllers/payrollController.js';
 import handleError from '../helpers/handleError.js';
+import { isAuthenticated } from '../middlewares/isAuthenticated.js';
 
 const router = express.Router();
 
 router.use(express.json());
+router.use(isAuthenticated)
 
 // View Payrolls
 router.get('/view', async (req, res) => {
@@ -68,6 +71,46 @@ router.post('/store', async (req, res) => {
     }
 });
 
+
+router.get("/edit/:id", async (req, res) => {
+
+    try {
+
+
+        const result = await getPayrollById(req.params.id);
+        console.log(result)
+        res.render("payroll_edit",{ users: result.data, user: req.session.user , payroll : result.data })
+
+    }catch(error) {
+
+        req.flash("warning", `${err.message}`)
+        return res.redirect('/payroll/add');
+
+    }
+
+})
+
+
+router.post("/update", async (req, res) => {
+    try {
+
+        console.log(req.body)
+        const result = await updatePayroll(req.body);
+        
+        if (result.queryStatus) {
+            req.flash('success', result.message);
+            res.redirect('/payroll/view');
+        } else {
+            req.flash('warning', result.message || 'Failed to update payroll');
+            res.redirect('back');
+        }
+    } catch (error) {
+
+        req.flash('warning', 'An unexpected error occurred');
+        res.redirect('back');
+
+    }
+});
 
 router.post("/delete/:id", async (req, res) => {
     const { id } = req.params;

@@ -1,4 +1,4 @@
-<form id="cashflowFormDates">
+{{!-- <form id="cashflowFormDates">
 <input type="date" name="start_date">
 <input type="date" name="end_date">
 <button>Submit</button>
@@ -38,4 +38,340 @@
     })
 
 
+</script> --}}
+
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6"><h3 class="mb-0">Cash Flow Statement</h3></div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Cash Flow</li>
+                </ol>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        
+        <!-- Date Range Filter Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-calendar-range me-2"></i>Filter Options
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">Beginning Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">Ending Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-primary" id="searchBtn">
+                                <i class="bi bi-search me-1"></i>Search
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="resetBtn">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cash Flow Statement Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-cash-stack me-2"></i>Cash Flow Statement
+                </h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- RECEIPTS Section -->
+                <div class="mb-5">
+                    <h4 class="text-success mb-3">
+                        <i class="bi bi-arrow-down-circle me-2"></i>RECEIPTS
+                    </h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-medium">Capital</td>
+                                    <td class="text-end fw-bold">$<span id="capital">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Loan Principal Repayments</td>
+                                    <td class="text-end fw-bold">$<span id="loanPrincipalRepayments">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Loan Interest Repayments</td>
+                                    <td class="text-end fw-bold">$<span id="loanInterestRepayments">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Loan Penalty Repayments</td>
+                                    <td class="text-end fw-bold">$<span id="loanPenaltyRepayments">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Loan Fees Repayments</td>
+                                    <td class="text-end fw-bold">$<span id="loanFeesRepayments">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Savings Deposits</td>
+                                    <td class="text-end fw-bold">$<span id="savingsDeposits">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Other Income</td>
+                                    <td class="text-end fw-bold">$<span id="otherIncome">0.00</span></td>
+                                </tr>
+                                <tr class="table-success border-top border-2">
+                                    <td class="fw-bold text-uppercase">Total Receipts (A)</td>
+                                    <td class="text-end fw-bold fs-5">$<span id="totalReceipts">0.00</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- EXPENSES Section -->
+                <div class="mb-5">
+                    <h4 class="text-danger mb-3">
+                        <i class="bi bi-arrow-up-circle me-2"></i>PAYMENTS
+                    </h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <tbody>
+                                  <tr>
+                                    <td class="fw-medium">Expenses</td>
+                                    <td class="text-end fw-bold">$<span id="loanReleased">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Payroll</td>
+                                    <td class="text-end fw-bold">$<span id="payroll">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Loan Released (Principal)</td>
+                                    <td class="text-end fw-bold">$<span id="loanReleased">0.00</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Savings Withdrawals</td>
+                                    <td class="text-end fw-bold">$<span id="savingsWithdrawals">0.00</span></td>
+                                </tr>
+                                <tr class="table-danger border-top border-2">
+                                    <td class="fw-bold text-uppercase">Total Payments (B)</td>
+                                    <td class="text-end fw-bold fs-5">$<span id="totalPayments">0.00</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CASH BALANCE Section -->
+                <div class="alert alert-info border-2" role="alert">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="alert-heading mb-0">
+                                <i class="bi bi-calculator me-2"></i>
+                                TOTAL CASH BALANCE
+                                <small class="text-muted">(Receipts - Payments)</small>
+                            </h3>
+                        </div>
+                        <div class="col-auto">
+                            <h2 class="mb-0 fw-bold" id="cashBalanceDisplay">
+                                $<span id="totalCashBalance">0.00</span>
+                            </h2>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Total Receipts: $<span id="receiptsRef">0.00</span>
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Total Payments: $<span id="paymentsRef">0.00</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="bi bi-printer me-1"></i>Print Report
+                        </button>
+                        <button type="button" class="btn btn-outline-success">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+                        </button>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <button type="button" class="btn btn-info">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh Data
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function () {
+    function formatCurrency(amount) {
+        return amount.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    async function fetchData(url, key, startDate, endDate) {
+        try {
+            const params = new URLSearchParams();
+            if (startDate) params.append('start_date', startDate);
+            if (endDate) params.append('end_date', endDate);
+            const response = await fetch(`${url}?${params.toString()}`, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error(`Failed to fetch from ${url}`);
+            const data = await response.json();
+            return parseFloat(data[key]) || 0;
+        } catch (error) {
+            console.error(`Error fetching from ${url}:`, error);
+            return 0;
+        }
+    }
+
+    const fetchCapital = (s, e) => fetchData('/api/capital/get_total_capital', 'total_capital', s, e);
+    const fetchLoanReleased = (s, e) => fetchData('/api/loan/total_principal_released', 'total_principal_released', s, e);
+    const fetchSavingsDeposited = (s, e) => fetchData('/api/saving/total_savings_deposited', 'total_savings_deposited', s, e);
+    const fetchSavingsWithdrawn = (s, e) => fetchData('/api/saving/total_savings_withdrawn', 'total_savings_withdrawn', s, e);
+    const fetchPayroll = (s, e) => fetchData('/api/payroll/total_payroll', 'total_payroll', s, e);
+    const fetchTotalIncome = (s, e) => fetchData('/api/income/total_income', 'total_income', s, e); // ✅ ADDED
+
+    async function updateCashFlow(startDate, endDate) {
+        const searchBtn = document.getElementById('searchBtn');
+        const originalBtnHtml = searchBtn.innerHTML;
+        searchBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Loading...';
+        searchBtn.disabled = true;
+
+        try {
+            const cashFlowData = {
+                receipts: {
+                    capital: await fetchCapital(startDate, endDate),
+                    loanPrincipalRepayments: 25000.00,
+                    loanInterestRepayments: 5000.00,
+                    loanPenaltyRepayments: 500.00,
+                    loanFeesRepayments: 750.00,
+                    savingsDeposits: await fetchSavingsDeposited(startDate, endDate),
+                    totalIncome: await fetchTotalIncome(startDate, endDate) // ✅ ADDED
+                },
+                expenses: {
+                    payroll: await fetchPayroll(startDate, endDate),
+                    loanReleased: await fetchLoanReleased(startDate, endDate),
+                    savingsWithdrawals: await fetchSavingsWithdrawn(startDate, endDate)
+                }
+            };
+
+            // Update Receipts
+            document.getElementById('capital').textContent = formatCurrency(cashFlowData.receipts.capital);
+            document.getElementById('loanPrincipalRepayments').textContent = formatCurrency(cashFlowData.receipts.loanPrincipalRepayments);
+            document.getElementById('loanInterestRepayments').textContent = formatCurrency(cashFlowData.receipts.loanInterestRepayments);
+            document.getElementById('loanPenaltyRepayments').textContent = formatCurrency(cashFlowData.receipts.loanPenaltyRepayments);
+            document.getElementById('loanFeesRepayments').textContent = formatCurrency(cashFlowData.receipts.loanFeesRepayments);
+            document.getElementById('savingsDeposits').textContent = formatCurrency(cashFlowData.receipts.savingsDeposits);
+            document.getElementById('totalIncome').textContent = formatCurrency(cashFlowData.receipts.totalIncome); // ✅ BINDING
+
+            const totalReceipts = Object.values(cashFlowData.receipts).reduce((sum, val) => sum + val, 0);
+            document.getElementById('totalReceipts').textContent = formatCurrency(totalReceipts);
+            document.getElementById('receiptsRef').textContent = formatCurrency(totalReceipts);
+
+            // Update Payments
+            document.getElementById('payroll').textContent = formatCurrency(cashFlowData.expenses.payroll);
+            document.getElementById('loanReleased').textContent = formatCurrency(cashFlowData.expenses.loanReleased);
+            document.getElementById('savingsWithdrawals').textContent = formatCurrency(cashFlowData.expenses.savingsWithdrawals);
+
+            const totalPayments = Object.values(cashFlowData.expenses).reduce((sum, val) => sum + val, 0);
+            document.getElementById('totalPayments').textContent = formatCurrency(totalPayments);
+            document.getElementById('paymentsRef').textContent = formatCurrency(totalPayments);
+
+            const cashBalance = totalReceipts - totalPayments;
+            document.getElementById('totalCashBalance').textContent = formatCurrency(cashBalance);
+
+            const cashBalanceDisplay = document.getElementById('cashBalanceDisplay');
+            cashBalanceDisplay.className = cashBalance >= 0 
+                ? 'mb-0 fw-bold text-success' 
+                : 'mb-0 fw-bold text-danger';
+        } catch (error) {
+            console.error('Error updating cash flow:', error);
+            alert('Failed to load data. Please try again.');
+        } finally {
+            searchBtn.innerHTML = originalBtnHtml;
+            searchBtn.disabled = false;
+        }
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', async function () {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates');
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            alert('Start date cannot be later than end date');
+            return;
+        }
+
+        await updateCashFlow(startDate, endDate);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+
+        const elements = [
+            'capital', 'loanPrincipalRepayments', 'loanInterestRepayments', 
+            'loanPenaltyRepayments', 'loanFeesRepayments', 'savingsDeposits', 
+            'totalIncome', 'totalReceipts', 'receiptsRef', 'payroll', 
+            'loanReleased', 'savingsWithdrawals', 'totalPayments', 
+            'paymentsRef', 'totalCashBalance'
+        ];
+
+        elements.forEach(id => {
+            document.getElementById(id).textContent = '0.00';
+        });
+
+        document.getElementById('cashBalanceDisplay').className = 'mb-0 fw-bold';
+    });
+
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    document.getElementById('startDate').valueAsDate = firstDay;
+    document.getElementById('endDate').valueAsDate = lastDay;
+    await updateCashFlow(firstDay.toISOString().split('T')[0], lastDay.toISOString().split('T')[0]);
+});
 </script>
+

@@ -159,3 +159,123 @@ export const totalPrincipalReleased = async (starting_date, end_date, branch) =>
     }
 
  }
+
+
+ 
+ export const totalSavingsWithdrawn = async (starting_date, end_date, branch) => {
+
+
+    try {
+
+        let query 
+
+        if(starting_date && end_date) {
+
+
+            let query = `
+                SELECT  coalesce(SUM(amount), 0) AS savings_withdrawn FROM savings_transactions
+             WHERE type = 'withdrawal' AND date between ? and ? AND deleted_at IS NULL AND branch_id = ? 
+            `
+
+            let [rows] = await pool.query(query, [starting_date, end_date,  branch])
+
+            console.log(rows)
+
+            return {
+                queryStatus : true,
+                data : parseInt(rows[0].savings_withdrawn)
+            }
+
+        }
+
+            query = `
+                 SELECT  coalesce(SUM(amount), 0) AS savings_withdrawn FROM savings_transactions
+             WHERE type = 'withdrawal' AND deleted_at IS NULL AND branch_id = ?
+            `
+
+            let [rows] = await pool.query(query, [branch])
+
+            return {
+                queryStatus : true,
+                data : parseInt(rows[0].savings_withdrawn)
+            }
+
+    }catch (error) {
+
+            console.log(error)
+            return handleError(error, "Failed To Get Total Savings Withdrawn/Api")
+
+    }
+
+ }
+
+
+export const getTotalPayroll = async (starting_date, end_date, branch) => {
+    try {
+        let query;
+        let rows;
+
+        if (starting_date && end_date) {
+            query = `
+                SELECT COALESCE(SUM(paid_amount), 0) AS total_payroll 
+                FROM payroll 
+                WHERE deleted_at IS NULL 
+                AND date BETWEEN ? AND ? 
+                AND branch_id = ?
+            `;
+            [rows] = await pool.query(query, [starting_date, end_date, branch]);
+        } else {
+            query = `
+                SELECT COALESCE(SUM(paid_amount), 0) AS total_payroll 
+                FROM payroll 
+                WHERE deleted_at IS NULL 
+                AND branch_id = ?
+            `;
+            [rows] = await pool.query(query, [branch]);
+        }
+
+        return {
+            queryStatus: true,
+            data: parseInt(rows[0].total_payroll),
+        };
+    } catch (error) {
+        console.log(error);
+        return handleError(error, "Failed To Get Total Payroll/Api");
+    }
+};
+
+export const getTotalIncome = async (starting_date, end_date, branch) => {
+    try {
+        let query;
+        let rows;
+
+        if (starting_date && end_date) {
+            query = `
+                SELECT COALESCE(SUM(amount), 0) AS total_income 
+                FROM other_income 
+                WHERE deleted_at IS NULL 
+                AND created_at BETWEEN ? AND ? 
+                AND branch_id = ?
+            `;
+            [rows] = await pool.query(query, [starting_date, end_date, branch]);
+        } else {
+            query = `
+                SELECT COALESCE(SUM(amount), 0) AS total_income 
+                FROM other_income 
+                WHERE deleted_at IS NULL 
+                AND branch_id = ?
+            `;
+            [rows] = await pool.query(query, [branch]);
+        }
+
+        return {
+            queryStatus: true,
+            data: parseInt(rows[0].total_income),
+        };
+    } catch (error) {
+        console.log(error);
+        return handleError(error, "Failed To Get Total Income/Api");
+    }
+};
+
+

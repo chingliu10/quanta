@@ -99,6 +99,9 @@
                                 </p>
                             </div>
                             <div class="col-md-4 text-md-end">
+                                <button class="btn approve-btn btn-primary" data-bs-toggle="modal" data-bs-target="#approvalModal">
+                                    <i class="bi bi-check-circle me-2"></i>Approve Loan
+                                </button>
                                 <span class="status-badge status-{{data.loan.status}}">
                                     {{#if (eq data.loan.status "pending")}}
                                         <i class="bi bi-clock me-1"></i> Pending
@@ -270,6 +273,108 @@
 
     </div>
 </div>
+
+<!-- Approval Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+               <form id="loanApprovalForm" action="/loan/approve_loan" method="post">
+                     <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="approvalModalLabel">
+                                <i class="bi bi-check-circle-fill me-2"></i>Loan Approval
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                              <div class="modal-body">
+                <!-- Approval Form -->
+                <div id="approvalForm">
+                    <div class="text-center mb-4">
+                        {{!-- <i class="bi bi-file-text-fill text-primary mb-3" style="font-size: 3rem;"></i> --}}
+                        <h4 class="text-primary mb-3">Approve Loan Application</h4>
+                        <p class="text-muted">Please review and confirm the approval details below</p>
+                    </div>
+                    
+                        <div class="approval-info">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted">Loan Reference:</label>
+                                    <div class="fs-5 fw-bold text-primary">
+                                        <i class="bi bi-file-text me-2"></i>
+                                        Loan #{{data.loan.loan_id}}
+                                        <input type="text" name="id" value={{data.loan.loan_id}} hidden>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted">Borrower:</label>
+                                    <div class="fs-5 fw-bold">
+                                        <i class="bi bi-person me-2"></i>
+                                        {{data.loan.first_name}} {{data.loan.last_name}}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted">Requested Amount:</label>
+                                    <div class="fs-5 fw-bold text-info">
+                                        <i class="bi bi-cash me-2"></i>
+                                        {{formatCurrency data.loan.principal}}
+                                        <input type="{{data.loan.principal}}" name="loan_id" hidden>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="approvalDate" class="form-label fw-bold">
+                                        <i class="bi bi-calendar-check me-2"></i>Approval Date *
+                                    </label>
+                                    <input type="date" class="form-control" id="approvalDate" name="approved_date" 
+                                        value="{{inputDate data.loan.created_at}}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="approvedAmount" class="form-label fw-bold">
+                                        <i class="bi bi-currency-dollar me-2"></i>Approved Amount *
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="approvedAmount" name="approved_amount" 
+                                               value="{{data.loan.principal}}" min="1" step="0.01" required>
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        You can approve a different amount than requested
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                
+            </div>
+                            <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-circle me-2"></i>Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-success" id="approveBtn">
+                                        <i class="bi bi-check-circle me-2"></i>Approve Loan
+                                    </button>
+                                    <button type="button" class="btn btn-success d-none" id="notificationBtn" onclick="sendNotification()">
+                                        <i class="bi bi-send me-2"></i>Send Notification
+                                    </button>
+                                </div>
+                             </div>
+               </form>
+        </div>
+</div>
+
 
 <script type="module">
     import { LoanScheduleCalculator } from '/js/loan.js';

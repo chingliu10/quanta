@@ -442,3 +442,21 @@ export const getLoanDetails = async (loanId) => {
 };
 
 
+export const disburseLoan = async (loanId, releaseDate, amount) => {
+  try {
+    const query = `
+      UPDATE loans SET 
+        release_date = ?,
+        status = 'open',
+        updated_at = NOW()
+      WHERE id = ? AND deleted_at IS NULL
+    `;
+    await pool.query(query, [releaseDate, loanId]);
+    return { queryStatus: true, message: 'Loan Disbursed' };
+  } catch (error) {
+    return handleError(error, 'Failed To Disburse Loan');
+  }
+}
+
+
+

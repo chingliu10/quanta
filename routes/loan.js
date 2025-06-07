@@ -8,7 +8,8 @@ import {
     getBorrowerDetails,
     getAllBorrowers,
     insertPendingLoan,
-    getLoanDetails
+    getLoanDetails,
+    disburseLoan
 } from "../controllers/loanContoller.js"
 import  handleError  from '../helpers/handleError.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
@@ -305,6 +306,36 @@ try {
     console.error(error);
     res.status(500).render('error_page', { message: 'Internal Server Error' });
 }
+
+
+})
+
+
+
+router.post("/approve_loan", async (req, res) => {
+
+    try {
+
+        let { loan_id , approved_date, approved_amount } = req.body
+
+        console.log(req.body)
+        let result = await disburseLoan(loan_id,approved_date,approved_amount)
+
+        if(result.status) {
+           res.flash("success", "Loan Disbursed Successfully")
+           return res.redirect("/loan/all")
+        }
+
+           res.flash("success", "Loan Disbursed Failed")
+           return res.redirect("back")
+
+    }catch (error) {
+
+        res.flash("success", "Loan Disbursed Failed")
+        return res.redirect("back")
+
+    }
+
 
 
 })

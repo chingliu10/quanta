@@ -19,6 +19,8 @@ import expenseRoutes from "./routes/expense.js"
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -59,6 +61,8 @@ app.use(express.static('assets'));
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 //subroutes
 app.use("/dashboard", dashboardRoutes);
 app.use("/borrower", borrowerRoutes);
@@ -223,12 +227,32 @@ app.post('/auth/login', async (req, res) => {
         // const activeBranch = branches.find(branch => branch.default_branch === 1) || branches[0];
 
         // Save user and branch information in the session
+        const tokenPayload = {
+                id: user.id,
+                name: user.first_name,
+                branchId: branch[0].branch_id,
+        };
+
+        let token =  jwt.sign(tokenPayload, 
+            //process.env.JWT_SECRET
+             "debora", {
+            expiresIn: '1h', // Or longer
+        });
+
         req.session.user = {
             id: user.id,
             user: user.first_name,
             branchId : branch[0].branch_id,
             branchName : branch[0].branch_name,
         };
+
+                // Set token as HTTP-only cookie
+        res.cookie('token', token, {
+        httpOnly: true,          // Prevent client-side JS access
+        secure: process.env.NODE_ENV === 'production', // HTTPS-only in production
+        maxAge: 3600000,         // 1 hour expiration (matches token)
+        sameSite: 'lax'          // Balance security and usability
+        });
 
         console.log(req.session);
         console.log(req.flash("warning", "Your message"));

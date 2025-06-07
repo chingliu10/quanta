@@ -15,6 +15,7 @@ import {
 
 import { getAllUsers } from '../helpers/generalHelper.js';
 import { isAuthenticated } from "../middlewares/isAuthenticated.js"
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -46,27 +47,51 @@ router.get("/change", async (req, res) => {
    
 })
 
+
 router.post("/change", async (req, res) => {
-    
-    const {  branch_id } = req.body
+    const { branch_id } = req.body;
+
     try {
+        const result = await findBranch(branch_id);
 
-        const result = await findBranch(branch_id)
-        if(result.queryStatus) {
+        if (result.queryStatus) {
+            // Update session user
+            req.session.user.branchId = result.data.id;
+            req.session.user.branchName = result.data.name;
 
-            req.session.user.branchId = result.data.id 
-            req.session.user.branchName = result.data.name
+            // 🔁 Re-sign a new token
+            const newToken = jwt.sign(
+                {
+                    id: req.session.user.id,
+                    user: req.session.user.user,
+                    branchId: req.session.user.branchId,
+                    branchName: req.session.user.branchName,
+                },
+                'debora', // Use env var in production
+                { expiresIn: '1h' }
+            );
+
+            // 🥠 Send the new token in an HTTP-only cookie
+            res.cookie('token', newToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000, // 1 hour
+            });
+
             req.flash('success', 'Branch Changed Successfully');
-            return res.redirect("/branch/change")
+            return res.redirect("/branch/change");
         }
 
-        res.status(400).render("error_page", { message : result.activity  })        
+        res.status(400).render("error_page", { message: result.activity });
 
-    }catch (error) {
-        
-        res.status(500).render("error_page", { message : "Something Went Wrong When Changing Branch"  })
+    } catch (error) {
+        console.error(error);
+        res.status(500).render("error_page", {
+            message: "Something Went Wrong When Changing Branch"
+        });
     }
-})
+});
 
 // Route to view branches
 router.get('/view', async (req, res) => {

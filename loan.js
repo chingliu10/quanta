@@ -70,7 +70,7 @@ const weeklyLoanData = {
     interestMethod: 'flat_rate',
     interestRate: '35',
     interestPeriod: 'week',
-    duration: '32',
+    duration: '2',
     durationType: 'week',
     repaymentCycle: 'weekly'
 };
@@ -96,4 +96,4 @@ const monthlyCalculator = new LoanScheduleCalculator(monthlyLoanData);
 const monthlySchedule = monthlyCalculator.generateSchedule();
 
 // Example output (first item of weekly schedule)
-console.log(monthlySchedule);
+console.log(weeklySchedule);

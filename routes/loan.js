@@ -291,7 +291,7 @@ try {
 
     if (loanStatus === 'pending') {
 
-        console.log(result.data)
+        // console.log(result.data)
         return res.render('loan_unapproved', { data : result.data });
     }
 
@@ -313,30 +313,46 @@ try {
 
 
 router.post("/approve_loan", async (req, res) => {
-
     try {
+        
+        let { 
+            id, 
+            approved_date, 
+            first_repayment_date, 
+            approved_amount 
+        } = req.body;
 
-        let { loan_id , approved_date, approved_amount } = req.body
-
-        console.log(req.body)
-        let result = await disburseLoan(loan_id,approved_date,approved_amount)
-
-        if(result.status) {
-           res.flash("success", "Loan Disbursed Successfully")
-           return res.redirect("/loan/all")
+        // Validate required fields
+        if (!id || !approved_date || !first_repayment_date || !approved_amount) {
+            req.flash("warning", "Missing required loan parameters");
+            return res.redirect(req.get('Referrer') || "/");
         }
 
-           res.flash("success", "Loan Disbursed Failed")
-           return res.redirect("back")
+        // Process loan disbursement
+        let result = await disburseLoan(
+            id,
+            approved_date,
+            first_repayment_date,
+            approved_amount
+        );
+   
+        if (result.queryStatus) {
+            req.flash("success", "Loan Disbursed Successfully");
+            return res.redirect("/loan/all");
+        }
+        
+        req.flash("warning", "Loan Disbursal Failed: ");
+        return res.redirect(req.get('Referrer') || "/");
 
-    }catch (error) {
-
-        res.flash("success", "Loan Disbursed Failed")
-        return res.redirect("back")
-
+    } catch (error) {
+        console.error("Loan Disbursal Error:", error);
+        
+        // Use actual error message if available
+        const errorMessage = error.message || "Internal server error";
+        req.flash("warning", `Loan Disbursal Failed: ${errorMessage}`);
+        
+        return res.redirect(req.get('Referrer') || "/");
     }
+});
 
-
-
-})
 export default router;

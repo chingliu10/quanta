@@ -279,3 +279,100 @@ export const getTotalIncome = async (starting_date, end_date, branch) => {
 };
 
 
+
+export const calculateLoanSchedule = async ({
+
+    id ,
+    borrower_id,
+    branch_id,
+    approved_amount,
+    first_payment_date,
+    interest_method,
+    interest_period,
+    interest_rate,
+    loan_duration
+
+}) => {
+
+
+    try {
+
+       
+
+
+        let { principalPerPayment , interestPerPayment } = getPrincipalAndInterestPerPayment(
+            approved_amount,
+            loan_duration,
+            interest_period,
+            interest_rate )
+
+        let remainingPrincipal = approved_amount, 
+            firstRepaymentDate = first_payment_date  
+
+        let currentTimeStamp = new Date()
+        let currentDate = new Date(firstRepaymentDate);
+
+        for (let i = 0; i < loan_duration; i++) {
+
+
+                const principal = Number(principalPerPayment.toFixed(2));
+                const interest = Number(interestPerPayment.toFixed(2));
+                const fees =  0; // Initial fees for first payment
+                const penalty = 0
+                const due = principal + interest + fees;
+                
+
+                remainingPrincipal -= principal;
+
+                let query = `
+                    insert into loan_schedules (loan_id, borrower_id, description, due_date, principal, principal_balance,interest, fees, 
+                    penalty, due, created_at, updated_at, branch_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)
+                `
+
+                await pool.query(query, [id, borrower_id, 'repayment', currentDate.toISOString().split('T')[0] ,  principal, remainingPrincipal , interest , fees, penalty, due, currentTimeStamp, currentTimeStamp, branch_id ])
+
+                currentDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+        
+        }
+
+        return {
+            queryStatus : true
+        }
+
+
+    }catch (e) {
+
+        console.log(e)
+
+        return {
+            queryStatus : false
+        }
+
+    }
+
+}
+
+
+function getPrincipalAndInterestPerPayment (approved_amount,
+        loan_duration,
+        interest_period,
+        interest_rate) {
+
+    let principalPerPayment , interestPerPayment
+
+    principalPerPayment = approved_amount / loan_duration
+
+    if(interest_period === 'week') {
+        const totalInterest = approved_amount * (interest_rate / 100)
+        interestPerPayment = totalInterest / loan_duration
+    } else if (interest_period === 'month') {
+        // For monthly interest (convert to weekly)
+        const monthlyInterest = approved_amount * ( interest_rate / 100);
+        interestPerPayment = monthlyInterest / 4; // Divide by 4 for weekly payments
+     }
+
+     return { principalPerPayment , interestPerPayment }
+
+
+}
+

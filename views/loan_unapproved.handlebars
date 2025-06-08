@@ -273,17 +273,18 @@
 
     </div>
 </div>
-
+{{!-- 
+{{> flash_message}}  --}}
 <!-- Approval Modal -->
 <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered ">
                <form id="loanApprovalForm" action="/loan/approve_loan" method="post">
                      <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="approvalModalLabel">
                                 <i class="bi bi-check-circle-fill me-2"></i>Loan Approval
                                 </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span>
                             </div>
                               <div class="modal-body">
                 <!-- Approval Form -->
@@ -330,11 +331,18 @@
                             <hr class="my-4">
                             
                             <div class="row mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label for="approvalDate" class="form-label fw-bold">
                                         <i class="bi bi-calendar-check me-2"></i>Approval Date *
                                     </label>
                                     <input type="date" class="form-control" id="approvalDate" name="approved_date" 
+                                        value="{{inputDate data.loan.created_at}}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="approvalDate" class="form-label fw-bold">
+                                        <i class="bi bi-calendar-check me-2"></i>First Repayment *
+                                    </label>
+                                    <input type="date" class="form-control" id="approvalDate" name="first_repayment_date" 
                                         value="{{inputDate data.loan.created_at}}" required>
                                 </div>
                             </div>
@@ -374,7 +382,6 @@
                </form>
         </div>
 </div>
-
 
 <script type="module">
     import { LoanScheduleCalculator } from '/js/loan.js';

@@ -1,5 +1,6 @@
 import connection from '../config/connection.js';
 import  handleError  from '../helpers/handleError.js';
+import { calculateLoanSchedule } from '../helpers/generalHelper.js';
 
 const { pool } = connection;
 
@@ -319,7 +320,7 @@ export const insertPendingLoan = async (user, branch , {
                 const query = `
                 insert into loans (user_id, borrower_id, loan_product_id, release_date, first_payment_date, principal, interest_method, interest_rate,
                 interest_period, loan_duration, loan_duration_type, repayment_cycle, loan_status, created_at, updated_at, status, branch_id)
-                values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             `
 
              await   pool.query(query, [
@@ -351,7 +352,7 @@ export const insertPendingLoan = async (user, branch , {
 
     }catch(error) {
 
-
+        console.log(error)
         return handleError(error, "Failed To Add Loan")
 
     }
@@ -442,21 +443,59 @@ export const getLoanDetails = async (loanId) => {
 };
 
 
-export const disburseLoan = async (loanId, releaseDate, amount) => {
+export const disburseLoan = async (loanId, releaseDate, first_repayment_date, amount) => {
+
+  const conn = await pool.getConnection();
   try {
-    const query = `
+    await conn.beginTransaction();
+
+    const updateQuery = `
       UPDATE loans SET 
-        release_date = ?,
-        status = 'open',
+        approved_date = ?,
+        disbursed_date = ?,
+        first_payment_date = ?,
+        status = 'disbursed',
         updated_at = NOW()
       WHERE id = ? AND deleted_at IS NULL
     `;
-    await pool.query(query, [releaseDate, loanId]);
-    return { queryStatus: true, message: 'Loan Disbursed' };
-  } catch (error) {
-    return handleError(error, 'Failed To Disburse Loan');
-  }
-}
+    await conn.query(updateQuery, [
+      releaseDate,
+      releaseDate,
+      first_repayment_date,
+      loanId,
+    ]);
 
+    const [rows] = await conn.query(
+      `SELECT * FROM loans WHERE id = ? AND deleted_at IS NULL`,
+      [loanId]
+    );
+
+    const loan = rows[0];
+    if (!loan) throw new Error('Loan not found');
+
+    const scheduleResult = await calculateLoanSchedule({
+      id: loan.id,
+      borrower_id: loan.borrower_id,
+      branch_id: loan.branch_id,
+      approved_amount: parseFloat(amount),
+      first_payment_date: loan.first_payment_date,
+      interest_method: loan.interest_method,
+      interest_period: loan.interest_period,
+      interest_rate: parseFloat(loan.interest_rate),
+      loan_duration: loan.loan_duration,
+    });
+
+    if (!scheduleResult.queryStatus) throw new Error('Failed to generate loan schedule');
+
+    await conn.commit();
+    return { queryStatus: true, message: 'Loan Disbursed Successfully' };
+
+  } catch (error) {
+    await conn.rollback();
+    return handleError(error, 'Failed To Disburse Loan');
+  } finally {
+    conn.release();
+  }
+};
 
 

@@ -1,0 +1,124 @@
+   <!-- Header Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">
+                                    <i class="bi bi-file-text me-2"></i>
+                                    Loan #{{data.loan.loan_id}}
+                                </h6>
+                                <p class="text-muted mb-0">
+                                    <i class="bi bi-person me-1"></i>
+                                    {{data.loan.first_name}} {{data.loan.last_name}}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                  {{#if (eq data.loan.status "pending")}}
+                                        <button class="btn approve-btn btn-primary" data-bs-toggle="modal" data-bs-target="#approvalModal">
+                                            <i class="bi bi-check-circle me-2"></i>Approve Loan
+                                        </button>
+                                    {{/if}}
+                                <span class="status-badge-lg status-{{data.loan.status}}"
+                                    style="padding: 10px;">
+                                    {{#if (eq data.loan.status "pending")}}
+                                        <i class="bi bi-clock me-2"></i> Pending
+                                    {{else if (eq data.loan.status "disbursed")}}
+                                        <i class="bi bi-check-circle me-2"></i> Disbursed
+                                    {{else if (eq data.loan.status "closed")}}
+                                        <i class="bi bi-lock me-2"></i> Closed
+                                    {{else}}
+                                        {{data.loan.status}}
+                                    {{/if}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Information Panels -->
+        <div class="row">
+            <!-- Borrower Info -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 info-card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="section-header"><i class="bi bi-person-circle me-2"></i>Borrower Information</h6>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-4"><span class="text-muted">Full Name:</span></div>
+                                <div class="col-8"><strong>{{data.loan.first_name}} {{data.loan.last_name}}</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-4"><span class="text-muted">Borrower ID:</span></div>
+                                <div class="col-8"><code>#{{data.loan.borrower_id}}</code></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-4"><span class="text-muted">Applied On:</span></div>
+                                <div class="col-8"><span id="application-date">{{formatDate data.loan.created_at}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Info -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 info-card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="section-header"><i class="bi bi-cash-stack me-2"></i>Loan Application Details</h6>
+
+                        <div class="text-center mb-3">
+                            <div class="loan-amount" id="loan-amount">{{formatCurrency data.loan.principal}}</div>
+                            <small class="text-muted">Requested Amount</small>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-5"><span class="text-muted">Interest Rate:</span></div>
+                                <div class="col-7"><strong>{{data.loan.interest_rate}}% {{data.loan.interest_period}}</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-5"><span class="text-muted">Loan Term:</span></div>
+                                <div class="col-7"><strong id="duration">{{data.loan.loan_duration}} </strong> <strong id="durationType">{{data.loan.loan_duration_type}}</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-5"><span class="text-muted">Repayment Cycle:</span></div>
+                                <div class="col-7 text-capitalize"><strong>{{data.loan.repayment_cycle}}</strong></div>
+                            </div>
+                        </div>
+
+                        {{#if data.loan.product_name}}
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-5"><span class="text-muted">Product:</span></div>
+                                <div class="col-7"><strong>{{data.loan.product_name}}</strong></div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div class="detail-row">
+                            <div class="row">
+                                <div class="col-5"><span class="text-muted">Interest Method:</span></div>
+                                <div class="col-7 text-capitalize"><strong id="interest_method">{{data.loan.interest_method}}</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

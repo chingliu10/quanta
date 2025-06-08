@@ -281,7 +281,7 @@ router.get("/details/:loan_id", async (req, res) => {
 
 try {
     const result = await getLoanDetails(loan_id);
-
+    console.log(result.data)
     if (!result.queryStatus) {
         // Optional: render an error page or return a 404
         return res.status(404).render('loan_not_found', { message: result.message });
@@ -291,16 +291,15 @@ try {
 
     if (loanStatus === 'pending') {
 
-        // console.log(result.data)
-        return res.render('loan_unapproved', { data : result.data });
+        return res.render('loan_details', { data : result.data });
     }
 
-    if (loanStatus === 'closed' || loanStatus === 'disbursed') {
-        return res.render('loan_active_or_closed', { data: result.data });
-    }
+    // if (loanStatus === 'closed' || loanStatus === 'disbursed') {
+    //     return res.render('loan_active_or_closed', { data: result.data });
+    // }
 
     // Optional: handle unknown status
-    return res.render('loan_unknown_status', { status: loanStatus, data: result.data });
+    return res.render('loan_details', { data: result.data });
 
 } catch (error) {
     console.error(error);

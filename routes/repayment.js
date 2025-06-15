@@ -3,7 +3,6 @@ import {
     getAllRepayments
 } from '../controllers/repaymentController.js';
 import { isAuthenticated } from '../middlewares/isAuthenticated.js';
-import handleError from '../helpers/handleError.js';
 
 const router = express.Router();
 

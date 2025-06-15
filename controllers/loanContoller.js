@@ -409,21 +409,24 @@ export const getLoanDetails = async (loanId) => {
     
         // 3. Get repayments
         const repaymentQuery = `
-        SELECT 
+      SELECT 
         loan_repayments.id AS id,
         amount,
         collection_date,
-        created_at,
+        loan_repayments.created_at as created_at,
+			first_name,
+            last_name,
             loan_repayment_methods.name AS method_of_payment
         FROM 
             loan_repayments
+		join 
+			users on loan_repayments.user_id = users.id
         JOIN
             loan_repayment_methods ON loan_repayments.repayment_method_id = loan_repayment_methods.id
         WHERE 
             loan_id = ? AND loan_repayments.deleted_at IS NULL
         ORDER BY 
             collection_date ASC
-
         `;
         const [repayments] = await pool.query(repaymentQuery, [loanId]);
 

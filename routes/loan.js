@@ -291,7 +291,7 @@ try {
 
     if (loanStatus === 'pending') {
 
-        return res.render('loan_details', { data : result.data });
+        return res.render('loan_details', {  title : "Loan Details", data : result.data });
     }
 
     // if (loanStatus === 'closed' || loanStatus === 'disbursed') {
@@ -299,7 +299,7 @@ try {
     // }
 
     // Optional: handle unknown status
-    return res.render('loan_details', { data: result.data });
+    return res.render('loan_details', { title : "Loan Details", data: result.data });
 
 } catch (error) {
     console.error(error);

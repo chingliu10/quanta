@@ -127,7 +127,13 @@ const hbs = exphbs.create({
         formatDateTime: (dateString) => {
             try {
                 const date = new Date(dateString);
-                return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`; 
+        if (isNaN(date)) throw new Error('Invalid Date');
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
               } catch (error) {
                 return 'Invalid Date';
               }
@@ -154,6 +160,9 @@ const hbs = exphbs.create({
         },
         check : (v, c) => {
             return (v === c) ? 'N/A' : v
+        },
+        addOne : function(index) {
+            return index + 1;
         },
         sum: (...args) => {
             const values = args.slice(0, -1); // Exclude the last `options` argument

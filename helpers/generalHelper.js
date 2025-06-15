@@ -376,3 +376,29 @@ function getPrincipalAndInterestPerPayment (approved_amount,
 
 }
 
+
+
+export async function getloanPaymentMethods () {
+
+    try {
+
+        let query = `
+             select * from loan_repayment_methods;
+        `
+
+        let [rows] = await pool.query(query)
+
+        return {
+            queryStatus : true,
+            data : rows
+        } 
+
+    }catch (error) {
+
+         return {
+            queryStatus : false
+        }
+
+    }
+
+}

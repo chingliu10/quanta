@@ -502,3 +502,53 @@ export const disburseLoan = async (loanId, releaseDate, first_repayment_date, am
 };
 
 
+export const getLoanMinimalDetailsForRepaymentPurposes  = async (loanId) => {
+    try {
+    const query = `
+      SELECT 
+          borrowers.id as borrowers_id,
+          borrowers.first_name,
+          borrowers.last_name,
+          loans.status AS original_status,
+          (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) AS balance,
+          CASE
+              WHEN loans.maturity_date < CURDATE() 
+                   AND (COALESCE(due_totals.total_due, 0) - COALESCE(paid_totals.total_paid, 0)) > 0
+              THEN 'Past Maturity'
+              ELSE loans.status
+          END AS status
+      FROM 
+          loans
+      JOIN 
+          borrowers ON borrowers.id = loans.borrower_id
+      LEFT JOIN 
+          (
+              SELECT loan_id, SUM(due + fees) AS total_due
+              FROM loan_schedules
+              WHERE deleted_at IS NULL
+              GROUP BY loan_id
+          ) AS due_totals ON loans.id = due_totals.loan_id
+      LEFT JOIN 
+          (
+              SELECT loan_id, SUM(amount) AS total_paid
+              FROM loan_repayments
+              WHERE deleted_at IS NULL
+              GROUP BY loan_id
+          ) AS paid_totals ON loans.id = paid_totals.loan_id
+      WHERE 
+          loans.id = ? AND loans.deleted_at IS NULL
+      LIMIT 1
+    `;
+
+    const [rows] = await pool.query(query, [loanId]);
+    if (rows.length === 0) {
+      return { queryStatus: false, message: "Loan not found" };
+    }
+
+    return { queryStatus: true, data: rows[0] };
+
+  } catch (error) {
+    return handleError(error, "fetching essential loan details");
+  }
+} 
+

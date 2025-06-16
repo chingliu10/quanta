@@ -1,4 +1,11 @@
-     <style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Repayment System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -6,96 +13,153 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
             line-height: 1.6;
         }
 
+        .app-content {
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container-fluid {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
 
         .breadcrumb {
-            background: #e9ecef;
-            padding: 15px 25px;
-            border-bottom: 1px solid #dee2e6;
+            background: #f1f5f9;
+            padding: 16px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
         }
 
         .breadcrumb-item {
-            display: inline;
-            color: #6c757d;
-            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            color: #64748b;
         }
 
         .breadcrumb-item:not(:last-child)::after {
-            content: " → ";
-            margin: 0 8px;
+            content: "›";
+            margin: 0 12px;
+            color: #94a3b8;
         }
 
         .breadcrumb-item.active {
-            color: #495057;
+            color: #0f172a;
             font-weight: 500;
         }
 
-        .form-container {
-            padding: 30px;
+        .page-title-container {
+            padding: 25px 30px 10px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .page-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #212529;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #007bff;
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .section-title {
-            font-size: 16px;
+        .page-title i {
+            color: #2563eb;
+            background: #dbeafe;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .form-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .form-column, .borrower-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 18px 25px;
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            padding: 25px;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 22px;
         }
 
         .form-label {
             display: block;
             font-weight: 500;
-            color: #495057;
+            color: #334155;
             margin-bottom: 8px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .required {
-            color: #dc3545;
+            color: #dc2626;
+            font-size: 18px;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
             transition: all 0.3s ease;
             background: white;
+            color: #1e293b;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
         .form-select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 12px center;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23646b7a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 14px center;
             background-repeat: no-repeat;
             background-size: 16px;
-            padding-right: 40px;
+            padding-right: 45px;
         }
 
         .amount-input-group {
@@ -104,87 +168,130 @@
             align-items: center;
         }
 
-        .amount-controls {
+        .currency-symbol {
             position: absolute;
-            right: 5px;
-            display: flex;
-            flex-direction: column;
+            left: 14px;
+            color: #64748b;
+            font-weight: 500;
             z-index: 2;
         }
 
+        .currency-input {
+            padding-left: 32px !important;
+        }
+
+        .amount-controls {
+            position: absolute;
+            right: 6px;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+            gap: 2px;
+        }
+
         .amount-btn {
-            background: #007bff;
+            background: #2563eb;
             color: white;
             border: none;
-            width: 30px;
-            height: 20px;
-            font-size: 12px;
+            width: 32px;
+            height: 22px;
+            font-size: 13px;
             cursor: pointer;
             transition: background-color 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 4px;
         }
 
         .amount-btn:hover {
-            background: #0056b3;
-        }
-
-        .amount-btn:first-child {
-            border-radius: 3px 3px 0 0;
-        }
-
-        .amount-btn:last-child {
-            border-radius: 0 0 3px 3px;
+            background: #1d4ed8;
         }
 
         .toggle-group {
             display: flex;
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 4px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 5px;
             margin-top: 8px;
         }
 
         .toggle-option {
             flex: 1;
-            padding: 8px 16px;
+            padding: 10px 16px;
             text-align: center;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: all 0.2s ease;
             font-size: 14px;
             font-weight: 500;
         }
 
         .toggle-option.active {
-            background: #007bff;
+            background: #2563eb;
             color: white;
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
         }
 
         .toggle-option:not(.active) {
-            color: #6c757d;
+            color: #475569;
         }
 
         .toggle-option:hover:not(.active) {
-            background: #e9ecef;
+            background: #e2e8f0;
         }
 
         .notify-methods {
             display: flex;
             gap: 10px;
-            margin-top: 8px;
+            margin-top: 15px;
         }
 
         .notify-methods.hidden {
             display: none;
         }
 
+        .method-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .method-option.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .method-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #64748b;
+        }
+
+        .method-option.active .method-icon {
+            color: #2563eb;
+        }
+
+        .method-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .optional-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
         .custom-fields-section {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 6px;
-            padding: 20px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 25px;
             text-align: center;
             margin: 20px 0;
             cursor: pointer;
@@ -192,36 +299,46 @@
         }
 
         .custom-fields-section:hover {
-            border-color: #007bff;
-            background: #f0f8ff;
+            border-color: #2563eb;
+            background: #f0f7ff;
         }
 
         .custom-fields-text {
-            color: #6c757d;
-            font-size: 14px;
+            color: #64748b;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-fields-text i {
+            font-size: 24px;
+            color: #94a3b8;
         }
 
         .btn {
-            padding: 12px 30px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         .btn-primary:active {
@@ -229,21 +346,156 @@
         }
 
         .form-actions {
-            margin-top: 40px;
+            margin-top: 35px;
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
         }
 
-        .optional-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid #e9ecef;
+        .borrower-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
         }
 
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 20px;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #1e293b;
+            text-align: right;
+        }
+
+        .balance-value {
+            color: #16a34a;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-overdue {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .payment-history {
+            margin-top: 25px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .view-all {
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .history-date {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .history-amount {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .history-method {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .recent-activity {
+            margin-top: 25px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .activity-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            flex-shrink: 0;
+        }
+
+        .activity-details {
+            flex-grow: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .activity-description {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .activity-time {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 992px) {
+            .form-layout {
+                grid-template-columns: 1fr;
+                gap: 25px;
             }
             
             .container-fluid {
@@ -251,122 +503,394 @@
                 max-width: calc(100% - 20px);
             }
         }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+            
+            .toggle-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .notify-methods {
+                flex-direction: column;
+            }
+            
+            .page-title {
+                font-size: 22px;
+            }
+        }
     </style>
-    <br/>
+</head>
+<body>
     <div class="app-content">
         <div class="container-fluid">
             <!-- Breadcrumb -->
             <div class="breadcrumb">
-                <span class="breadcrumb-item">Home</span>
+                <span class="breadcrumb-item"><i class="fas fa-home"></i> Home</span>
+                <span class="breadcrumb-item">Loans</span>
+                <span class="breadcrumb-item">Repayments</span>
                 <span class="breadcrumb-item active">Add Repayment</span>
             </div>
 
-            <!-- Form Container -->
-            <div class="form-container">
-                <h1 class="page-title">Add Repayment</h1>
+            <!-- Page Title -->
+            <div class="page-title-container">
+                <h1 class="page-title">
+                    <i class="fas fa-money-check-alt"></i>
+                    Add Repayment
+                </h1>
+            </div>
 
-                <form id="repaymentForm">
-                    <!-- Repayment Amount -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Repayment Amount <span class="required">*</span>
-                        </label>
-                        <div class="amount-input-group">
-                            <input type="number" class="form-control" id="repaymentAmount" step="0.01" min="0" placeholder="0.00" required>
-                            <div class="amount-controls">
-                                <button type="button" class="amount-btn" onclick="adjustAmount(1)">+</button>
-                                <button type="button" class="amount-btn" onclick="adjustAmount(-1)">-</button>
+            <!-- Main Content Layout -->
+            <div class="form-layout">
+                <!-- Left Column: Repayment Form -->
+                <div class="form-column">
+                    <!-- Repayment Details Card -->
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Repayment Details
+                        </div>
+                        <div class="card-content">
+                            <form id="repaymentForm" action="/repayment/store" method="post">
+                                <!-- Repayment Amount -->
+                                <input type="text" name="borrower" value="{{loanDetails.borrowers_id}}" hidden>
+                                <input type="text" name="loan_id" value="{{loanId}}" hidden>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span>Repayment Amount</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="amount-input-group">
+                                        {{!-- <span class="currency-symbol">TSh</span> --}}
+                                        <input type="number" class="form-control currency-input" name="repayment_amount" id="repaymentAmount" step="100" min="0" placeholder="0.00" required>
+                                        <div class="amount-controls">
+                                            <button type="button" class="amount-btn" onclick="adjustAmount(10000)">+</button>
+                                            <button type="button" class="amount-btn" onclick="adjustAmount(-10000)">-</button>
+                                        </div>
+                                    </div>
+                                    <div class="info-label" style="margin-top: 8px; text-align: right;">
+                                        Outstanding Balance: <span class="balance-value">{{formatCurrency loanDetails.balance}}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Repayment Method -->
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span>Repayment Method</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-control form-select" id="repaymentMethod" name="repayment_method" required>
+                                        {{!-- <option value="cash" selected>Cash</option>
+                                        <option value="bank_transfer">Bank Transfer</option>
+                                        <option value="check">Check</option>
+                                        <option value="mobile_money">Mobile Money</option>
+                                        <option value="card">Card Payment</option> --}}
+                                        {{#each paymentMethods}}
+                                            <option value="{{this.id}}">{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+
+                                <!-- Collection Date -->
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span>Collection Date</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="date" class="form-control" id="collectionDate" name="repayment_date" required value="2023-08-15">
+                                </div>
+
+                                  <div class="form-group">
+                                        <label class="form-label">
+                                            <span>Description</span>
+                                        </label>
+                                        <textarea class="form-control" id="description" rows="3" placeholder="Enter any additional notes about this repayment...">Customer made partial payment in person at branch</textarea>
+                                    </div>
+
+                                <!-- Auto Apply Late Repayment -->
+                                {{!-- <div class="form-group">
+                                    <label class="form-label">
+                                        <span>Apply to Late Repayment</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="toggle-group">
+                                        <div class="toggle-option active" onclick="toggleOption(this, 'autoApply', 'no')">No</div>
+                                        <div class="toggle-option" onclick="toggleOption(this, 'autoApply', 'yes')">Yes</div>
+                                    </div>
+                                    <input type="hidden" id="autoApply" value="no">
+                                    <div class="info-label" style="margin-top: 8px; font-size: 13px;">
+                                        When enabled, payment will be applied to any overdue amounts first
+                                    </div>
+                                </div> --}}
+
+                                <!-- Notify Borrower -->
+                                {{!-- <div class="form-group">
+                                    <label class="form-label">
+                                        <span>Notify Borrower</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="toggle-group">
+                                        <div class="toggle-option active" onclick="toggleNotify(this, 'no')">No</div>
+                                        <div class="toggle-option" onclick="toggleNotify(this, 'yes')">Yes</div>
+                                    </div>
+                                    <input type="hidden" id="notifyBorrower" value="no">
+
+                                    <!-- Notify Method (hidden by default) -->
+                                    <div class="notify-methods hidden" id="notifyMethods">
+                                        <label class="form-label" style="margin-top: 15px; margin-bottom: 12px;">
+                                            <span>Notification Method</span>
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="notify-methods">
+                                            <div class="method-option" onclick="toggleMethod(this, 'email_sms')">
+                                                <div class="method-icon"><i class="fas fa-comment-alt"></i></div>
+                                                <div class="method-label">SMS Only</div>
+                                            </div>
+                                            <div class="method-option" onclick="toggleMethod(this, 'email')">
+                                                <div class="method-icon"><i class="fas fa-envelope"></i></div>
+                                                <div class="method-label">Email Only</div>
+                                            </div>
+                                            <div class="method-option active" onclick="toggleMethod(this, 'both')">
+                                                <div class="method-icon"><i class="fas fa-comments"></i></div>
+                                                <div class="method-label">Both</div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="notifyMethod" value="both">
+                                    </div>
+                                </div> --}}
+
+                                <!-- Optional Fields Section -->
+                                {{!-- <div class="optional-section">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span>Description</span>
+                                        </label>
+                                        <textarea class="form-control" id="description" rows="3" placeholder="Enter any additional notes about this repayment...">Customer made partial payment in person at branch</textarea>
+                                    </div>
+
+                                    <!-- Custom Fields -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span>Custom Fields</span>
+                                        </label>
+                                        <div class="custom-fields-section" onclick="addCustomField()">
+                                            <div class="custom-fields-text">
+                                                <i class="fas fa-plus-circle"></i>
+                                                <strong>Add custom fields to this repayment</strong>
+                                                <div style="font-size: 13px;">Receipt number, transaction ID, etc.</div>
+                                            </div>
+                                        </div>
+                                        <div id="customFieldsContainer"></div>
+                                    </div>
+                                </div> --}}
+
+                                <!-- Form Actions -->
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        Save Repayment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Borrower Information -->
+                <div class="borrower-column">
+                    <!-- Borrower Summary Card -->
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-user"></i>
+                            Borrower Summary
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="info-label">Borrower Name:</span>
+                                <span class="info-value">{{loanDetails.first_name}} {{loanDetails.last_name}}</span>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Repayment Method -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Repayment Method <span class="required">*</span>
-                        </label>
-                        <select class="form-control form-select" id="repaymentMethod" required>
-                            <option value="cash" selected>Cash</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="check">Check</option>
-                            <option value="mobile_money">Mobile Money</option>
-                            <option value="card">Card Payment</option>
-                        </select>
-                    </div>
-
-                    <!-- Collection Date -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Collection Date <span class="required">*</span>
-                        </label>
-                        <input type="date" class="form-control" id="collectionDate" required>
-                    </div>
-
-                    <!-- Auto Apply Late Repayment -->
-                    {{!-- <div class="form-group">
-                        <label class="form-label">
-                            Automatically Apply Late repayment to preceding schedules? <span class="required">*</span>
-                        </label>
-                        <div class="toggle-group">
-                            <div class="toggle-option active" onclick="toggleOption(this, 'autoApply', 'no')">No</div>
-                            <div class="toggle-option" onclick="toggleOption(this, 'autoApply', 'yes')">Yes</div>
-                        </div>
-                        <input type="hidden" id="autoApply" value="no">
-                    </div> --}}
-
-                    <!-- Notify Borrower -->
-                    {{!-- <div class="form-group">
-                        <label class="form-label">
-                            Notify Borrower? <span class="required">*</span>
-                        </label>
-                        <div class="toggle-group">
-                            <div class="toggle-option active" onclick="toggleNotify(this, 'no')">No</div>
-                            <div class="toggle-option" onclick="toggleNotify(this, 'yes')">Yes</div>
-                        </div>
-                        <input type="hidden" id="notifyBorrower" value="no">
-
-                        <!-- Notify Method (hidden by default) -->
-                        <div class="notify-methods hidden" id="notifyMethods">
-                            <label class="form-label" style="margin-top: 15px; margin-bottom: 8px;">
-                                Notify Method <span class="required">*</span>
-                            </label>
-                            <div class="toggle-group">
-                                <div class="toggle-option active" onclick="toggleOption(this, 'notifyMethod', 'email_sms')">Email & SMS</div>
-                                <div class="toggle-option" onclick="toggleOption(this, 'notifyMethod', 'sms')">SMS</div>
-                                <div class="toggle-option" onclick="toggleOption(this, 'notifyMethod', 'email')">Email</div>
+                            <div class="info-row">
+                                <span class="info-label">Loan ID:</span>
+                                <span class="info-value">{{loanId}}</span>
                             </div>
-                            <input type="hidden" id="notifyMethod" value="email_sms">
+                            {{!-- <div class="info-row">
+                                <span class="info-label">Loan Product:</span>
+                                <span class="info-value">Business Expansion</span>
+                            </div> --}}
+                            {{!-- <div class="info-row">
+                                <span class="info-label">Disbursement Date:</span>
+                                <span class="info-value">15 Mar 2023</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Maturity Date:</span>
+                                <span class="info-value">14 Sep 2023</span>
+                            </div> --}}
+                            <div class="info-row">
+                                <span class="info-label">Outstanding Balance:</span>
+                                <span class="info-value balance-value">{{formatCurrency loanDetails.balance}}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Loan Status:</span>
+                                <span class="info-value">
+                                    <span class="status-badge status-active">Active</span>
+                                </span>
+                            </div>
+                            {{!-- <div class="info-row">
+                                <span class="info-label">Original Amount:</span>
+                                <span class="info-value">TSh 1,200,000</span>
+                            </div> --}}
                         </div>
-                    </div> --}}
+                    </div>
 
-                    <!-- Optional Fields Section -->
-                    <div class="optional-section">
-                        {{!-- <div class="section-title">Optional Fields</div> --}}
-
-                        <!-- Description -->
-                        <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" id="description" rows="4" placeholder="Enter any additional notes or description..."></textarea>
+                    <!-- Payment History Card -->
+                    {{!-- <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-history"></i>
+                            Recent Payments
                         </div>
-
-                        <!-- Custom Fields -->
-                        {{!-- <div class="form-group">
-                            <label class="form-label">Custom Fields</label>
-                            <div class="custom-fields-section" onclick="addCustomField()">
-                                <div class="custom-fields-text">
-                                    <strong>Click here to add custom fields on this page</strong>
+                        <div class="card-content">
+                            <div class="payment-history">
+                                <div class="history-header">
+                                    <div class="history-title">Last 3 Payments</div>
+                                    <a href="#" class="view-all">View All</a>
+                                </div>
+                                
+                                <div class="history-item">
+                                    <div>
+                                        <div class="history-date">10 Aug 2023</div>
+                                        <div class="history-method">Mobile Money</div>
+                                    </div>
+                                    <div class="history-amount">TSh 150,000</div>
+                                </div>
+                                
+                                <div class="history-item">
+                                    <div>
+                                        <div class="history-date">27 Jul 2023</div>
+                                        <div class="history-method">Bank Transfer</div>
+                                    </div>
+                                    <div class="history-amount">TSh 200,000</div>
+                                </div>
+                                
+                                <div class="history-item">
+                                    <div>
+                                        <div class="history-date">12 Jul 2023</div>
+                                        <div class="history-method">Cash</div>
+                                    </div>
+                                    <div class="history-amount">TSh 150,000</div>
                                 </div>
                             </div>
-                            <div id="customFieldsContainer"></div>
-                        </div> --}}
-                    </div>
+                        </div>
+                    </div> --}}
 
-                    <!-- Form Actions -->
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
+                    <!-- Recent Activity Card -->
+                    {{!-- <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-bell"></i>
+                            Recent Activity
+                        </div>
+                        <div class="card-content">
+                            <div class="recent-activity">
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-comment"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">Payment Reminder Sent</div>
+                                        <div class="activity-description">SMS reminder for upcoming payment</div>
+                                        <div class="activity-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">Statement Generated</div>
+                                        <div class="activity-description">Monthly loan statement</div>
+                                        <div class="activity-time">1 day ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">Contact Info Updated</div>
+                                        <div class="activity-description">Changed phone number</div>
+                                        <div class="activity-time">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
             </div>
         </div>
     </div>
+    
 {{> flash_message}}
+    <script>
+        // Toggle functions
+        function toggleOption(element, fieldId, value) {
+            const container = element.closest('.toggle-group');
+            container.querySelectorAll('.toggle-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById(fieldId).value = value;
+        }
+        
+        function toggleMethod(element, value) {
+            const container = element.closest('.notify-methods');
+            container.querySelectorAll('.method-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById('notifyMethod').value = value;
+        }
+        
+        function toggleNotify(element, value) {
+            const container = element.closest('.form-group');
+            container.querySelectorAll('.toggle-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById('notifyBorrower').value = value;
+            
+            const methods = document.getElementById('notifyMethods');
+            if (value === 'yes') {
+                methods.classList.remove('hidden');
+            } else {
+                methods.classList.add('hidden');
+            }
+        }
+        
+        // Amount adjustment
+        function adjustAmount(amount) {
+            const input = document.getElementById('repaymentAmount');
+            let currentValue = parseFloat(input.value) || 0;
+            let newValue = currentValue + amount;
+            
+            if (newValue < 0) newValue = 0;
+            
+            input.value = newValue.toFixed(2);
+        }
+        
+        // Add custom field (placeholder)
+        function addCustomField() {
+            alert('Custom field functionality would open a modal or add a field in a real application');
+        }
+        
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('collectionDate').value = today;
+        });
+    </script>
+</body>
+</html>

@@ -29,3 +29,34 @@ WHERE loan_repayments.deleted_at is null AND loan_repayments.branch_id = ?
     }
 }
 
+
+export const insertRepayment = async (loan_id, borrower, user, 
+            repayment_amount, repayment_method, repayment_date, notes, branch ) => {
+
+    try {
+
+
+        let currentTime = new Date()
+
+        const query = `
+            INSERT INTO loan_repayments (loan_id, borrower_id, user_id, amount, repayment_method_id, collection_date,
+                notes, due_date, created_at, updated_at, branch_id)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?)
+        `
+
+        await pool.query(query, [loan_id, borrower, user, repayment_amount, repayment_method, repayment_date, notes,
+                repayment_date, currentTime, currentTime, branch
+        ])
+
+        return {
+            queryStatus : true
+        }
+
+    }catch (error) {
+
+        console.log(error)
+        return handleError(error, 'Creating Loan Repayment');
+
+    }
+ }
+
